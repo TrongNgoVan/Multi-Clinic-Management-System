@@ -10,6 +10,8 @@ class BacSi(Base):
     ten = Column(String(100), nullable=False)
     sdt = Column(String(15), nullable=False)
     chucvu = Column(String(50), nullable=True)
+    tendangnhap = Column(String(50), nullable=False)
+    matkhau = Column(String(50), nullable=False)
 
     # Phòng chức năng
     phong_id = Column(Integer, ForeignKey("phongchucnang.id"))
