@@ -5,7 +5,7 @@ from werkzeug.security import check_password_hash
 
 bacsi_bp = Blueprint("bacsi", __name__)
 
-
+#Hai
 @bacsi_bp.route("/bacsi", methods=["GET"])
 def get_all_bacsi():
     session = SessionLocal()
