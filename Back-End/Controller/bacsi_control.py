@@ -52,5 +52,3 @@ def login_bacsi():
     else:
         session.close()
         return jsonify({"message": "Tên đăng nhập hoặc mật khẩu không đúng"}), 401
-=======
-
