@@ -21,6 +21,8 @@ def get_all_bacsi():
     session.close()
     return jsonify(result)
 
+
+
 @bacsi_bp.route("/bacsi", methods=["POST"])
 def create_bacsi():
     data = request.json
@@ -35,6 +37,7 @@ def create_bacsi():
     session.close()
     return jsonify({"message": "Tạo bác sĩ thành công"}), 201
 
+<<<<<<< HEAD
 @bacsi_bp.route("/login", methods=["POST"])
 def login_bacsi():
     data = request.json
@@ -50,3 +53,7 @@ def login_bacsi():
     else:
         session.close()
         return jsonify({"message": "Tên đăng nhập hoặc mật khẩu không đúng"}), 401
+=======
+
+
+>>>>>>> a5866e423299c8f058216934cf25db2170eb2f82
