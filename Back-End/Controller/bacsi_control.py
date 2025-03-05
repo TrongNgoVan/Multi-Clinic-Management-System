@@ -19,6 +19,8 @@ def get_all_bacsi():
     session.close()
     return jsonify(result)
 
+
+
 @bacsi_bp.route("/bacsi", methods=["POST"])
 def create_bacsi():
     data = request.json
@@ -32,3 +34,6 @@ def create_bacsi():
     session.commit()
     session.close()
     return jsonify({"message": "Tạo bác sĩ thành công"}), 201
+
+
+

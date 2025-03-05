@@ -3,6 +3,8 @@ from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 from DB.db_connection import Base
 
+
+
 class BacSi(Base):
     __tablename__ = "bacsi"
 
