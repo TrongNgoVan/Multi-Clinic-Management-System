@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from DB.db_connection import SessionLocal
+from Back_End.DB.db_connection import SessionLocal
 from Model.bacsi import BacSi
 from werkzeug.security import check_password_hash
 
@@ -12,43 +12,13 @@ def get_all_bacsi():
     ds_bacsi = session.query(BacSi).all()
     result = []
     for b in ds_bacsi:
-        result.append({
+        bacsi_info = {
             "id": b.id,
             "ten": b.ten,
-            "sdt": b.sdt,
-            "chucvu": b.chucvu
-        })
+            "dob": b.dob,
+            "chuyenmon": b.chuyenmon
+        }
+        result.append(bacsi_info)
+        print(bacsi_info)  # Hiển thị thông tin bác sĩ ra terminal
     session.close()
     return jsonify(result)
-
-
-
-@bacsi_bp.route("/bacsi", methods=["POST"])
-def create_bacsi():
-    data = request.json
-    session = SessionLocal()
-    new_bacsi = BacSi(
-        ten=data["ten"],
-        sdt=data["sdt"],
-        chucvu=data["chucvu"]
-    )
-    session.add(new_bacsi)
-    session.commit()
-    session.close()
-    return jsonify({"message": "Tạo bác sĩ thành công"}), 201
-
-@bacsi_bp.route("/login", methods=["POST"])
-def login_bacsi():
-    data = request.json
-    tendangnhap = data.get("tendangnhap")
-    matkhau = data.get("matkhau")
-
-    session = SessionLocal()
-    bacsi = session.query(BacSi).filter_by(pass=tendangnhap).first()
-
-    if bacsi and check_password_hash(bacsi.matkhau, matkhau):
-        session.close()
-        return jsonify({"message": "Đăng nhập thành công"}), 200
-    else:
-        session.close()
-        return jsonify({"message": "Tên đăng nhập hoặc mật khẩu không đúng"}), 401
