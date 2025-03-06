@@ -12,6 +12,8 @@ class BenhNhan(Base):
     sdt = Column(String(15), nullable=True)
     quequan = Column(String(255), nullable=True)
     cccd = Column(String(20), unique=True, nullable=True)
+    username = Column(String(100), unique=True,nullable=False)
+
 
     # Liên kết với Lịch hẹn
     lichhen_list = relationship("LichHen", back_populates="benhnhan")

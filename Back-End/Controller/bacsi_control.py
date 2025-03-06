@@ -44,7 +44,7 @@ def login_bacsi():
     matkhau = data.get("matkhau")
 
     session = SessionLocal()
-    bacsi = session.query(BacSi).filter_by(tendangnhap=tendangnhap).first()
+    bacsi = session.query(BacSi).filter_by(pass=tendangnhap).first()
 
     if bacsi and check_password_hash(bacsi.matkhau, matkhau):
         session.close()

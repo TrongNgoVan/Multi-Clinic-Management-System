@@ -12,11 +12,11 @@ class BacSi(Base):
     ten = Column(String(100), nullable=False)
     sdt = Column(String(15), nullable=False)
     chucvu = Column(String(50), nullable=True)
-    tendangnhap = Column(String(50), nullable=False)
-    matkhau = Column(String(50), nullable=False)
 
     # Phòng chức năng
     phong_id = Column(Integer, ForeignKey("phongchucnang.id"))
+    username = Column(String(100), unique=True,nullable=False)
+    pass  =   Column(String(20), nullable=False)
     phong = relationship("PhongChucNang", back_populates="bacsi_list")
 
     # Liên kết với các bảng khác
