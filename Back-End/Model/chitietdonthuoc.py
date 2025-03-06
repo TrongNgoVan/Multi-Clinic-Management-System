@@ -6,10 +6,11 @@ class ChiTietDonThuoc(Base):
     __tablename__ = "chitietdonthuoc"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    donthuoc_id = Column(Integer, ForeignKey("donthuoc.id"))
-    thuoc_id = Column(Integer, ForeignKey("thuoc.id"))
-    soluong = Column(Integer, nullable=False)
+    donthuoc_id = Column(Integer, ForeignKey("donthuoc.id"), nullable=True)
+    thuoc_id = Column(Integer, ForeignKey("thuoc.id"), nullable=True)
+    soluong = Column(Integer, nullable=True)
     gia = Column(Float, nullable=True)
 
-    donthuoc = relationship("DonThuoc", back_populates="chitiet_list")
+    # Quan hệ
+    donthuoc = relationship("DonThuoc", back_populates="chitietdonthuoc_list")
     thuoc = relationship("Thuoc", back_populates="chitietdonthuoc_list")

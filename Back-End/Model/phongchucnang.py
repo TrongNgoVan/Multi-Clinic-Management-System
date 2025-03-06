@@ -6,8 +6,8 @@ class PhongChucNang(Base):
     __tablename__ = "phongchucnang"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    chucNang = Column(String(255), nullable=False)
+    chucNang = Column(String(255), nullable=True)
     moTa = Column(Text, nullable=True)
 
-    # Liên kết với Bác sĩ (1 phòng - nhiều bác sĩ)
+    # Quan hệ ngược với BacSi
     bacsi_list = relationship("BacSi", back_populates="phong")
