@@ -19,7 +19,7 @@ def get_all_bacsi():
     return jsonify(ds_bacsi), 200
 
 
-@bacsi_bp.route("/bacsi", methods=["POST"])
+@bacsi_bp.route("/thembacsi", methods=["POST"])
 def create_bacsi():
     data = request.json
     conn = get_db_connection()

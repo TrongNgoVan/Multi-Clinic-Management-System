@@ -17,10 +17,10 @@ def get_db_connection():
 def test_connection():
     conn = get_db_connection()
     if conn:
-        print("✅ Kết nối MySQL thành công!")
+        print(" Kết nối MySQL thành công!")
         conn.close()
     else:
-        print("❌ Kết nối MySQL thất bại!")
+        print(" Kết nối MySQL thất bại!")
 
 # Chạy kiểm tra kết nối
 if __name__ == "__main__":
