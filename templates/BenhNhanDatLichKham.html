@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đặt Lịch Khám</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
+    <link rel="stylesheet" href="../templates/css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../templates/javascript/scripts.js"></script>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-danger">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">&#8962;</a>
+                <a class="nav-link text-white ms-3" href="BenhNhanView.html">Quay lại</a>
+                <div class="mx-auto">
+                    <span class="navbar-text text-white fw-bold">Đặt lịch khám</span>
+                </div>
+                <span class="navbar-text" style="color: white;">Ngô Văn Trọng <span class="logout">&#10162;</span></span>
+            </div>
+        </nav>
+    </header>
+    <main class="container mt-4">
+        <div class="row">
+            <div class="col-md-6 d-flex flex-column gap-3">
+                <div class="dropdown">
+                    <button class="btn btn-danger btn-lg w-100 custom-btn dropdown-toggle" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                        Chọn phòng chức năng
+                    </button>
+                    <ul class="dropdown-menu w-100" aria-labelledby="dropdownMenuButton">
+                        <li><a class="dropdown-item" href="#" onclick="selectDepartment('Phòng khám tổng quát')">Phòng khám tổng quát</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="selectDepartment('Phòng khám tim mạch')">Phòng khám tim mạch</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="selectDepartment('Phòng khám não bộ')">Phòng khám não bộ</a></li>
+                    </ul>
+                </div>
+                <div class="dropdown">
+                    <button class="btn btn-danger btn-lg w-100 custom-btn" id="selectDateBtn">
+                        Chọn thời gian
+                    </button>
+                    <div class="dropdown-menu p-3" id="datePickerContainer">
+                        <input type="text" id="datepicker" class="form-control text-center" placeholder="Chọn ngày">
+                    </div>
+                </div>
+                
+            </div>
+            <div class="col-md-6 d-flex flex-column gap-3">
+                <div class="border p-3 text-center fw-bold">Thông tin bổ sung</div>
+                <div class="border p-3 text-center fw-bold" id="selected-department">Phòng chức năng đã chọn</div>
+                <div class="border p-3 text-center fw-bold" id="selected-time">Thời gian hẹn</div>
+                <div class="border p-3 text-center fw-bold" id="selected-doctor">Bác sĩ đã chọn</div>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="p-4">
+                <div class="row align-items-center">
+                    <div class="col-md-4 text-center">
+                        <div class="square-img-container">
+                            <img src="../templates/images/download.png" alt="Ảnh bệnh nhân" class="img-fluid rounded square-img" style="width: 30%;">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <p><strong>Tên:</strong> Nguyễn Văn A</p>
+                        <p><strong>Ngày sinh:</strong> 01/01/1990</p>
+                        <p><strong>Số CCCD:</strong> 123456789</p>
+                    </div>
+                    <div class="col-md-4">
+                        <p><strong>Quê quán:</strong> Hà Nội</p>
+                        <p><strong>Số điện thoại:</strong> 0123456789</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-12 text-center">
+                <button class="btn btn-danger btn-lg custom-btn" id="btnLenLich">Lên Lịch</button>
+            </div>
+        </div>
+    </main>
+    <script>
+        document.getElementById("btnLenLich").addEventListener("click", function (event) {
+        event.preventDefault(); // Ngăn chặn điều hướng ngay lập tức
+        
+        Swal.fire({
+            icon: 'success',
+            title: 'Lên lịch thành công!',
+            text: 'Lịch khám của bạn đã được đặt.',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#dc3545',
+            allowOutsideClick: false
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = "BenhNhanView.html"; // Điều hướng sau khi nhấn OK
+            }
+        });
+    });
+    </script>
+</body>
+</html>
