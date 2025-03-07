@@ -1,3 +1,4 @@
+import secrets
 from flask import Flask
 from BackEnd.Controller.home_control import home_bp
 from BackEnd.Controller.bacsi_control import bacsi_bp
@@ -11,6 +12,11 @@ from BackEnd.Controller.phongchucnang_control import phongchucnang_bp
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
 
+# cái này là thêm mã hóa bảo mật cho bất cứ trang web nào dùng session nhé ae
+
+app.secret_key = secrets.token_hex(32)
+
+
 # Đoạn này là đăng ký các Blueprint cho toàn bộ các controller mỗi khi ae  khởi chạy server nhé!
 #  ae cứ hiể BluePrint như một cái tên đaij diện cho 1 module lớn( liên quan đến 1 đối tượng)
 # nó chứa nhiều route( hay API, URL) , mỗi route sẽ đại diện cho 1 hàm hay 1 tính năng cụ thể của 1 đối tượng
@@ -18,15 +24,15 @@ app = Flask(__name__, template_folder="templates", static_folder="static")
 # khi ae gọi đến route này thì nó sẽ gọi đến hàm tương ứng trong controller để xử lý
 #  còn url_prefix là tiền tố của blueprint, nó sẽ thêm vào trước tất cả các route trong blueprint, muốn truy cập vào 1 route nào đó thì ae phải thêm tiền tố đó vào trước
 #  ví dụ: bacsi_bp có url_prefix là "/bacsi" thì route dangnhap sẽ là "/bacsi/dangnhap"
-#  Server khởi động khi chạy file này, server sẽ khởi động trên cổng http://127.0.0.1:5000    
+#  Server khởi động khi chạy file này, server sẽ khởi động trên cổng http://127.0.0.1:5000  .  
 # ae muón try cập vào 1 route nào đó thì thêm tên của router ( nhớ thêm tiền tố nếu có của blueprint) vào sau cổng 
 
 app.register_blueprint(home_bp)
 app.register_blueprint(bacsi_bp, url_prefix="/bacsi")
 app.register_blueprint(benhnhan_bp, url_prefix="/benhnhan")
 app.register_blueprint(donthuoc_bp, url_prefix="/donthuoc")
-app.register_blueprint(lichhen_bp, url_prefix="/lichhen")
-app.register_blueprint(phieukham_bp, url_prefix="/phieukham")
+app.register_blueprint(lichhen_bp, url_prefix="/lichhen")   
+app.register_blueprint(phieukham_bp, url_prefix="/phieukham")   
 app.register_blueprint(thuoc_bp, url_prefix="/thuoc")
 app.register_blueprint(chitietdonthuoc_bp, url_prefix="/chitietdonthuoc")
 app.register_blueprint(phongchucnang_bp, url_prefix="/phongchucnang")

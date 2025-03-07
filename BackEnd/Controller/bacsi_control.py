@@ -1,5 +1,5 @@
 import mysql.connector
-from flask import Blueprint, request, jsonify, render_template
+from flask import Blueprint, request, jsonify, render_template, redirect, url_for, session, flash
 from werkzeug.security import generate_password_hash, check_password_hash
 from BackEnd.DB.db_connection import get_db_connection
 
@@ -11,6 +11,51 @@ bacsi_bp = Blueprint("bacsi", __name__)
 @bacsi_bp.route("/dang-nhap")
 def dang_nhap():
     return render_template("BacSiDangNhap.html")  
+
+
+@bacsi_bp.route("/login", methods=["POST"])
+def login_bacsi():
+    data = request.form  # Lấy dữ liệu từ form gửi lên
+    username = data.get("username")
+    matkhau = data.get("password")
+
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    query = "SELECT * FROM bacsi WHERE username = %s"
+    cursor.execute(query, (username,))
+    bacsi = cursor.fetchone()  # Lấy toàn bộ thông tin bác sĩ
+
+    cursor.close()
+    conn.close()
+
+    if bacsi and bacsi["pass"] == matkhau:
+        # Lưu toàn bộ thông tin bác sĩ vào session
+        session["bacsi"] = bacsi  
+
+        flash("Đăng nhập thành công!", "success")
+        return redirect(url_for("bacsi.trang_chu_bacsi"))  # Chuyển đến trang chủ bác sĩ
+    else:
+        flash("Tên đăng nhập hoặc mật khẩu không đúng", "danger")
+        return redirect(url_for("bacsi.dang_nhap"))  # Quay lại trang đăng nhập nếu sai
+
+@bacsi_bp.route("/logout", methods=["GET", "POST"])
+def logout_bacsi():
+    session.pop("bacsi", None)
+    flash("Đăng xuất thành công!", "info")
+    return redirect(url_for("bacsi.dang_nhap"))
+
+
+
+@bacsi_bp.route("/trangchu")
+def trang_chu_bacsi():
+    if "bacsi" in session:
+        bacsi = session["bacsi"] 
+        return render_template("BacSiView.html", bacsi=bacsi)  # Truyền thông tin vào trang chủ bác sĩ
+    
+    flash("Vui lòng đăng nhập trước!", "warning")
+    return redirect(url_for("bacsi.dang_nhap"))
+
 
 @bacsi_bp.route("/get_all_bacsi", methods=["GET"])
 def get_all_bacsi():
@@ -55,29 +100,4 @@ def create_bacsi():
     cursor.close()
     conn.close()
     return jsonify({"message": "Tạo bác sĩ thành công"}), 201
-
-
-@bacsi_bp.route("/login", methods=["POST"])
-def login_bacsi():
-    data = request.json
-    username = data.get("username")
-    matkhau = data.get("password")
-
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
-
-    query = "SELECT id, password FROM bacsi WHERE username = %s"
-    cursor.execute(query, (username,))
-    bacsi = cursor.fetchone()
-
-    cursor.close()
-    conn.close()
-
-    if bacsi and check_password_hash(bacsi["password"], matkhau):
-        return jsonify({"message": "Đăng nhập thành công"}), 200
-    else:
-        return jsonify({"message": "Tên đăng nhập hoặc mật khẩu không đúng"}), 401
-
-
-
 

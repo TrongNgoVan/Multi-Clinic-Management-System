@@ -25,23 +25,23 @@
 
       <!-- Navigation Links -->
       <ul class="navbar__links">
-        <li><a href="#">Đặt lịch khám</a></li>
-        <li><a href="#">Xem phiếu khám</a></li>
-        <li><a href="#">Xem đơn thuốc</a></li>
+        <li><a href="#">Xem tin tức</a></li>
+        <li><a href="#">Xem giới thiệu</a></li>
       </ul>
 
       <!-- Login Button -->
       <div class="navbar__user">
         <button onclick="toggleLoginOptions()">Đăng nhập</button>
-        <div id="login-options" style="display: none; position: absolute; background: white; padding: 10px; border-radius: 5px;">
-          <a href="{{ url_for('benhnhan.dang_nhap') }}">Đăng nhập với tư cách Bác sĩ</a>
+        <div id="login-options" class="login-dropdown">
+          <a href="{{ url_for('benhnhan.dang_nhap') }}">Đăng nhập với tư cách Bệnh nhân</a>
           <a href="{{ url_for('bacsi.dang_nhap') }}">Đăng nhập với tư cách Bác sĩ</a>
         </div>
       </div>
+      
     </nav>
   </header>
 
-  <!-- Hero / Banner Section -->
+
   <section class="hero">
     <img src="static/images/background-ptit-daotao.jpg" alt="PTIT Clinic Building" class="hero__image" />
     <div class="hero__overlay">

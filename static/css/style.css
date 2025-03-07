@@ -112,3 +112,41 @@
   background-color: #d40000;
   color: #fff;
 }
+
+.navbar__user {
+  position: relative;
+  display: inline-block;
+}
+
+.navbar__user button {
+  background-color: #bf0d0d;
+  color: white;
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.login-dropdown {
+  display: none;
+  position: absolute;
+  top: 40px;
+  right: 0;
+  background-color: rgb(250, 243, 243);
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  width: 200px;
+  z-index: 1000;
+}
+
+.login-dropdown a {
+  display: block;
+  padding: 10px;
+  text-decoration: none;
+  color: black;
+}
+
+.login-dropdown a:hover {
+  background-color: #c50808;
+}
