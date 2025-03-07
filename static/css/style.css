@@ -1,0 +1,114 @@
+/* Basic Reset & Box-Sizing */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* Body Styling */
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    color: #333;
+  }
+  
+  /* Header & Navigation */
+  .header {
+    background-color: #d40000; /* A bold red color */
+  }
+  
+  .navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 10px 20px;
+  }
+  
+  .navbar__logo img {
+    height: 40px;
+    width: auto;
+  }
+  
+  .navbar__links {
+    display: flex;
+    list-style: none;
+  }
+  
+  .navbar__links li {
+    margin: 0 15px;
+  }
+  
+  .navbar__links a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 500;
+    transition: opacity 0.2s ease;
+  }
+  
+  .navbar__links a:hover {
+    opacity: 0.8;
+  }
+  
+  .navbar__user a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 500;
+    transition: opacity 0.2s ease;
+  }
+  
+  .navbar__user a:hover {
+    opacity: 0.8;
+  }
+  
+/* Hero Section with Full Background */
+.hero {
+  position: relative;
+  width: 100%;
+  /* A fixed height or min-height ensures the background is visible */
+  min-height: 80vh; /* adjust as needed */
+  /* Replace 'clinic-building.jpg' with your actual image path */
+  background: url("assets/background-ptit-daotao.jpg") center center no-repeat;
+  background-size: cover;
+}
+
+/* Overlay for darkening the background & placing text */
+.hero__overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: #fff;
+
+  /* Slightly darken the background image */
+  background-color: rgba(0, 0, 0, 0.4);
+  padding: 2rem 3rem;
+  border-radius: 8px;
+}
+
+.hero__overlay h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.hero__overlay p {
+  font-size: 1.2rem;
+  line-height: 1.5;
+}
+
+/* Main Content */
+.main-content {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  padding: 20px;
+  background-color: #d40000;
+  color: #fff;
+}
