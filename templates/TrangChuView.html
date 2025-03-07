@@ -4,19 +4,23 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Phòng Khám Đa Khoa PTIT</title>
+  <link rel="icon" href="static/favicon.ico" type="image/x-icon"> 
   <link rel="stylesheet" href="static/css/style.css">
+  <script>
+    function toggleLoginOptions() {
+      var loginOptions = document.getElementById("login-options");
+      loginOptions.style.display = (loginOptions.style.display === "block") ? "none" : "block";
+    }
+  </script>
 </head>
 <body>
 
   <!-- Header / Navigation -->
   <header class="header">
     <nav class="navbar">
-      <!-- Logo or Home Icon -->
+      <!-- Logo -->
       <div class="navbar__logo">
-        <!-- Replace `logo.png` with your actual logo file if you have one -->
-        <a href="#">
-          <img src="static/assets/home.png" alt="Home" />
-        </a>
+        <a href="#"><img src="static/images/home.png" alt="Home" /></a>
       </div>
 
       <!-- Navigation Links -->
@@ -26,30 +30,27 @@
         <li><a href="#">Xem đơn thuốc</a></li>
       </ul>
 
-      <!-- User Name / Profile -->
+      <!-- Login Button -->
       <div class="navbar__user">
-        <a href="#">Ngọ Văn Trọng</a>
+        <button onclick="toggleLoginOptions()">Đăng nhập</button>
+        <div id="login-options" style="display: none; position: absolute; background: white; padding: 10px; border-radius: 5px;">
+          <a href="{{ url_for('benhnhan.dang_nhap') }}">Đăng nhập với tư cách Bác sĩ</a>
+          <a href="{{ url_for('bacsi.dang_nhap') }}">Đăng nhập với tư cách Bác sĩ</a>
+        </div>
       </div>
     </nav>
   </header>
 
   <!-- Hero / Banner Section -->
   <section class="hero">
-    <!-- Replace `clinic-building.jpg` with the actual path to your building image -->
-    <img src="static/assets/background-ptit-daotao.jpg" alt="PTIT Clinic Building" class="hero__image" />
-
+    <img src="static/images/background-ptit-daotao.jpg" alt="PTIT Clinic Building" class="hero__image" />
     <div class="hero__overlay">
       <h1>Phòng Khám Đa Khoa PTIT</h1>
       <p>Nơi Quy Tụ Các Bác Sĩ <br> Tài Năng - Tâm Huyết - Trách Nhiệm</p>
     </div>
   </section>
 
-  <!-- (Optional) Main Content Section -->
-  <main class="main-content">
-    <!-- Add more details, services, etc. here if needed -->
-  </main>
-
-  <!-- (Optional) Footer -->
+  <!-- Footer -->
   <footer class="footer">
     <p>&copy; 2025 Phòng Khám Đa Khoa PTIT</p>
   </footer>
