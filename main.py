@@ -13,6 +13,7 @@ from flask_cors import CORS
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
 CORS(app)
+# ae nhớ thêm CORS sẽ giúp trình duyệt không chặn request từ router của FrontEnd đến API của BackEnd nhé ae!
 # cái này là thêm mã hóa bảo mật cho bất cứ trang web nào dùng session nhé ae
 
 app.secret_key = secrets.token_hex(32)
