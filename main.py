@@ -9,9 +9,10 @@ from BackEnd.Controller.phieukham_control import phieukham_bp
 from BackEnd.Controller.thuoc_control import thuoc_bp
 from BackEnd.Controller.chitietdonthuoc_control import chitietdonthuoc_bp
 from BackEnd.Controller.phongchucnang_control import phongchucnang_bp
+from flask_cors import CORS
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
-
+CORS(app)
 # cái này là thêm mã hóa bảo mật cho bất cứ trang web nào dùng session nhé ae
 
 app.secret_key = secrets.token_hex(32)

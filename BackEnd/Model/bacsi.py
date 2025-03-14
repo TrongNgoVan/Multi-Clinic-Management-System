@@ -1,5 +1,5 @@
 class BacSi:
-    def __init__(self, id, ten, dob, chuyenmon, hocvan, kinhnghiem, img, phong_id, username, password):
+    def __init__(self, id, ten, dob, chuyenmon, hocvan, kinhnghiem, img, phongID, username, password):
         self.id = id
         self.ten = ten
         self.dob = dob
@@ -7,7 +7,7 @@ class BacSi:
         self.hocvan = hocvan
         self.kinhnghiem = kinhnghiem
         self.img = img
-        self.phong_id = phong_id
+        self.phongID = phongID
         self.username = username
         self.password = password
 
@@ -21,7 +21,7 @@ class BacSi:
             "hocvan": self.hocvan,
             "kinhnghiem": self.kinhnghiem,
             "img": self.img,
-            "phong_id": self.phong_id,
+            "phongID": self.phongID,
             "username": self.username,
             "password": self.password
         }

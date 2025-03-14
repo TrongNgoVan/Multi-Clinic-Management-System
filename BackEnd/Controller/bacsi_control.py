@@ -2,7 +2,7 @@ import mysql.connector
 from flask import Blueprint, request, jsonify, render_template, redirect, url_for, session, flash
 from werkzeug.security import generate_password_hash, check_password_hash
 from BackEnd.DB.db_connection import get_db_connection
-
+from BackEnd.Service.bacsi_sv import BacSiService
 
 bacsi_bp = Blueprint("bacsi", __name__)
 # đoạn này là để ae tạo ra một Blueprint có tên là bacsi_bp cho phần controller của bác sĩ, nó đại diện cho toàn bộ các router hay chúc năng con của bác sĩ
@@ -11,6 +11,16 @@ bacsi_bp = Blueprint("bacsi", __name__)
 @bacsi_bp.route("/dang-nhap")
 def dang_nhap():
     return render_template("BacSiDangNhap.html")  
+
+
+bacsi_bp = Blueprint("bacsi", __name__)
+
+@bacsi_bp.route("/get_all_bacsi", methods=["GET"])
+def get_all_bacsi():
+    ds_bacsi = BacSiService.get_all_bacsi()
+    return jsonify([bacsi.to_dict() for bacsi in ds_bacsi])
+
+
 
 
 @bacsi_bp.route("/login", methods=["POST"])
@@ -57,18 +67,7 @@ def trang_chu_bacsi():
     return redirect(url_for("bacsi.dang_nhap"))
 
 
-@bacsi_bp.route("/get_all_bacsi", methods=["GET"])
-def get_all_bacsi():
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
 
-    query = "SELECT ID, ten, dob, chuyenmon, hocvan, kinhnghiem, img, phongID , username FROM bacsi"
-    cursor.execute(query)
-    ds_bacsi = cursor.fetchall()
-
-    cursor.close()
-    conn.close()
-    return jsonify(ds_bacsi), 200
 
 
 @bacsi_bp.route("/thembacsi", methods=["POST"])
@@ -100,4 +99,7 @@ def create_bacsi():
     cursor.close()
     conn.close()
     return jsonify({"message": "Tạo bác sĩ thành công"}), 201
+
+
+
 

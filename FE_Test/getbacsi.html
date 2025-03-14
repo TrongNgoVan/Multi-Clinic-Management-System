@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh sách Bác Sĩ</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+        }
+        .error-message {
+            text-align: center;
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Danh sách Bác Sĩ</h2>
+    <p id="error-message" class="error-message" style="display: none;">Không thể lấy dữ liệu bác sĩ!</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Hình ảnh</th>
+                <th>Tên</th>
+                <th>Chuyên môn</th>
+                <th>Học vấn</th>
+                <th>Kinh nghiệm</th>
+                <th>Phòng</th>
+                <th>Username</th>
+            </tr>
+        </thead>
+        <tbody id="bacsi-table-body">
+            <!-- Dữ liệu sẽ được thêm vào đây -->
+        </tbody>
+    </table>
+
+    <script>
+         async function fetchBacSi() {
+    console.log("fetchBacSi() được gọi");  // Kiểm tra hàm có chạy không
+    try {
+        let response = await fetch("http://127.0.0.1:5000/bacsi/get_all_bacsi");
+        console.log("Response Status:", response.status);
+
+        if (!response.ok) throw new Error("Lỗi API, mã: " + response.status);
+        
+        let data = await response.json();
+        console.log("Dữ liệu nhận được:", data);  
+
+        let tableBody = document.getElementById("bacsi-table-body");
+        console.log("tableBody tìm thấy:", tableBody); // Kiểm tra tableBody có tồn tại không
+        tableBody.innerHTML = "";
+
+        data.forEach(bacsi => {
+            console.log("Thêm bác sĩ:", bacsi);  // Kiểm tra từng bác sĩ
+
+            let row = document.createElement("tr");
+            let imgSrc = bacsi.img && bacsi.img !== "chưa có" ? bacsi.img : "ava.jpg";
+
+            row.innerHTML = `
+                <td><img src="${imgSrc}" alt="Ảnh bác sĩ"></td>
+                <td>${bacsi.ten}</td>
+                <td>${bacsi.chuyenmon}</td>
+                <td>${bacsi.hocvan}</td>
+                <td>${bacsi.kinhnghiem}</td>
+                <td>${bacsi.phongID ? bacsi.phongID : "Chưa có"}</td>
+                <td>${bacsi.username}</td>
+            `;
+            tableBody.appendChild(row);
+        });
+
+    } catch (error) {
+        console.error("Lỗi khi lấy danh sách bác sĩ:", error);
+    }
+}
+
+// GỌI HÀM KHI TẢI TRANG
+document.addEventListener("DOMContentLoaded", fetchBacSi);
+
+    </script>
+
+</body>
+</html>
