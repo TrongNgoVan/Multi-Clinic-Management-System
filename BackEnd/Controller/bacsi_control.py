@@ -2,7 +2,9 @@ import mysql.connector
 from flask import Blueprint, request, jsonify, render_template, redirect, url_for, session, flash
 from werkzeug.security import generate_password_hash, check_password_hash
 from BackEnd.DB.db_connection import get_db_connection
+
 from BackEnd.Service.bacsi_sv import BacSiService
+
 
 bacsi_bp = Blueprint("bacsi", __name__)
 # đoạn này là để ae tạo ra một Blueprint có tên là bacsi_bp cho phần controller của bác sĩ, nó đại diện cho toàn bộ các router hay chúc năng con của bác sĩ
@@ -76,7 +78,6 @@ def create_bacsi():
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    hashed_password = generate_password_hash(data["password"])
     query = """
         INSERT INTO bacsi (ten, dob, chuyenmon, hocvan, kinhnghiem, img, phong_id, username, password)
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
@@ -90,7 +91,7 @@ def create_bacsi():
         data["img"],
         data["phong_id"],
         data["username"],
-        hashed_password
+        data["pass"]
     )
 
     cursor.execute(query, values)
