@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Đơn thuốc</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Link Bootstrap CSS -->
+  <link 
+    rel="stylesheet" 
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+  >
+  <style>
+    /* Tùy chọn: Thêm viền để mô phỏng bố cục trong hình */
+    .patient-info, .don-thuoc {
+      border: 1px solid #000;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+    /* Giới hạn chiều cao ảnh thuốc (nếu cần) */
+    .thuoc-img {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+    }
+    /* Định dạng cột cho table */
+    .table thead th {
+      vertical-align: middle;
+      text-align: center;
+    }
+    .table tbody td {
+      vertical-align: middle;
+      text-align: center;
+    }
+    /* Nút +/- */
+    .qty-btn {
+      border: none;
+      background-color: #e2e6ea; /* xám nhạt */
+      width: 32px;
+      height: 32px;
+      line-height: 1;
+      font-size: 20px;
+      padding: 0;
+    }
+  </style>
+</head>
+<body>
+  <!-- Thanh tiêu đề -->
+  <nav class="navbar navbar-dark bg-danger">
+    <div class="container-fluid">
+      <!-- Nút Home (hoặc link về trang chính) -->
+      <a class="navbar-brand" href="#">
+        <img 
+          src="home_icon.png" 
+          alt="Trang chủ" 
+          style="width:30px; height:30px; object-fit:cover;"
+        >
+      </a>
+      <!-- Tiêu đề chính ở giữa -->
+      <span class="navbar-text text-white mx-auto fw-bold">Đơn thuốc</span>
+      <!-- Nút quay lại -->
+      <a class="nav-link text-white ms-3" href="javascript:history.back()">
+        Quay lại
+      </a>
+    </div>
+  </nav>
+
+  <div class="container mt-4">
+    <!-- Thông tin bệnh nhân -->
+    <div class="patient-info">
+      <div class="row">
+        <div class="col-md-3 d-flex align-items-center">
+          <img 
+            src="patient.jpg" 
+            class="img-fluid rounded" 
+            alt="Bệnh nhân"
+          >
+        </div>
+        <div class="col-md-9">
+          <h5>Họ Tên: Ngô Văn Thứ</h5>
+          <p>Năm Sinh: 10/10/1995</p>
+          <p>CCCD: 0402343021</p>
+          <p>SĐT: 0903456789</p>
+          <p>Quê quán: Thanh Hóa</p>
+          <p>Bệnh chẩn đoán: U Thần kinh đệm</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Khối thông tin đơn thuốc -->
+    <div class="don-thuoc">
+      <!-- Dòng thông tin chung về đơn thuốc -->
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label for="ngayKeDon" class="form-label">Ngày kê đơn</label>
+          <input 
+            type="date" 
+            class="form-control" 
+            id="ngayKeDon"
+            value="2025-03-14"
+          >
+        </div>
+        <div class="col-md-6">
+          <label for="bacSiKeDon" class="form-label">Bác sĩ kê đơn</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            id="bacSiKeDon"
+            placeholder="Tên bác sĩ"
+            value="BS. Nguyễn Văn A"
+          >
+        </div>
+      </div>
+
+      <!-- Tiêu đề bảng đơn thuốc -->
+      <h5 class="text-center mb-3">Đơn Thuốc</h5>
+      <!-- Bảng thuốc -->
+      <div class="table-responsive">
+        <table class="table table-bordered align-middle">
+          <thead class="table-light">
+            <tr>
+              <th style="width: 10%">Ảnh</th>
+              <th style="width: 40%">Thuốc</th>
+              <th style="width: 20%">Đơn Giá</th>
+              <th style="width: 20%">Số Lượng</th>
+              <th style="width: 10%"></th>
+            </tr>
+          </thead>
+          <tbody id="donThuocBody">
+            <!-- Hàng ví dụ 1 -->
+            <tr>
+              <td>
+                <img 
+                  src="thuoc_bo_tim.jpg" 
+                  alt="Thuốc bổ tim AAA" 
+                  class="thuoc-img"
+                >
+              </td>
+              <td>Thuốc bổ tim AAA</td>
+              <td>500.000 VND</td>
+              <td>
+                <input 
+                  type="number" 
+                  class="form-control text-center" 
+                  min="1" 
+                  value="2"
+                  onchange="tinhTongTien()"
+                >
+              </td>
+              <td>
+                <!-- Có thể dùng nút +/- nếu muốn -->
+                <button class="qty-btn me-1" onclick="giamSoLuong(this)">-</button>
+                <button class="qty-btn" onclick="tangSoLuong(this)">+</button>
+              </td>
+            </tr>
+            <!-- Hàng ví dụ 2 (trống) -->
+            <tr>
+              <td>
+                <!-- Ảnh thuốc -->
+                <img 
+                  src="thuoc_placeholder.jpg" 
+                  alt="Thuốc khác" 
+                  class="thuoc-img"
+                >
+              </td>
+              <td>...</td>
+              <td>...</td>
+              <td>
+                <input 
+                  type="number" 
+                  class="form-control text-center" 
+                  min="1" 
+                  value="1"
+                  onchange="tinhTongTien()"
+                >
+              </td>
+              <td>
+                <button class="qty-btn me-1" onclick="giamSoLuong(this)">-</button>
+                <button class="qty-btn" onclick="tangSoLuong(this)">+</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Tổng tiền -->
+      <div class="text-end mb-3">
+        <strong>Thành Tiền: <span id="tongTien">1.000.000 VND</span></strong>
+      </div>
+
+      <!-- Lưu ý sử dụng thuốc -->
+      <div class="mb-3">
+        <label for="ghiChu" class="form-label">
+          Lưu ý về sử dụng thuốc (VD: Nên uống ít dần theo thời gian)
+        </label>
+        <textarea 
+          class="form-control" 
+          id="ghiChu" 
+          rows="2"
+        ></textarea>
+      </div>
+
+      <!-- Nút thao tác -->
+      <div class="d-flex justify-content-between">
+        <button class="btn btn-danger" onclick="chonThuoc()">
+          Chọn Thuốc
+        </button>
+        <button class="btn btn-primary" onclick="luuDonThuoc()">
+          Lưu đơn thuốc
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap + JS -->
+  <script 
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js">
+  </script>
+  <script>
+    // Hàm tăng/giảm số lượng thuốc
+    function tangSoLuong(btn) {
+      const input = btn.parentNode.parentNode.querySelector('input[type="number"]');
+      input.value = parseInt(input.value) + 1;
+      tinhTongTien();
+    }
+    function giamSoLuong(btn) {
+      const input = btn.parentNode.parentNode.querySelector('input[type="number"]');
+      if (parseInt(input.value) > 1) {
+        input.value = parseInt(input.value) - 1;
+        tinhTongTien();
+      }
+    }
+
+    // Tính toán tổng tiền (mô phỏng)
+    function tinhTongTien() {
+      // Ở đây bạn có thể viết logic để tính lại tổng dựa trên giá + số lượng
+      // Hiện tại chỉ minh hoạ cập nhật text cho vui
+      document.getElementById('tongTien').innerText = "1.500.000 VND";
+    }
+
+    // Nút "Chọn Thuốc"
+    function chonThuoc() {
+      alert("Mở danh sách thuốc để chọn thêm...");
+    }
+
+    // Nút "Lưu đơn thuốc"
+    function luuDonThuoc() {
+      alert("Đã lưu đơn thuốc!");
+    }
+  </script>
+</body>
+</html>
