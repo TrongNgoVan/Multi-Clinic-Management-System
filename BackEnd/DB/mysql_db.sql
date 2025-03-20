@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th3 06, 2025 lúc 12:28 AM
+-- Thời gian đã tạo: Th3 20, 2025 lúc 03:08 AM
 -- Phiên bản máy phục vụ: 10.4.32-MariaDB
 -- Phiên bản PHP: 8.0.30
 
@@ -28,7 +28,7 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `bacsi` (
-  `ID` int(11) NOT NULL,
+  `id` int(11) NOT NULL,
   `ten` varchar(255) NOT NULL,
   `dob` date NOT NULL,
   `chuyenmon` varchar(255) NOT NULL,
@@ -37,8 +37,15 @@ CREATE TABLE `bacsi` (
   `img` varchar(100) NOT NULL,
   `phongID` int(11) NOT NULL,
   `username` varchar(100) NOT NULL,
-  `pass` varchar(20) NOT NULL
+  `password` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `bacsi`
+--
+
+INSERT INTO `bacsi` (`id`, `ten`, `dob`, `chuyenmon`, `hocvan`, `kinhnghiem`, `img`, `phongID`, `username`, `password`) VALUES
+(1, 'Ngọ Văn Trọng', '2003-07-16', 'Chuẩn đoán não bộ', 'Bác Sĩ Chuyên Khoa I', '2 năm làm việc tại Bệnh Viện Bạch Mai', 'chưa có', 1, 'ngovantrong1607', '123');
 
 -- --------------------------------------------------------
 
@@ -95,9 +102,10 @@ CREATE TABLE `donthuoc` (
 
 CREATE TABLE `lichhen` (
   `ID` int(11) NOT NULL,
-  `bacsiID` int(11) DEFAULT NULL,
-  `benhnhanID` int(11) DEFAULT NULL,
-  `thoigianhen` datetime DEFAULT NULL
+  `bacsiID` int(11) NOT NULL,
+  `benhnhanID` int(11) NOT NULL,
+  `thoigianhen` datetime NOT NULL,
+  `trangthai` varchar(100) NOT NULL DEFAULT 'Chưa duyệt'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -130,6 +138,13 @@ CREATE TABLE `phongchucnang` (
   `moTa` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Đang đổ dữ liệu cho bảng `phongchucnang`
+--
+
+INSERT INTO `phongchucnang` (`ID`, `chucNang`, `moTa`) VALUES
+(1, 'Phòng Khám Não Bộ', 'Các bác sĩ khám não bộ hàng đầu VN');
+
 -- --------------------------------------------------------
 
 --
@@ -153,7 +168,7 @@ CREATE TABLE `thuoc` (
 -- Chỉ mục cho bảng `bacsi`
 --
 ALTER TABLE `bacsi`
-  ADD PRIMARY KEY (`ID`),
+  ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `username` (`username`),
   ADD KEY `phongID` (`phongID`);
 
@@ -217,7 +232,7 @@ ALTER TABLE `thuoc`
 -- AUTO_INCREMENT cho bảng `bacsi`
 --
 ALTER TABLE `bacsi`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT cho bảng `benhnhan`
@@ -253,7 +268,7 @@ ALTER TABLE `phieukham`
 -- AUTO_INCREMENT cho bảng `phongchucnang`
 --
 ALTER TABLE `phongchucnang`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT cho bảng `thuoc`
