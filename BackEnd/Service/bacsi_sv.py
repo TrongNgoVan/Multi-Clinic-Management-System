@@ -45,3 +45,26 @@ class BacSiService:
         cursor.close()
         conn.close()
         return True
+        
+    @staticmethod
+    def login_bacsi(username, password):
+     
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        query = "SELECT * FROM bacsi WHERE username = %s"
+        cursor.execute(query, (username,))
+        bacsi = cursor.fetchone()  # Lấy toàn bộ thông tin bác sĩ
+
+        cursor.close()
+        conn.close()
+
+        if bacsi and bacsi["pass"] == matkhau:
+            # Lưu toàn bộ thông tin bác sĩ vào session
+            session["bacsi"] = bacsi  
+
+            flash("Đăng nhập thành công!", "success")
+            return redirect(url_for("bacsi.trang_chu_bacsi"))  # Chuyển đến trang chủ bác sĩ
+        else:
+            flash("Tên đăng nhập hoặc mật khẩu không đúng", "danger")
+            return redirect(url_for("bacsi.dang_nhap"))  # Quay lại trang đăng nhập nếu sai
