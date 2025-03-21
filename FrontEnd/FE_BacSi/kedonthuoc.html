@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tạo Đơn Thuốc</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: auto;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        .patient-info, .prescription-form {
+            margin-bottom: 20px;
+        }
+        .patient-info div {
+            text-align: center;
+            margin: 10px 0;
+        }
+        .prescription-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .prescription-table th, .prescription-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        .prescription-table th {
+            background-color: #f2f2f2;
+        }
+        .btn-container {
+            text-align: center;
+        }
+        .btn {
+            width: 30%;
+            padding: 10px;
+            margin: 10px 1%;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+        .btn-red {
+            background-color: #f44336;
+        }
+        .btn-red:hover {
+            background-color: #e53935;
+        }
+        .btn-back {
+            background-color: #2196F3;
+        }
+        .btn-back:hover {
+            background-color: #1E88E5;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Tạo Đơn Thuốc</h2>
+        <div class="patient-info">
+            <div id="patient-name">Họ Tên: </div>
+            <div id="patient-dob">Ngày Sinh: </div>
+            <div id="patient-cccd">CCCD: </div>
+            <div id="patient-phone">SĐT: </div>
+            <div id="patient-address">Quê quán: </div>
+            <div id="patient-diagnosis">Chẩn đoán: </div>
+        </div>
+        <div class="prescription-form">
+            <table class="prescription-table">
+                <thead>
+                    <tr>
+                        <th>Thuốc</th>
+                        <th>Đơn Giá</th>
+                        <th>Số Lượng</th>
+                        <th>Thành Tiền</th>
+                        <th>Hành Động</th>
+                    </tr>
+                </thead>
+                <tbody id="prescription-details">
+                    <!-- Các chi tiết đơn thuốc sẽ được thêm vào đây -->
+                </tbody>
+            </table>
+            <div style="text-align: right; margin-bottom: 20px;">
+                <strong>Thành Tiền: </strong><span id="total-amount">0</span> VND
+            </div>
+            <textarea id="prescription-description" placeholder="Mô tả đơn thuốc" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;"></textarea>
+        </div>
+        <div class="btn-container">
+            <button class="btn" onclick="selectMedicine()">Chọn Thuốc</button>
+            <button class="btn btn-red" onclick="savePrescription()">Lưu Đơn Thuốc</button>
+            <button class="btn btn-back" onclick="goBack()">Quay lại</button>
+        </div>
+    </div>
+
+    <script>
+document.addEventListener("DOMContentLoaded", () => {
+            const phieukham = JSON.parse(sessionStorage.getItem("phieukham"));
+            if (phieukham) {
+                displayPhieuKham(phieukham);
+            } else {
+                fetchPhieuKham();
+            }
+        });
+
+        function displayPhieuKham(phieukham) {
+            document.getElementById("patient-name").textContent = `Họ Tên: ${phieukham.benhnhan.ten}`;
+            document.getElementById("patient-dob").textContent = `Ngày Sinh: ${phieukham.benhnhan.dob}`;
+            document.getElementById("patient-cccd").textContent = `CCCD: ${phieukham.benhnhan.cccd}`;
+            document.getElementById("patient-phone").textContent = `SĐT: ${phieukham.benhnhan.sdt}`;
+            document.getElementById("patient-address").textContent = `Quê quán: ${phieukham.benhnhan.quequan}`;
+            document.getElementById("patient-diagnosis").textContent = `Chẩn đoán: ${phieukham.chandoan}`;
+        }
+
+        async function fetchPhieuKham() {
+            try {
+                let response = await fetch(`http://127.0.0.1:5000/bacsi/get_phieu_kham_by_id`);
+                if (!response.ok) throw new Error("Lỗi API, mã: " + response.status);
+                
+                let data = await response.json();
+                displayPhieuKham(data);
+            } catch (error) {
+                console.error("Lỗi khi lấy thông tin phiếu khám:", error);
+            }
+        }
+
+        function selectMedicine() {
+            // Chuyển hướng đến giao diện chọn thuốc
+            const urlParams = new URLSearchParams(window.location.search);
+            const phieukhamID = urlParams.get('phieukhamID');
+            window.location.href = `chonthuoc.html?phieukhamID=${phieukhamID}`;
+        }
+
+        function addMedicineRow(medicine, price, quantity) {
+            const tableBody = document.getElementById("prescription-details");
+            const row = document.createElement("tr");
+
+            const medicineCell = document.createElement("td");
+            medicineCell.textContent = medicine;
+            row.appendChild(medicineCell);
+
+            const priceCell = document.createElement("td");
+            priceCell.textContent = price;
+            row.appendChild(priceCell);
+
+            const quantityCell = document.createElement("td");
+            const quantityInput = document.createElement("input");
+            quantityInput.type = "number";
+            quantityInput.value = quantity;
+            quantityInput.min = 1;
+            quantityInput.onchange = updateTotalAmount;
+            quantityCell.appendChild(quantityInput);
+            row.appendChild(quantityCell);
+
+            const amountCell = document.createElement("td");
+            amountCell.textContent = price * quantity;
+            row.appendChild(amountCell);
+
+            const actionCell = document.createElement("td");
+            const removeButton = document.createElement("button");
+            removeButton.textContent = "Xóa";
+            removeButton.onclick = () => {
+                tableBody.removeChild(row);
+                updateTotalAmount();
+            };
+            actionCell.appendChild(removeButton);
+            row.appendChild(actionCell);
+
+            tableBody.appendChild(row);
+            updateTotalAmount();
+        }
+
+        function updateTotalAmount() {
+            const tableBody = document.getElementById("prescription-details");
+            let totalAmount = 0;
+            for (let row of tableBody.rows) {
+                const price = parseFloat(row.cells[1].textContent);
+                const quantity = parseInt(row.cells[2].querySelector("input").value);
+                const amount = price * quantity;
+                row.cells[3].textContent = amount;
+                totalAmount += amount;
+            }
+            document.getElementById("total-amount").textContent = totalAmount;
+        }
+
+        async function savePrescription() {
+            const benhnhanID = new URLSearchParams(window.location.search).get('benhnhanID');
+            const bacsiID = sessionStorage.getItem("bacsiID");
+            const description = document.getElementById("prescription-description").value;
+            const prescriptionDetails = [];
+
+            const tableBody = document.getElementById("prescription-details");
+            for (let row of tableBody.rows) {
+                const medicine = row.cells[0].textContent;
+                const price = parseFloat(row.cells[1].textContent);
+                const quantity = parseInt(row.cells[2].querySelector("input").value);
+                prescriptionDetails.push({ medicine, price, quantity });
+            }
+
+            const data = {
+                benhnhanID,
+                bacsiID,
+                description,
+                prescriptionDetails
+            };
+
+            try {
+                let response = await fetch(`http://127.0.0.1:5000/bacsi/create_prescription`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    alert("Lưu đơn thuốc thành công!");
+                    window.location.href = `danhsachphieukham.html?benhnhanID=${benhnhanID}`;
+                } else {
+                    throw new Error("Lỗi khi lưu đơn thuốc");
+                }
+            } catch (error) {
+                console.error("Lỗi khi lưu đơn thuốc:", error);
+                alert("Lỗi khi lưu đơn thuốc. Vui lòng thử lại.");
+            }
+        }
+
+        function goBack() {
+            // Chuyển hướng về trang trước đó
+            window.history.back();
+        }
+    </script>
+
+</body>
+</html>

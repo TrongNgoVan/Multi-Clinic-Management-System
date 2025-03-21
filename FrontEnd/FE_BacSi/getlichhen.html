@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lịch Hẹn Bác Sĩ</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+        }
+        .error-message {
+            text-align: center;
+            color: red;
+            font-weight: bold;
+        }
+        .btn {
+            padding: 5px 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+        .btn-back {
+            background-color: #2196F3;
+        }
+        .btn-back:hover {
+            background-color: #1E88E5;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Lịch Hẹn Bác Sĩ</h2>
+    <p id="error-message" class="error-message" style="display: none;">Không thể lấy dữ liệu lịch hẹn!</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Ảnh Bệnh Nhân</th>
+                <th>Tên Bệnh Nhân</th>
+                <th>Năm Sinh</th>
+                <th>CCCD</th>
+                <th>Số Điện Thoại</th>
+                <th>Quê Quán</th>
+                <th>Thời Gian Hẹn</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody id="lichhen-table-body">
+            <!-- Dữ liệu sẽ được thêm vào đây -->
+        </tbody>
+    </table>
+    <div style="text-align: center; margin-top: 20px;">
+        <button class="btn btn-back" onclick="goBack()">Quay lại</button>
+    </div>
+
+    <script>
+        async function fetchLichHen(bacsiID) {
+            try {
+                let response = await fetch(`http://127.0.0.1:5000/bacsi/get_all_lichhen/${bacsiID}`);
+                if (!response.ok) throw new Error("Lỗi API, mã: " + response.status);
+                
+                let data = await response.json();
+                let tableBody = document.getElementById("lichhen-table-body");
+                tableBody.innerHTML = "";
+
+                data.forEach(lichhen => {
+                    let row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td><img src="ava.jpg" alt="Ảnh Bệnh Nhân"></td>
+                        <td>${lichhen.benhnhan.ten}</td>
+                        <td>${lichhen.benhnhan.dob}</td>
+                        <td>${lichhen.benhnhan.cccd}</td>
+                        <td>${lichhen.benhnhan.sdt}</td>
+                        <td>${lichhen.benhnhan.quequan}</td>
+                        <td>${lichhen.thoigianhen}</td>
+                        <td><button class="btn" onclick="khamBenh(${lichhen.benhnhan.id})">Khám</button></td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+
+            } catch (error) {
+                document.getElementById("error-message").style.display = "block";
+                console.error("Lỗi khi lấy danh sách lịch hẹn:", error);
+            }
+        }
+
+        function khamBenh(benhnhanID) {
+            // Chuyển hướng đến trang tạo phiếu khám với ID bệnh nhân
+            window.location.href = `taophieukham.html?benhnhanID=${benhnhanID}`;
+        }
+
+        function goBack() {
+            // Chuyển hướng về trang trước đó
+            window.history.back();
+        }
+
+        // GỌI HÀM KHI TẢI TRANG
+        document.addEventListener("DOMContentLoaded", () => {
+            // Giả sử ID của bác sĩ được lưu trong sessionStorage
+            let bacsiID = sessionStorage.getItem("bacsiID");
+            if (bacsiID) {
+                fetchLichHen(bacsiID);
+            } else {
+                document.getElementById("error-message").textContent = "Không tìm thấy ID của bác sĩ!";
+                document.getElementById("error-message").style.display = "block";
+            }
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tạo Phiếu Khám</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: auto;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        .patient-info, .medical-form {
+            margin-bottom: 20px;
+        }
+        .patient-info img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: block;
+            margin: auto;
+        }
+        .patient-info div, .medical-info div {
+            text-align: center;
+            margin: 10px 0;
+        }
+        .medical-info {
+            border-top: 1px solid #ddd;
+            padding-top: 20px;
+        }
+        .medical-info input, .medical-info textarea {
+            width: 50%;
+            padding: 10px;
+            margin: 10px auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            display: block;
+        }
+        .btn-container {
+            text-align: center;
+        }
+        .btn {
+            width: 30%;
+            padding: 10px;
+            margin: 10px 1%;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+        .btn-red {
+            background-color: #f44336;
+        }
+        .btn-red:hover {
+            background-color: #e53935;
+        }
+        .btn-back {
+            background-color: #2196F3;
+        }
+        .btn-back:hover {
+            background-color: #1E88E5;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Khám Bệnh</h2>
+        <div class="patient-info">
+            <img id="patient-img" src="ava.jpg" alt="Ảnh Bệnh Nhân">
+            <div id="patient-name">Họ Tên: </div>
+            <div id="patient-dob">Ngày Sinh: </div>
+            <div id="patient-cccd">CCCD: </div>
+            <div id="patient-phone">SĐT: </div>
+            <div id="patient-address">Quê quán: </div>
+        </div>
+        <div class="medical-info">
+            <input type="text" id="symptoms" placeholder="Triệu chứng">
+            <input type="text" id="test-results" placeholder="Thông số xét nghiệm">
+            <input type="text" id="anhxetnghiem" placeholder="Ảnh xét nghiệm">
+            <input type="text" id="diagnosis" placeholder="Kết quả chẩn đoán">
+            <input type="text" id="tienkham" placeholder="Tiền khám">
+        </div>
+        <div class="btn-container">
+            <button class="btn" onclick="smartDiagnosis()">Chẩn đoán thông minh</button>
+            <button class="btn btn-red" onclick="saveMedicalRecord()">Lưu Phiếu Khám</button>
+            <button class="btn btn-back" onclick="goBack()">Quay lại</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const benhnhanID = urlParams.get('benhnhanID');
+            fetchPatientInfo(benhnhanID);
+        });
+
+        async function fetchPatientInfo(benhnhanID) {
+            try {
+                let response = await fetch(`http://127.0.0.1:5000/bacsi/get_phieu_kham/${benhnhanID}`);
+                if (!response.ok) throw new Error("Lỗi API, mã: " + response.status);
+                
+                let data = await response.json();
+                document.getElementById("patient-name").textContent = `Họ Tên: ${data.benhnhan.ten}`;
+                document.getElementById("patient-dob").textContent = `Ngày Sinh: ${data.benhnhan.dob}`;
+                document.getElementById("patient-cccd").textContent = `CCCD: ${data.benhnhan.cccd}`;
+                document.getElementById("patient-phone").textContent = `SĐT: ${data.benhnhan.sdt}`;
+                document.getElementById("patient-address").textContent = `Quê quán: ${data.benhnhan.quequan}`;
+            } catch (error) {
+                console.error("Lỗi khi lấy thông tin bệnh nhân:", error);
+            }
+        }
+
+        function smartDiagnosis() {
+            // Thực hiện chẩn đoán thông minh
+            alert("Chức năng chẩn đoán thông minh đang được phát triển.");
+        }
+
+        async function saveMedicalRecord() {
+            const trieuchung = document.getElementById("symptoms").value;
+            const chandoan = document.getElementById("diagnosis").value;
+            const thongsoxetnghiem = document.getElementById("test-results").value;
+            const anhxetnghiem = document.getElementById("anhxetnghiem").value;
+            const ngaykham = new Date().toISOString().split('T')[0];
+            const benhnhanID = new URLSearchParams(window.location.search).get('benhnhanID');
+            const bacsiID = sessionStorage.getItem("bacsiID");
+            const tienkham = document.getElementById("tienkham").value;
+
+            const data = {
+                trieuchung,
+                chandoan,
+                thongsoxetnghiem,
+                anhxetnghiem,
+                ngaykham,
+                benhnhanID,
+                bacsiID,
+                tienkham
+            };
+
+            try {
+                let response = await fetch(`http://127.0.0.1:5000/bacsi/create_phieu_kham`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    let result = await response.json();
+                    alert("Tạo phiếu khám thành công!");
+                    window.location.href = `kedonthuoc.html`;
+                } else {
+                    throw new Error("Lỗi khi tạo phiếu khám");
+                }
+            } catch (error) {
+                console.error("Lỗi khi tạo phiếu khám:", error);
+                alert("Lỗi khi tạo phiếu khám. Vui lòng thử lại.");
+            }
+        }
+
+        function goBack() {
+            // Chuyển hướng về trang trước đó
+            window.history.back();
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giao Diện Chính</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .main-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h2 {
+            color: #333;
+        }
+        .btn {
+            display: block;
+            width: 200px;
+            padding: 10px;
+            margin: 10px auto;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        <h2>Giao Diện Chính</h2>
+        <a href="getlichhen.html" class="btn">Xem lịch hẹn</a>
+        <!-- <a href="kedonthuoc.html" class="btn">Kê đơn thuốc</a> -->
+        <a href="xemphieukham.html" class="btn">Xem phiếu khám</a>
+        <button class="btn" onclick="logout()" style="width: 100px;">Đăng Xuất</button>
+    </div>
+
+    <script>
+        function logout() {
+            // Xóa ID của bác sĩ khỏi sessionStorage
+            sessionStorage.removeItem('bacsiID');
+            // Chuyển hướng đến trang đăng nhập
+            window.location.href = 'dangnhap.html';
+        }
+    </script>
+
+</body>
+</html>

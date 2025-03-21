@@ -1,13 +1,16 @@
+from BackEnd.Model.bacsi import BacSi
+from BackEnd.Model.benhnhan import BenhNhan
+
 class PhieuKham:
-    def __init__(self, id, trieuchung, chuandoan, thongsoxetnghiem, anhxetnghiem, ngaykham, benhnhan_id, bacsi_id, tienkham):
+    def __init__(self, id, trieuchung, chandoan, thongsoxetnghiem, anhxetnghiem, ngaykham, tienkham, BenhNhan, BacSi):
         self.id = id
         self.trieuchung = trieuchung
-        self.chuandoan = chuandoan
+        self.chandoan = chandoan
         self.thongsoxetnghiem = thongsoxetnghiem
         self.anhxetnghiem = anhxetnghiem
         self.ngaykham = ngaykham
-        self.benhnhan_id = benhnhan_id
-        self.bacsi_id = bacsi_id
+        self.BenhNhan = BenhNhan
+        self.BacSi = BacSi
         self.tienkham = tienkham
 
     def to_dict(self):
@@ -15,11 +18,11 @@ class PhieuKham:
         return {
             "id": self.id,
             "trieuchung": self.trieuchung,
-            "chuandoan": self.chuandoan,
+            "chandoan": self.chandoan,
             "thongsoxetnghiem": self.thongsoxetnghiem,
             "anhxetnghiem": self.anhxetnghiem,
             "ngaykham": str(self.ngaykham) if self.ngaykham else None,
-            "benhnhan_id": self.benhnhan_id,
-            "bacsi_id": self.bacsi_id,
+            "benhnhan": self.BenhNhan.to_dict() if self.BenhNhan else None,
+            "bacsi": self.BacSi.to_dict() if self.BacSi else None,
             "tienkham": self.tienkham
         }

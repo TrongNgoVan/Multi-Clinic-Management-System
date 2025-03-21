@@ -1,5 +1,9 @@
 from BackEnd.DB.db_connection import get_db_connection
 from BackEnd.Model.bacsi import BacSi
+from BackEnd.Model.benhnhan import BenhNhan
+from BackEnd.Model.lichhen import LichHen
+from BackEnd.Model.phieukham import PhieuKham
+from BackEnd.Model.thuoc import Thuoc
 
 class BacSiService:
     @staticmethod
@@ -12,45 +16,92 @@ class BacSiService:
         cursor.close()
         conn.close()
         return bacsi_list
-
+    
     @staticmethod
-    def get_bacsi_by_username(username):
-        """Tìm bác sĩ theo username."""
+    def get_all_lichhen(bacsiID):
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
-        cursor.execute("SELECT * FROM bacsi WHERE username = %s", (username,))
-        row = cursor.fetchone()
+        query = """
+            SELECT lichhen.id, lichhen.thoigianhen, 
+                   bacsi.id as bacsi_id, bacsi.ten as bacsi_ten, 
+                   benhnhan.id as benhnhan_id, benhnhan.ten as benhnhan_ten, benhnhan.dob as benhnhan_dob, 
+                   benhnhan.cccd as benhnhan_cccd, benhnhan.sdt as benhnhan_sdt, benhnhan.quequan as benhnhan_quequan, benhnhan.img as benhnhan_img
+            FROM lichhen
+            JOIN bacsi ON lichhen.bacsiID = bacsi.id
+            JOIN benhnhan ON lichhen.benhnhanID = benhnhan.id
+            WHERE lichhen.bacsiID = %s
+        """
+        cursor.execute(query, (bacsiID,))
+        lichhen_list = []
+        for row in cursor.fetchall():
+            bacsi = BacSi(id=row["bacsi_id"], ten=row["bacsi_ten"], dob=None, chuyenmon=None, hocvan=None, kinhnghiem=None, img=None, phongID=None, username=None, password=None)
+            benhnhan = BenhNhan(id=row["benhnhan_id"], ten=row["benhnhan_ten"], dob=row["benhnhan_dob"], cccd=row["benhnhan_cccd"], sdt=row["benhnhan_sdt"], quequan=row["benhnhan_quequan"], img=row["benhnhan_img"], username=None, password=None)
+            lichhen = LichHen(id=row["id"], thoigianhen=row["thoigianhen"], Bacsi=bacsi, BenhNhan=benhnhan)
+            lichhen_list.append(lichhen)
         cursor.close()
         conn.close()
-        return BacSi(**row) if row else None
+        return lichhen_list
 
     @staticmethod
-    def create_bacsi(data):
-        """Tạo một bác sĩ mới."""
+    def get_phieu_kham(benhnhanID):
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        query = """
+            SELECT phieukham.id, phieukham.trieuchung, phieukham.chandoan, phieukham.thongsoxetnghiem, phieukham.anhxetnghiem, phieukham.ngaykham, phieukham.tienkham,
+                   benhnhan.id as benhnhan_id, benhnhan.ten as benhnhan_ten, benhnhan.dob as benhnhan_dob, benhnhan.cccd as benhnhan_cccd, benhnhan.sdt as benhnhan_sdt, benhnhan.quequan as benhnhan_quequan, benhnhan.img as benhnhan_img,
+                   bacsi.id as bacsi_id, bacsi.ten as bacsi_ten
+            FROM phieukham
+            JOIN benhnhan ON phieukham.benhnhanID = benhnhan.id
+            JOIN bacsi ON phieukham.bacsiID = bacsi.id
+            WHERE phieukham.benhnhanID = %s
+        """
+        cursor.execute(query, (benhnhanID,))
+        row = cursor.fetchone()
+        
+        if row:
+            benhnhan = BenhNhan(id=row["benhnhan_id"], ten=row["benhnhan_ten"], dob=row["benhnhan_dob"], cccd=row["benhnhan_cccd"], sdt=row["benhnhan_sdt"], quequan=row["benhnhan_quequan"], img=row["benhnhan_img"], username=None, password=None)
+            bacsi = BacSi(id=row["bacsi_id"], ten=row["bacsi_ten"], dob=None, chuyenmon=None, hocvan=None, kinhnghiem=None, img=None, phongID=None, username=None, password=None)
+            phieukham = PhieuKham(id=row["id"], trieuchung=row["trieuchung"], chandoan=row["chandoan"], thongsoxetnghiem=row["thongsoxetnghiem"], anhxetnghiem=row["anhxetnghiem"], ngaykham=row["ngaykham"], tienkham=row["tienkham"], BenhNhan=benhnhan, BacSi=bacsi)
+            cursor.fetchall()  # Đảm bảo tất cả các kết quả đã được đọc
+            cursor.close()
+            conn.close()
+            return phieukham.to_dict()
+        else:
+            cursor.fetchall()  # Đảm bảo tất cả các kết quả đã được đọc
+            cursor.close()
+            conn.close()
+            return None
+
+    @staticmethod
+    def create_phieu_kham(trieuchung, chandoan, thongsoxetnghiem, anhxetnghiem, ngaykham, benhnhanID, bacsiID, tienkham):
         conn = get_db_connection()
         cursor = conn.cursor()
-
         query = """
-        INSERT INTO bacsi (ten, dob, chuyenmon, hocvan, kinhnghiem, img, phongID, username, password)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+            INSERT INTO phieukham (trieuchung, chandoan, thongsoxetnghiem, anhxetnghiem, ngaykham, benhnhanID, bacsiID, tienkham)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
         """
-        values = (
-            data["ten"], data["dob"], data["chuyenmon"], data["hocvan"],
-            data["kinhnghiem"], data["img"], data["phongID"], data["username"],
-            data["password"]
-        )
-
-        cursor.execute(query, values)
+        cursor.execute(query, (trieuchung, chandoan, thongsoxetnghiem, anhxetnghiem, ngaykham, benhnhanID, bacsiID, tienkham))
         conn.commit()
+        
+        # Lấy ID của phiếu khám vừa tạo
+        phieukham_id = cursor.lastrowid
+        
+        # Tạo đối tượng BenhNhan và BacSi
+        benhnhan = BenhNhan(id=benhnhanID, ten=None, dob=None, cccd=None, sdt=None, quequan=None, img=None, username=None, password=None)
+        bacsi = BacSi(id=bacsiID, ten=None, dob=None, chuyenmon=None, hocvan=None, kinhnghiem=None, img=None, phongID=None, username=None, password=None)
+        
+        # Tạo đối tượng PhieuKham
+        phieukham = PhieuKham(id=phieukham_id, trieuchung=trieuchung, chandoan=chandoan, thongsoxetnghiem=thongsoxetnghiem, anhxetnghiem=anhxetnghiem, ngaykham=ngaykham, tienkham=tienkham, BenhNhan=benhnhan, BacSi=bacsi)
+        
         cursor.close()
         conn.close()
-        return True
         
+        return phieukham.to_dict()
+    
     @staticmethod
     def login_bacsi(username, password):
-     
         conn = get_db_connection()
-        cursor = conn.cursor()
+        cursor = conn.cursor(dictionary=True)
 
         query = "SELECT * FROM bacsi WHERE username = %s"
         cursor.execute(query, (username,))
@@ -59,12 +110,22 @@ class BacSiService:
         cursor.close()
         conn.close()
 
-        if bacsi and bacsi["pass"] == matkhau:
-            # Lưu toàn bộ thông tin bác sĩ vào session
-            session["bacsi"] = bacsi  
-
-            flash("Đăng nhập thành công!", "success")
-            return redirect(url_for("bacsi.trang_chu_bacsi"))  # Chuyển đến trang chủ bác sĩ
+        if bacsi and bacsi["password"] == password:
+            return {"success": True, "bacsiID": bacsi["id"], "message": "Đăng nhập thành công!"}
         else:
-            flash("Tên đăng nhập hoặc mật khẩu không đúng", "danger")
-            return redirect(url_for("bacsi.dang_nhap"))  # Quay lại trang đăng nhập nếu sai
+            return {"success": False, "message": "Tên đăng nhập hoặc mật khẩu không đúng"}
+
+    @staticmethod
+    def get_thuoc(search_term):
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        query = """
+            SELECT id, ten, mota, nsx, hsd, dongia
+            FROM thuoc
+            WHERE ten LIKE %s
+        """
+        cursor.execute(query, ('%' + search_term + '%',))
+        thuoc_list = [Thuoc(**row).to_dict() for row in cursor.fetchall()]
+        cursor.close()
+        conn.close()
+        return thuoc_list
