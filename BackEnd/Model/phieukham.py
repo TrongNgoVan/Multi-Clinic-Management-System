@@ -3,6 +3,7 @@ from BackEnd.Model.benhnhan import BenhNhan
 
 class PhieuKham:
     def __init__(self, id, trieuchung, chandoan, thongsoxetnghiem, anhxetnghiem, ngaykham, tienkham, BenhNhan, BacSi):
+        # Fix lại thuộc tính chuandoan ==> chandoan. Lỡ để thuộc tính chandoan trong database rồi :v
         self.id = id
         self.trieuchung = trieuchung
         self.chandoan = chandoan
