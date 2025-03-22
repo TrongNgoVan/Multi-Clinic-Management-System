@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tạo Phiếu Khám</title>
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -111,7 +112,13 @@
     </div>
 
     <script>
+
         document.addEventListener("DOMContentLoaded", () => {
+            const bacsiStr = sessionStorage.getItem("bacsi");
+            if (!bacsiStr) {
+                window.location.href = "dangnhap.html";
+                return; // Dừng thực thi các đoạn code phía dưới
+            }
             const benhnhanStr = sessionStorage.getItem("benhnhan");
             if (benhnhanStr) {
                 const benhnhan = JSON.parse(benhnhanStr);

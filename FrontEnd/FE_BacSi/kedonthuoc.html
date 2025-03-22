@@ -120,6 +120,10 @@
         document.addEventListener("DOMContentLoaded", () => {
             const phieukhamStr = sessionStorage.getItem("phieukham");
             const bacsiStr = sessionStorage.getItem("bacsi");
+            if (!bacsiStr) {
+                window.location.href = "dangnhap.html";
+                return; // Dừng thực thi các đoạn code phía dưới
+            }
             if (phieukhamStr && bacsiStr) {
                 const phieukham = JSON.parse(phieukhamStr);
                 console.log("Thông tin phiếu khám:", phieukham);

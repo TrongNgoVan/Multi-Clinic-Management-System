@@ -12,24 +12,44 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            margin: 0;
-        }
-        .main-container {
-            background-color: white;
+            margin: 0px;
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            text-align: center;
         }
+
         h2 {
+            text-align: center;
             color: #333;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .btn:hover {
+            background-color: #830b0b;
+        }
+        .error-message {
+            color: red;
+            text-align: center;
+            margin-top: 10px;
         }
         .btn {
             display: block;
             width: 200px;
             padding: 10px;
             margin: 10px auto;
-            background-color: #4CAF50;
+            background-color: #ad0707;
             color: white;
             border: none;
             border-radius: 4px;
@@ -37,9 +57,19 @@
             text-decoration: none;
             text-align: center;
         }
-        .btn:hover {
-            background-color: #45a049;
+
+        .main-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
         }
+
+
+
+
+
     </style>
 </head>
 <body>
@@ -55,6 +85,10 @@
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const bacsiStr = sessionStorage.getItem("bacsi");
+            if (!bacsiStr) {
+                window.location.href = "dangnhap.html";
+                return; // Dừng thực thi các đoạn code phía dưới
+            }
             if (bacsiStr) {
                 const bacsi = JSON.parse(bacsiStr);
                 displayBacSiInfo(bacsi);

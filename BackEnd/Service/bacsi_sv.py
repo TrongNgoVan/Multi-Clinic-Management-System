@@ -6,6 +6,7 @@ from BackEnd.Model.phieukham import PhieuKham
 from BackEnd.Model.thuoc import Thuoc
 
 class BacSiService:
+
     @staticmethod
     def get_all_bacsi():
         """Lấy danh sách tất cả bác sĩ từ DB."""
@@ -16,7 +17,11 @@ class BacSiService:
         cursor.close()
         conn.close()
         return bacsi_list
-    
+
+
+
+
+
     @staticmethod
     def get_all_lichhen(bacsiID):
         conn = get_db_connection()

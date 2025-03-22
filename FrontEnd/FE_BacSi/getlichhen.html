@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lịch Hẹn Bác Sĩ</title>
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -86,6 +87,13 @@
     </div>
 
     <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const bacsiStr = sessionStorage.getItem("bacsi");
+            if (!bacsiStr) {
+                window.location.href = "dangnhap.html";
+                return; // Dừng thực thi các đoạn code phía dưới
+            }
+        });
         async function fetchLichHen(bacsiID) {
             try {
                 let response = await fetch(`http://127.0.0.1:5000/bacsi/get_all_lichhen/${bacsiID}`);
