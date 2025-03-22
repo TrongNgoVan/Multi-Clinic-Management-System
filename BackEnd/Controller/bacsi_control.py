@@ -61,14 +61,19 @@ def create_phieu_kham():
     bacsiID = data.get("bacsiID")
     tienkham = data.get("tienkham")
     
+    # Gọi service để tạo phiếu khám
     result = BacSiService.create_phieu_kham(trieuchung, chandoan, thongsoxetnghiem, anhxetnghiem, ngaykham, benhnhanID, bacsiID, tienkham)
-    
-    # Lưu thông tin phiếu khám vào session
 
-    session["phieukham"] = result
-    session.modified = True
+    # Chuyển result thành dictionary trước khi lưu vào session
+    if hasattr(result, "to_dict"):  # Nếu có phương thức to_dict() thì gọi nó
+        session["phieukham"] = result.to_dict()
+    else:
+        session["phieukham"] = result  # Nếu result đã là dictionary thì lưu thẳng
+
+    session.modified = True  # Cập nhật session
 
     return jsonify(result), 201
+
 
 @bacsi_bp.route("/get_thuoc", methods=["GET"])
 def get_thuoc():
