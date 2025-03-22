@@ -116,15 +116,21 @@
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const phieukhamStr = sessionStorage.getItem("phieukham");
+            const bacsiStr = sessionStorage.getItem("bacsi");
             if (phieukhamStr) {
                 const phieukham = JSON.parse(phieukhamStr);
+                console.log("Thông tin phiếu khám:", phieukham);
                 displayPhieuKham(phieukham);
+            }
+            if (bacsiStr) {
+                const bacsi = JSON.parse(bacsiStr);
+                console.log("Thông tin bác sĩ:", bacsi);
             }
         });
 
         function displayPhieuKham(phieukham) {
             if (phieukham && phieukham.BenhNhan) {
-                document.getElementById("patient-name").textContent = `Họ Tên: ${phieukham.BenhNhan.ten}`;
+                document.getElementById("patient-name").textContent = `Họ Tên: ${phieukham.BenhNhan.id}`;
                 document.getElementById("patient-dob").textContent = `Ngày Sinh: ${phieukham.BenhNhan.dob}`;
                 document.getElementById("patient-cccd").textContent = `CCCD: ${phieukham.BenhNhan.cccd}`;
                 document.getElementById("patient-phone").textContent = `SĐT: ${phieukham.BenhNhan.sdt}`;
@@ -194,7 +200,7 @@
 
         async function savePrescription() {
             const benhnhanID = JSON.parse(sessionStorage.getItem("phieukham")).BenhNhan.id;
-            const bacsiID = sessionStorage.getItem("bacsiID");
+            const bacsiID = JSON.parse(sessionStorage.getItem("bacsi")).id;
             const description = document.getElementById("prescription-description").value;
             const prescriptionDetails = [];
 

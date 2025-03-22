@@ -115,6 +115,7 @@
             const benhnhanStr = sessionStorage.getItem("benhnhan");
             if (benhnhanStr) {
                 const benhnhan = JSON.parse(benhnhanStr);
+                console.log("Thông tin phiếu khám:", benhnhan);
                 displayPatientInfo(benhnhan);
             }
         });
@@ -139,7 +140,7 @@
             const anhxetnghiem = document.getElementById("anhxetnghiem").value;
             const ngaykham = new Date().toISOString().split('T')[0];
             const benhnhanID = JSON.parse(sessionStorage.getItem("benhnhan")).id;
-            const bacsiID = sessionStorage.getItem("bacsiID");
+            const bacsiID = JSON.parse(sessionStorage.getItem("bacsi")).id;
             const tienkham = document.getElementById("tienkham").value;
 
             const data = {

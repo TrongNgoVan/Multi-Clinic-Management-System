@@ -46,16 +46,33 @@
 
     <div class="main-container">
         <h2>Giao Diện Chính</h2>
+        <div id="bacsi-info"></div>
         <a href="getlichhen.html" class="btn">Xem lịch hẹn</a>
-        <!-- <a href="kedonthuoc.html" class="btn">Kê đơn thuốc</a> -->
         <a href="xemphieukham.html" class="btn">Xem phiếu khám</a>
         <button class="btn" onclick="logout()" style="width: 100px;">Đăng Xuất</button>
     </div>
 
     <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const bacsiStr = sessionStorage.getItem("bacsi");
+            if (bacsiStr) {
+                const bacsi = JSON.parse(bacsiStr);
+                displayBacSiInfo(bacsi);
+            }
+        });
+
+        function displayBacSiInfo(bacsi) {
+            const bacsiInfoDiv = document.getElementById("bacsi-info");
+            bacsiInfoDiv.innerHTML = `
+                <p>Họ Tên: ${bacsi.ten}</p>
+                <p>Chuyên Môn: ${bacsi.chuyenmon}</p>
+                <p>Kinh Nghiệm: ${bacsi.kinhnghiem}</p>
+            `;
+        }
+
         function logout() {
-            // Xóa ID của bác sĩ khỏi sessionStorage
-            sessionStorage.removeItem('bacsiID');
+            // Xóa thông tin bác sĩ khỏi sessionStorage
+            sessionStorage.removeItem('bacsi');
             // Chuyển hướng đến trang đăng nhập
             window.location.href = 'dangnhap.html';
         }

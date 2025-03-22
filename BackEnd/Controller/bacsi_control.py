@@ -1,6 +1,5 @@
 import mysql.connector
 from flask import Blueprint, request, jsonify, render_template, redirect, url_for, session, flash
-from werkzeug.security import generate_password_hash, check_password_hash
 from BackEnd.DB.db_connection import get_db_connection
 
 from BackEnd.Service.bacsi_sv import BacSiService
@@ -24,11 +23,10 @@ def login_bacsi():
     password = data.get("password")
     result = BacSiService.login_bacsi(username, password)
     if result["success"]:
-        session["bacsiID"] = result["bacsiID"]
+        session["bacsi"] = result["bacsi"]
         return jsonify(result), 200
     else:
         return jsonify(result), 401
-
 
 # @bacsi_bp.route("/get_phieu_kham_by_id", methods=["GET"])
 # def get_phieu_kham_by_id():
