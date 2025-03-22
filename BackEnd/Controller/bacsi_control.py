@@ -41,31 +41,25 @@ def login_bacsi():
 @bacsi_bp.route("/create_phieu_kham", methods=["POST"])
 def create_phieu_kham():
     data = request.get_json()
+
+    # Lấy dữ liệu từ request
     trieuchung = data.get("trieuchung")
     chandoan = data.get("chandoan")
     thongsoxetnghiem = data.get("thongsoxetnghiem")
     anhxetnghiem = data.get("anhxetnghiem")
     ngaykham = data.get("ngaykham")
-    benhnhanID = data.get("benhnhanID")
-    bacsiID = data.get("bacsiID")
+    benhnhan = data.get("benhnhan")
+    bacsi = data.get("bacsi")
     tienkham = data.get("tienkham")
-    
+
     # Gọi service để tạo phiếu khám
-    result = BacSiService.create_phieu_kham(trieuchung, chandoan, thongsoxetnghiem, anhxetnghiem, ngaykham, benhnhanID, bacsiID, tienkham)
+    result = BacSiService.create_phieu_kham(
+        trieuchung, chandoan, thongsoxetnghiem, anhxetnghiem, ngaykham, benhnhan, bacsi, tienkham
+    )
+
+    return jsonify(result), 201  # Convert object to dictionary trước khi trả về
 
 
-    # Chuyển result thành dictionary trước khi lưu vào session
-    if hasattr(result, "to_dict"):  # Nếu có phương thức to_dict() thì gọi nó
-        session["phieukham"] = result.to_dict()
-    else:
-        session["phieukham"] = result  # Nếu result đã là dictionary thì lưu thẳng
-
-    session.modified = True  # Cập nhật session
-
-    
-
-
-    return jsonify(result), 201
 
 
 @bacsi_bp.route("/get_thuoc", methods=["GET"])

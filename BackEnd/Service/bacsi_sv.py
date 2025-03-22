@@ -43,38 +43,45 @@ class BacSiService:
         return lichhen_list
 
     @staticmethod
-    def create_phieu_kham(trieuchung, chandoan, thongsoxetnghiem, anhxetnghiem, ngaykham, benhnhanID, bacsiID, tienkham):
+    def create_phieu_kham(trieuchung, chandoan, thongsoxetnghiem, anhxetnghiem, ngaykham, benhnhan, bacsi, tienkham):
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
         
-        # Lấy thông tin bệnh nhân
-        cursor.execute("SELECT * FROM benhnhan WHERE id = %s", (benhnhanID,))
-        benhnhan_data = cursor.fetchone()
-        benhnhan = BenhNhan(**benhnhan_data)
-        
-        # Lấy thông tin bác sĩ
-        cursor.execute("SELECT * FROM bacsi WHERE id = %s", (bacsiID,))
-        bacsi_data = cursor.fetchone()
-        bacsi = BacSi(**bacsi_data)
-        
-        # Tạo phiếu khám
-        query = """
-            INSERT INTO phieukham (trieuchung, chandoan, thongsoxetnghiem, anhxetnghiem, ngaykham, benhnhanID, bacsiID, tienkham)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-        """
-        cursor.execute(query, (trieuchung, chandoan, thongsoxetnghiem, anhxetnghiem, ngaykham, benhnhanID, bacsiID, tienkham))
-        conn.commit()
-        
-        # Lấy ID của phiếu khám vừa tạo
-        phieukham_id = cursor.lastrowid
-        
-        # Tạo đối tượng PhieuKham
-        phieukham = PhieuKham(id=phieukham_id, trieuchung=trieuchung, chandoan=chandoan, thongsoxetnghiem=thongsoxetnghiem, anhxetnghiem=anhxetnghiem, ngaykham=ngaykham, tienkham=tienkham, BenhNhan=benhnhan, BacSi=bacsi)
-        
-        cursor.close()
-        conn.close()
-        
-        return phieukham.to_dict()
+        try:
+            # Tạo phiếu khám
+            query = """
+                INSERT INTO phieukham (trieuchung, chandoan, thongsoxetnghiem, anhxetnghiem, ngaykham, benhnhanID, bacsiID, tienkham)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            """
+            cursor.execute(query, (trieuchung, chandoan, thongsoxetnghiem, anhxetnghiem, ngaykham, benhnhan.get("id"), bacsi.get("id"), tienkham))
+            conn.commit()
+            
+            # Lấy ID của phiếu khám vừa tạo
+            phieukham_id = cursor.lastrowid
+            
+
+            phieukham_dict = {
+                "id": phieukham_id,
+                "trieuchung": trieuchung,
+                "chandoan": chandoan,
+                "thongsoxetnghiem": thongsoxetnghiem,
+                "anhxetnghiem": anhxetnghiem,
+                "ngaykham": ngaykham,
+                "tienkham": tienkham,
+                "BenhNhan": benhnhan,  # Giữ nguyên dict đã nhận
+                "BacSi": bacsi  # Giữ nguyên dict đã nhận
+            }
+            
+            return phieukham_dict
+
+        except Exception as e:
+            conn.rollback()
+            return {"error": f"Lỗi khi tạo phiếu khám: {str(e)}"}
+
+        finally:
+            cursor.close()
+            conn.close()
+
     
     @staticmethod
     def login_bacsi(username, password):

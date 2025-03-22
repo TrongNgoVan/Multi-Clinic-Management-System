@@ -139,22 +139,21 @@
             const thongsoxetnghiem = document.getElementById("test-results").value;
             const anhxetnghiem = document.getElementById("anhxetnghiem").value;
             const ngaykham = new Date().toISOString().split('T')[0];
-            const benhnhanID = JSON.parse(sessionStorage.getItem("benhnhan")).id;
-            const bacsiID = JSON.parse(sessionStorage.getItem("bacsi")).id;
             const tienkham = document.getElementById("tienkham").value;
-
+            const benhnhan = JSON.parse(sessionStorage.getItem("benhnhan"));
+            const bacsi = JSON.parse(sessionStorage.getItem("bacsi"));
             const data = {
                 trieuchung,
                 chandoan,
                 thongsoxetnghiem,
                 anhxetnghiem,
                 ngaykham,
-                benhnhanID,
-                bacsiID,
+                benhnhan,
+                bacsi,
                 tienkham
             };
 
-            try {
+            try{
                 let response = await fetch(`http://127.0.0.1:5000/bacsi/create_phieu_kham`, {
                     method: 'POST',
                     headers: {

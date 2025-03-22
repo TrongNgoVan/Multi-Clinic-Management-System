@@ -105,6 +105,9 @@
                 <strong>Thành Tiền: </strong><span id="total-amount">0</span> VND
             </div>
             <textarea id="prescription-description" placeholder="Mô tả đơn thuốc" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;"></textarea>
+            <div style="text-align: right; margin-bottom: 20px;">
+                <strong>Bác sĩ kê đơn: </strong><span id="bs"></span>
+            </div>
         </div>
         <div class="btn-container">
             <button class="btn" onclick="selectMedicine()">Chọn Thuốc</button>
@@ -117,25 +120,29 @@
         document.addEventListener("DOMContentLoaded", () => {
             const phieukhamStr = sessionStorage.getItem("phieukham");
             const bacsiStr = sessionStorage.getItem("bacsi");
-            if (phieukhamStr) {
+            if (phieukhamStr && bacsiStr) {
                 const phieukham = JSON.parse(phieukhamStr);
                 console.log("Thông tin phiếu khám:", phieukham);
-                displayPhieuKham(phieukham);
-            }
-            if (bacsiStr) {
                 const bacsi = JSON.parse(bacsiStr);
                 console.log("Thông tin bác sĩ:", bacsi);
+                displayPhieuKham(phieukham,bacsi);
             }
+            else
+            {
+                console.log("Không có thông tin gì cả, hichic");
+            }
+
         });
 
-        function displayPhieuKham(phieukham) {
-            if (phieukham && phieukham.BenhNhan) {
-                document.getElementById("patient-name").textContent = `Họ Tên: ${phieukham.BenhNhan.id}`;
+        function displayPhieuKham(phieukham,bacsi) {
+            if (phieukham) {
+                document.getElementById("patient-name").textContent = `Họ Tên: ${phieukham.BenhNhan.ten}`;
                 document.getElementById("patient-dob").textContent = `Ngày Sinh: ${phieukham.BenhNhan.dob}`;
                 document.getElementById("patient-cccd").textContent = `CCCD: ${phieukham.BenhNhan.cccd}`;
                 document.getElementById("patient-phone").textContent = `SĐT: ${phieukham.BenhNhan.sdt}`;
                 document.getElementById("patient-address").textContent = `Quê quán: ${phieukham.BenhNhan.quequan}`;
                 document.getElementById("patient-diagnosis").textContent = `Chẩn đoán: ${phieukham.chandoan}`;
+                document.getElementById("bs").textContent = `${bacsi.ten}`;
             } else {
                 console.warn("Dữ liệu phiếu khám hoặc bệnh nhân không đầy đủ.");
             }
