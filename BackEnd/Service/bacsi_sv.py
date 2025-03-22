@@ -43,39 +43,21 @@ class BacSiService:
         return lichhen_list
 
     @staticmethod
-    def get_phieu_kham(benhnhanID):
-        conn = get_db_connection()
-        cursor = conn.cursor(dictionary=True)
-        query = """
-            SELECT phieukham.id, phieukham.trieuchung, phieukham.chandoan, phieukham.thongsoxetnghiem, phieukham.anhxetnghiem, phieukham.ngaykham, phieukham.tienkham,
-                   benhnhan.id as benhnhan_id, benhnhan.ten as benhnhan_ten, benhnhan.dob as benhnhan_dob, benhnhan.cccd as benhnhan_cccd, benhnhan.sdt as benhnhan_sdt, benhnhan.quequan as benhnhan_quequan, benhnhan.img as benhnhan_img,
-                   bacsi.id as bacsi_id, bacsi.ten as bacsi_ten
-            FROM phieukham
-            JOIN benhnhan ON phieukham.benhnhanID = benhnhan.id
-            JOIN bacsi ON phieukham.bacsiID = bacsi.id
-            WHERE phieukham.benhnhanID = %s
-        """
-        cursor.execute(query, (benhnhanID,))
-        row = cursor.fetchone()
-        
-        if row:
-            benhnhan = BenhNhan(id=row["benhnhan_id"], ten=row["benhnhan_ten"], dob=row["benhnhan_dob"], cccd=row["benhnhan_cccd"], sdt=row["benhnhan_sdt"], quequan=row["benhnhan_quequan"], img=row["benhnhan_img"], username=None, password=None)
-            bacsi = BacSi(id=row["bacsi_id"], ten=row["bacsi_ten"], dob=None, chuyenmon=None, hocvan=None, kinhnghiem=None, img=None, phongID=None, username=None, password=None)
-            phieukham = PhieuKham(id=row["id"], trieuchung=row["trieuchung"], chandoan=row["chandoan"], thongsoxetnghiem=row["thongsoxetnghiem"], anhxetnghiem=row["anhxetnghiem"], ngaykham=row["ngaykham"], tienkham=row["tienkham"], BenhNhan=benhnhan, BacSi=bacsi)
-            cursor.fetchall()  # Đảm bảo tất cả các kết quả đã được đọc
-            cursor.close()
-            conn.close()
-            return phieukham.to_dict()
-        else:
-            cursor.fetchall()  # Đảm bảo tất cả các kết quả đã được đọc
-            cursor.close()
-            conn.close()
-            return None
-
-    @staticmethod
     def create_phieu_kham(trieuchung, chandoan, thongsoxetnghiem, anhxetnghiem, ngaykham, benhnhanID, bacsiID, tienkham):
         conn = get_db_connection()
-        cursor = conn.cursor()
+        cursor = conn.cursor(dictionary=True)
+        
+        # Lấy thông tin bệnh nhân
+        cursor.execute("SELECT * FROM benhnhan WHERE id = %s", (benhnhanID,))
+        benhnhan_data = cursor.fetchone()
+        benhnhan = BenhNhan(**benhnhan_data)
+        
+        # Lấy thông tin bác sĩ
+        cursor.execute("SELECT * FROM bacsi WHERE id = %s", (bacsiID,))
+        bacsi_data = cursor.fetchone()
+        bacsi = BacSi(**bacsi_data)
+        
+        # Tạo phiếu khám
         query = """
             INSERT INTO phieukham (trieuchung, chandoan, thongsoxetnghiem, anhxetnghiem, ngaykham, benhnhanID, bacsiID, tienkham)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
@@ -85,10 +67,6 @@ class BacSiService:
         
         # Lấy ID của phiếu khám vừa tạo
         phieukham_id = cursor.lastrowid
-        
-        # Tạo đối tượng BenhNhan và BacSi
-        benhnhan = BenhNhan(id=benhnhanID, ten=None, dob=None, cccd=None, sdt=None, quequan=None, img=None, username=None, password=None)
-        bacsi = BacSi(id=bacsiID, ten=None, dob=None, chuyenmon=None, hocvan=None, kinhnghiem=None, img=None, phongID=None, username=None, password=None)
         
         # Tạo đối tượng PhieuKham
         phieukham = PhieuKham(id=phieukham_id, trieuchung=trieuchung, chandoan=chandoan, thongsoxetnghiem=thongsoxetnghiem, anhxetnghiem=anhxetnghiem, ngaykham=ngaykham, tienkham=tienkham, BenhNhan=benhnhan, BacSi=bacsi)
@@ -102,16 +80,23 @@ class BacSiService:
     def login_bacsi(username, password):
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
-
         query = "SELECT * FROM bacsi WHERE username = %s"
         cursor.execute(query, (username,))
-        bacsi = cursor.fetchone()  # Lấy toàn bộ thông tin bác sĩ
-
+        bacsi = cursor.fetchone()
         cursor.close()
         conn.close()
 
         if bacsi and bacsi["password"] == password:
-            return {"success": True, "bacsiID": bacsi["id"], "message": "Đăng nhập thành công!"}
+            return {
+                "success": True,
+                "bacsi": {
+                    "id": bacsi["id"],
+                    "ten": bacsi["ten"],
+                    "chuyenmon": bacsi["chuyenmon"],
+                    "kinhnghiem": bacsi["kinhnghiem"],
+                    "username": bacsi["username"]
+                }
+            }
         else:
             return {"success": False, "message": "Tên đăng nhập hoặc mật khẩu không đúng"}
 

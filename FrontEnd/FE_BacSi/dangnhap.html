@@ -31,21 +31,14 @@
         .form-group label {
             display: block;
             margin-bottom: 5px;
+            color: #333;
         }
         .form-group input {
             width: 100%;
             padding: 8px;
             box-sizing: border-box;
-        }
-        .error-message {
-            color: red;
-            text-align: center;
-            margin-bottom: 15px;
-        }
-        .success-message {
-            color: green;
-            text-align: center;
-            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
         }
         .btn {
             width: 100%;
@@ -55,9 +48,15 @@
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            text-align: center;
         }
         .btn:hover {
             background-color: #45a049;
+        }
+        .error-message {
+            color: red;
+            text-align: center;
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -65,47 +64,44 @@
 
     <div class="login-container">
         <h2>Đăng Nhập Bác Sĩ</h2>
-        <div id="message" class="error-message" style="display: none;"></div>
         <div class="form-group">
             <label for="username">Tên đăng nhập</label>
-            <input type="text" id="username" name="username" required>
+            <input type="text" id="username" placeholder="Nhập tên đăng nhập">
         </div>
         <div class="form-group">
             <label for="password">Mật khẩu</label>
-            <input type="password" id="password" name="password" required>
+            <input type="password" id="password" placeholder="Nhập mật khẩu">
         </div>
         <button class="btn" onclick="login()">Đăng Nhập</button>
+        <p id="error-message" class="error-message" style="display: none;">Tên đăng nhập hoặc mật khẩu không đúng!</p>
     </div>
 
     <script>
         async function login() {
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+
+            const data = { username, password };
 
             try {
-                const response = await fetch('http://127.0.0.1:5000/bacsi/login', {
+                let response = await fetch(`http://127.0.0.1:5000/bacsi/login`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ username, password })
+                    body: JSON.stringify(data)
                 });
 
-                const result = await response.json();
-
                 if (response.ok) {
-                    // Lưu ID của bác sĩ vào sessionStorage
-                    sessionStorage.setItem('bacsiID', result.bacsiID);
-                    // Chuyển hướng đến trang getbacsi.html
-                    window.location.href = 'giaodienchinh.html';
+                    let result = await response.json();
+                    sessionStorage.setItem("bacsi", JSON.stringify(result.bacsi));
+                    window.location.href = `giaodienchinh.html`;
                 } else {
-                    document.getElementById('message').textContent = result.message;
-                    document.getElementById('message').style.display = 'block';
+                    document.getElementById("error-message").style.display = "block";
                 }
             } catch (error) {
-                document.getElementById('message').textContent = 'Đã xảy ra lỗi. Vui lòng thử lại.';
-                document.getElementById('message').style.display = 'block';
-                console.error('Lỗi khi đăng nhập:', error);
+                console.error("Lỗi khi đăng nhập:", error);
+                document.getElementById("error-message").style.display = "block";
             }
         }
     </script>

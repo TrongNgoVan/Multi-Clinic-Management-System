@@ -114,41 +114,36 @@
     </div>
 
     <script>
-document.addEventListener("DOMContentLoaded", () => {
-            const phieukham = JSON.parse(sessionStorage.getItem("phieukham"));
-            if (phieukham) {
+        document.addEventListener("DOMContentLoaded", () => {
+            const phieukhamStr = sessionStorage.getItem("phieukham");
+            const bacsiStr = sessionStorage.getItem("bacsi");
+            if (phieukhamStr) {
+                const phieukham = JSON.parse(phieukhamStr);
+                console.log("Thông tin phiếu khám:", phieukham);
                 displayPhieuKham(phieukham);
-            } else {
-                fetchPhieuKham();
+            }
+            if (bacsiStr) {
+                const bacsi = JSON.parse(bacsiStr);
+                console.log("Thông tin bác sĩ:", bacsi);
             }
         });
 
         function displayPhieuKham(phieukham) {
-            document.getElementById("patient-name").textContent = `Họ Tên: ${phieukham.benhnhan.ten}`;
-            document.getElementById("patient-dob").textContent = `Ngày Sinh: ${phieukham.benhnhan.dob}`;
-            document.getElementById("patient-cccd").textContent = `CCCD: ${phieukham.benhnhan.cccd}`;
-            document.getElementById("patient-phone").textContent = `SĐT: ${phieukham.benhnhan.sdt}`;
-            document.getElementById("patient-address").textContent = `Quê quán: ${phieukham.benhnhan.quequan}`;
-            document.getElementById("patient-diagnosis").textContent = `Chẩn đoán: ${phieukham.chandoan}`;
-        }
-
-        async function fetchPhieuKham() {
-            try {
-                let response = await fetch(`http://127.0.0.1:5000/bacsi/get_phieu_kham_by_id`);
-                if (!response.ok) throw new Error("Lỗi API, mã: " + response.status);
-                
-                let data = await response.json();
-                displayPhieuKham(data);
-            } catch (error) {
-                console.error("Lỗi khi lấy thông tin phiếu khám:", error);
+            if (phieukham && phieukham.BenhNhan) {
+                document.getElementById("patient-name").textContent = `Họ Tên: ${phieukham.BenhNhan.id}`;
+                document.getElementById("patient-dob").textContent = `Ngày Sinh: ${phieukham.BenhNhan.dob}`;
+                document.getElementById("patient-cccd").textContent = `CCCD: ${phieukham.BenhNhan.cccd}`;
+                document.getElementById("patient-phone").textContent = `SĐT: ${phieukham.BenhNhan.sdt}`;
+                document.getElementById("patient-address").textContent = `Quê quán: ${phieukham.BenhNhan.quequan}`;
+                document.getElementById("patient-diagnosis").textContent = `Chẩn đoán: ${phieukham.chandoan}`;
+            } else {
+                console.warn("Dữ liệu phiếu khám hoặc bệnh nhân không đầy đủ.");
             }
         }
 
         function selectMedicine() {
             // Chuyển hướng đến giao diện chọn thuốc
-            const urlParams = new URLSearchParams(window.location.search);
-            const phieukhamID = urlParams.get('phieukhamID');
-            window.location.href = `chonthuoc.html?phieukhamID=${phieukhamID}`;
+            window.location.href = `chonthuoc.html`;
         }
 
         function addMedicineRow(medicine, price, quantity) {
@@ -204,8 +199,8 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         async function savePrescription() {
-            const benhnhanID = new URLSearchParams(window.location.search).get('benhnhanID');
-            const bacsiID = sessionStorage.getItem("bacsiID");
+            const benhnhanID = JSON.parse(sessionStorage.getItem("phieukham")).BenhNhan.id;
+            const bacsiID = JSON.parse(sessionStorage.getItem("bacsi")).id;
             const description = document.getElementById("prescription-description").value;
             const prescriptionDetails = [];
 

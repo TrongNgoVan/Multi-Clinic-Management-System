@@ -105,7 +105,7 @@
                         <td>${lichhen.benhnhan.sdt}</td>
                         <td>${lichhen.benhnhan.quequan}</td>
                         <td>${lichhen.thoigianhen}</td>
-                        <td><button class="btn" onclick="khamBenh(${lichhen.benhnhan.id})">Khám</button></td>
+                        <td><button class="btn" onclick='khamBenh(${JSON.stringify(lichhen.benhnhan)})'>Khám</button></td>
                     `;
                     tableBody.appendChild(row);
                 });
@@ -116,9 +116,11 @@
             }
         }
 
-        function khamBenh(benhnhanID) {
-            // Chuyển hướng đến trang tạo phiếu khám với ID bệnh nhân
-            window.location.href = `taophieukham.html?benhnhanID=${benhnhanID}`;
+        function khamBenh(benhnhan) {
+            // Lưu thông tin bệnh nhân vào sessionStorage
+            sessionStorage.setItem("benhnhan", JSON.stringify(benhnhan));
+            // Chuyển hướng đến trang tạo phiếu khám
+            window.location.href = `taophieukham.html`;
         }
 
         function goBack() {
@@ -128,12 +130,13 @@
 
         // GỌI HÀM KHI TẢI TRANG
         document.addEventListener("DOMContentLoaded", () => {
-            // Giả sử ID của bác sĩ được lưu trong sessionStorage
-            let bacsiID = sessionStorage.getItem("bacsiID");
-            if (bacsiID) {
-                fetchLichHen(bacsiID);
+            // Lấy thông tin bác sĩ từ sessionStorage
+            const bacsiStr = sessionStorage.getItem("bacsi");
+            if (bacsiStr) {
+                const bacsi = JSON.parse(bacsiStr);
+                fetchLichHen(bacsi.id);
             } else {
-                document.getElementById("error-message").textContent = "Không tìm thấy ID của bác sĩ!";
+                document.getElementById("error-message").textContent = "Không tìm thấy thông tin bác sĩ!";
                 document.getElementById("error-message").style.display = "block";
             }
         });
