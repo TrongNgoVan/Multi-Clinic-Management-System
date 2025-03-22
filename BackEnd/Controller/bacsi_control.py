@@ -30,23 +30,14 @@ def login_bacsi():
         return jsonify(result), 401
 
 
-@bacsi_bp.route("/get_phieu_kham/<int:benhnhanID>", methods=["GET"])
-def get_phieu_kham(benhnhanID):
-    
-    phieukham = BacSiService.get_phieu_kham(benhnhanID)
-    if phieukham:
-        return jsonify(phieukham), 200
-    else:
-        return jsonify({"message": "Không tìm thấy phiếu khám"}), 404
-
-@bacsi_bp.route("/get_phieu_kham_by_id", methods=["GET"])
-def get_phieu_kham_by_id():
-    phieukham = session.get("phieukham")
-    print("Lấy từ session:", session.get("phieukham"))
-    if phieukham:
-        return jsonify(phieukham), 200
-    else:
-        return jsonify({"message": "Không tìm thấy phiếu khám"}), 404
+# @bacsi_bp.route("/get_phieu_kham_by_id", methods=["GET"])
+# def get_phieu_kham_by_id():
+#     phieukham = session.get("phieukham")
+#     print("Lấy từ session:", session.get("phieukham"))
+#     if phieukham:
+#         return jsonify(phieukham), 200
+#     else:
+#         return jsonify({"message": "Không tìm thấy phiếu khám"}), 404
     
 
 @bacsi_bp.route("/create_phieu_kham", methods=["POST"])
@@ -64,7 +55,6 @@ def create_phieu_kham():
     result = BacSiService.create_phieu_kham(trieuchung, chandoan, thongsoxetnghiem, anhxetnghiem, ngaykham, benhnhanID, bacsiID, tienkham)
     
     # Lưu thông tin phiếu khám vào session
-
     session["phieukham"] = result
     session.modified = True
 

@@ -43,36 +43,6 @@ class BacSiService:
         return lichhen_list
 
     @staticmethod
-    def get_phieu_kham(benhnhanID):
-        conn = get_db_connection()
-        cursor = conn.cursor(dictionary=True)
-        query = """
-            SELECT phieukham.id, phieukham.trieuchung, phieukham.chandoan, phieukham.thongsoxetnghiem, phieukham.anhxetnghiem, phieukham.ngaykham, phieukham.tienkham,
-                   benhnhan.id as benhnhan_id, benhnhan.ten as benhnhan_ten, benhnhan.dob as benhnhan_dob, benhnhan.cccd as benhnhan_cccd, benhnhan.sdt as benhnhan_sdt, benhnhan.quequan as benhnhan_quequan, benhnhan.img as benhnhan_img,
-                   bacsi.id as bacsi_id, bacsi.ten as bacsi_ten
-            FROM phieukham
-            JOIN benhnhan ON phieukham.benhnhanID = benhnhan.id
-            JOIN bacsi ON phieukham.bacsiID = bacsi.id
-            WHERE phieukham.benhnhanID = %s
-        """
-        cursor.execute(query, (benhnhanID,))
-        row = cursor.fetchone()
-        
-        if row:
-            benhnhan = BenhNhan(id=row["benhnhan_id"], ten=row["benhnhan_ten"], dob=row["benhnhan_dob"], cccd=row["benhnhan_cccd"], sdt=row["benhnhan_sdt"], quequan=row["benhnhan_quequan"], img=row["benhnhan_img"], username=None, password=None)
-            bacsi = BacSi(id=row["bacsi_id"], ten=row["bacsi_ten"], dob=None, chuyenmon=None, hocvan=None, kinhnghiem=None, img=None, phongID=None, username=None, password=None)
-            phieukham = PhieuKham(id=row["id"], trieuchung=row["trieuchung"], chandoan=row["chandoan"], thongsoxetnghiem=row["thongsoxetnghiem"], anhxetnghiem=row["anhxetnghiem"], ngaykham=row["ngaykham"], tienkham=row["tienkham"], BenhNhan=benhnhan, BacSi=bacsi)
-            cursor.fetchall()  # Đảm bảo tất cả các kết quả đã được đọc
-            cursor.close()
-            conn.close()
-            return phieukham.to_dict()
-        else:
-            cursor.fetchall()  # Đảm bảo tất cả các kết quả đã được đọc
-            cursor.close()
-            conn.close()
-            return None
-
-    @staticmethod
     def create_phieu_kham(trieuchung, chandoan, thongsoxetnghiem, anhxetnghiem, ngaykham, benhnhanID, bacsiID, tienkham):
         conn = get_db_connection()
         cursor = conn.cursor()

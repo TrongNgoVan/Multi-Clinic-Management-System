@@ -78,6 +78,9 @@
         .btn-back:hover {
             background-color: #1E88E5;
         }
+        .btn-create-prescription {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -103,30 +106,25 @@
             <button class="btn" onclick="smartDiagnosis()">Chẩn đoán thông minh</button>
             <button class="btn btn-red" onclick="saveMedicalRecord()">Lưu Phiếu Khám</button>
             <button class="btn btn-back" onclick="goBack()">Quay lại</button>
+            <button class="btn btn-create-prescription" id="create-prescription-btn" onclick="createPrescription()">Tạo Đơn Thuốc</button>
         </div>
     </div>
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const benhnhanID = urlParams.get('benhnhanID');
-            fetchPatientInfo(benhnhanID);
+            const benhnhanStr = sessionStorage.getItem("benhnhan");
+            if (benhnhanStr) {
+                const benhnhan = JSON.parse(benhnhanStr);
+                displayPatientInfo(benhnhan);
+            }
         });
 
-        async function fetchPatientInfo(benhnhanID) {
-            try {
-                let response = await fetch(`http://127.0.0.1:5000/bacsi/get_phieu_kham/${benhnhanID}`);
-                if (!response.ok) throw new Error("Lỗi API, mã: " + response.status);
-                
-                let data = await response.json();
-                document.getElementById("patient-name").textContent = `Họ Tên: ${data.benhnhan.ten}`;
-                document.getElementById("patient-dob").textContent = `Ngày Sinh: ${data.benhnhan.dob}`;
-                document.getElementById("patient-cccd").textContent = `CCCD: ${data.benhnhan.cccd}`;
-                document.getElementById("patient-phone").textContent = `SĐT: ${data.benhnhan.sdt}`;
-                document.getElementById("patient-address").textContent = `Quê quán: ${data.benhnhan.quequan}`;
-            } catch (error) {
-                console.error("Lỗi khi lấy thông tin bệnh nhân:", error);
-            }
+        function displayPatientInfo(benhnhan) {
+            document.getElementById("patient-name").textContent = `Họ Tên: ${benhnhan.ten}`;
+            document.getElementById("patient-dob").textContent = `Ngày Sinh: ${benhnhan.dob}`;
+            document.getElementById("patient-cccd").textContent = `CCCD: ${benhnhan.cccd}`;
+            document.getElementById("patient-phone").textContent = `SĐT: ${benhnhan.sdt}`;
+            document.getElementById("patient-address").textContent = `Quê quán: ${benhnhan.quequan}`;
         }
 
         function smartDiagnosis() {
@@ -140,7 +138,7 @@
             const thongsoxetnghiem = document.getElementById("test-results").value;
             const anhxetnghiem = document.getElementById("anhxetnghiem").value;
             const ngaykham = new Date().toISOString().split('T')[0];
-            const benhnhanID = new URLSearchParams(window.location.search).get('benhnhanID');
+            const benhnhanID = JSON.parse(sessionStorage.getItem("benhnhan")).id;
             const bacsiID = sessionStorage.getItem("bacsiID");
             const tienkham = document.getElementById("tienkham").value;
 
@@ -167,7 +165,8 @@
                 if (response.ok) {
                     let result = await response.json();
                     alert("Tạo phiếu khám thành công!");
-                    window.location.href = `kedonthuoc.html`;
+                    document.getElementById("create-prescription-btn").style.display = "inline-block";
+                    sessionStorage.setItem("phieukham", JSON.stringify(result));
                 } else {
                     throw new Error("Lỗi khi tạo phiếu khám");
                 }
@@ -175,6 +174,10 @@
                 console.error("Lỗi khi tạo phiếu khám:", error);
                 alert("Lỗi khi tạo phiếu khám. Vui lòng thử lại.");
             }
+        }
+
+        function createPrescription() {
+            window.location.href = `kedonthuoc.html`;
         }
 
         function goBack() {
