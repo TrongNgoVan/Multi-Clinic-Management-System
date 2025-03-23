@@ -46,31 +46,19 @@
         .search-bar button:hover {
             background-color: #45a049;
         }
-        .medicine-list {
+        table {
+            width: 100%;
+            border-collapse: collapse;
             margin-bottom: 20px;
         }
-        .medicine-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px;
+        th, td {
             border: 1px solid #ddd;
-            border-radius: 4px;
-            margin-bottom: 10px;
+            padding: 10px;
+            text-align: center;
         }
-        .medicine-item div {
-            flex: 1;
-            padding: 0 10px;
-        }
-        .medicine-item button {
+        th {
             background-color: #4CAF50;
             color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            padding: 10px;
-        }
-        .medicine-item button:hover {
-            background-color: #45a049;
         }
         .btn-container {
             text-align: center;
@@ -105,9 +93,21 @@
             <input type="text" id="search-input" placeholder="Tìm kiếm thuốc...">
             <button onclick="searchMedicine()">Tìm kiếm</button>
         </div>
-        <div class="medicine-list" id="medicine-list">
-            <!-- Danh sách thuốc sẽ được thêm vào đây -->
-        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Chọn</th>
+                    <th>Tên Thuốc</th>
+                    <th>Mô Tả</th>
+                    <th>NSX</th>
+                    <th>HSD</th>
+                    <th>Đơn Giá</th>
+                </tr>
+            </thead>
+            <tbody id="medicine-list">
+                <!-- Danh sách thuốc sẽ được thêm vào đây -->
+            </tbody>
+        </table>
         <div class="btn-container">
             <button class="btn" onclick="selectMedicine()">Chọn Thuốc</button>
             <button class="btn btn-back" onclick="goBack()">Quay lại</button>
@@ -116,31 +116,33 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const phieukhamID = urlParams.get('phieukhamID');
+            const bacsiStr = sessionStorage.getItem("bacsi");
+            if (!bacsiStr) {
+                window.location.href = "dangnhap.html";
+                return; // Dừng thực thi các đoạn code phía dưới
+            }
             fetchMedicineList();
         });
 
         async function fetchMedicineList(searchTerm = "") {
             try {
-                let response = await fetch(`http://127.0.0.1:5000/bacsi/get_thuoc?search=${encodeURIComponent(searchTerm)}`);
+                let response = await fetch(`http://26.80.253.0:5000/bacsi/get_thuoc?search=${encodeURIComponent(searchTerm)}`);
                 if (!response.ok) throw new Error("Lỗi API, mã: " + response.status);
                 
                 let data = await response.json();
                 const medicineList = document.getElementById("medicine-list");
                 medicineList.innerHTML = "";
                 data.forEach(medicine => {
-                    const medicineItem = document.createElement("div");
-                    medicineItem.className = "medicine-item";
-                    medicineItem.innerHTML = `
-                        <div>${medicine.ten}</div>
-                        <div>${medicine.mota}</div>
-                        <div>${medicine.nsx}</div>
-                        <div>${medicine.hsd}</div>
-                        <div>${medicine.dongia}</div>
-                        <button onclick="selectMedicineItem('${medicine.id}', '${medicine.ten}', ${medicine.dongia})">Chọn</button>
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td><input type="checkbox" class="medicine-checkbox" data-id="${medicine.id}" data-name="${medicine.ten}" data-price="${medicine.dongia}"></td>
+                        <td>${medicine.ten}</td>
+                        <td>${medicine.mota}</td>
+                        <td>${medicine.nsx}</td>
+                        <td>${medicine.hsd}</td>
+                        <td>${medicine.dongia}</td>
                     `;
-                    medicineList.appendChild(medicineItem);
+                    medicineList.appendChild(row);
                 });
             } catch (error) {
                 console.error("Lỗi khi lấy danh sách thuốc:", error);
@@ -152,21 +154,23 @@
             fetchMedicineList(searchInput);
         }
 
-        function selectMedicineItem(id, name, price) {
-            const selectedMedicine = { id, name, price };
-            sessionStorage.setItem("selectedMedicine", JSON.stringify(selectedMedicine));
-            alert(`Đã chọn thuốc: ${name}`);
-        }
-
         function selectMedicine() {
-            const selectedMedicine = JSON.parse(sessionStorage.getItem("selectedMedicine"));
-            if (selectedMedicine) {
-                const urlParams = new URLSearchParams(window.location.search);
-                const phieukhamID = urlParams.get('phieukhamID');
-                window.location.href = `kedonthuoc.html?phieukhamID=${phieukhamID}`;
-            } else {
-                alert("Vui lòng chọn thuốc trước khi tiếp tục.");
-            }
+            const selectedMedicines = JSON.parse(sessionStorage.getItem("selectedMedicines")) || [];
+            const checkboxes = document.querySelectorAll(".medicine-checkbox:checked");
+            checkboxes.forEach(checkbox => {
+                const medicine = {
+                    id: checkbox.getAttribute("data-id"),
+                    name: checkbox.getAttribute("data-name"),
+                    price: parseFloat(checkbox.getAttribute("data-price"))
+                };
+                // Kiểm tra xem thuốc đã có trong chi tiết đơn thuốc hay chưa
+                const existingMedicine = selectedMedicines.find(m => m.id === medicine.id);
+                if (!existingMedicine) {
+                    selectedMedicines.push(medicine);
+                }
+            });
+            sessionStorage.setItem("selectedMedicines", JSON.stringify(selectedMedicines));
+            window.location.href = `kedonthuoc.html`;
         }
 
         function goBack() {

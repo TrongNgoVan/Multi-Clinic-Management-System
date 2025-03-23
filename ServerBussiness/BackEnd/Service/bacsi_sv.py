@@ -61,32 +61,51 @@ class BacSiService:
             cursor.execute(query, (trieuchung, chandoan, thongsoxetnghiem, anhxetnghiem, ngaykham, benhnhan.get("id"), bacsi.get("id"), tienkham))
             conn.commit()
             
-            # Lấy ID của phiếu khám vừa tạo
-            phieukham_id = cursor.lastrowid
-            
-
-            phieukham_dict = {
-                "id": phieukham_id,
-                "trieuchung": trieuchung,
-                "chandoan": chandoan,
-                "thongsoxetnghiem": thongsoxetnghiem,
-                "anhxetnghiem": anhxetnghiem,
-                "ngaykham": ngaykham,
-                "tienkham": tienkham,
-                "BenhNhan": benhnhan,  # Giữ nguyên dict đã nhận
-                "BacSi": bacsi  # Giữ nguyên dict đã nhận
-            }
-            
-            return phieukham_dict
+            return {"success": True, "message": "Tạo phiếu khám thành công"}
 
         except Exception as e:
             conn.rollback()
-            return {"error": f"Lỗi khi tạo phiếu khám: {str(e)}"}
+            return {"success": False, "message": f"Lỗi khi tạo phiếu khám: {str(e)}"}
 
         finally:
             cursor.close()
             conn.close()
 
+    @staticmethod
+    def create_prescription(ngaymua, benhnhan, bacsi, tonggia, mota, chitietdonthuoc):
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        
+        try:
+            # Tạo đơn thuốc
+            query = """
+                INSERT INTO donthuoc (ngaymua, benhnhanID, bacsiID, tonggia, mota)
+                VALUES (%s, %s, %s, %s, %s)
+            """
+            cursor.execute(query, (ngaymua, benhnhan.get("id"), bacsi.get("id"), tonggia, mota))
+            conn.commit()
+            
+            # Lấy ID của đơn thuốc vừa tạo
+            donthuoc_id = cursor.lastrowid
+            
+            # Tạo chi tiết đơn thuốc
+            for chitiet in chitietdonthuoc:
+                query = """
+                    INSERT INTO chitietdonthuoc (donthuocID, thuocID, soluong, gia)
+                    VALUES (%s, %s, %s, %s)
+                """
+                cursor.execute(query, (donthuoc_id, chitiet["thuocID"], chitiet["soluong"], chitiet["dongia"]))
+            conn.commit()
+            
+            return {"success": True, "message": "Tạo đơn thuốc thành công"}
+
+        except Exception as e:
+            conn.rollback()
+            return {"success": False, "message": f"Lỗi khi tạo đơn thuốc: {str(e)}"}
+
+        finally:
+            cursor.close()
+            conn.close()
     
     @staticmethod
     def login_bacsi(username, password):
@@ -104,9 +123,14 @@ class BacSiService:
                 "bacsi": {
                     "id": bacsi["id"],
                     "ten": bacsi["ten"],
+                    "dob": bacsi["dob"],
                     "chuyenmon": bacsi["chuyenmon"],
+                    "hocvan": bacsi["hocvan"],
                     "kinhnghiem": bacsi["kinhnghiem"],
-                    "username": bacsi["username"]
+                    "img": bacsi["img"],
+                    "phongID": bacsi["phongID"],
+                    "username": bacsi["username"],
+                    "password": bacsi["password"]
                 }
             }
         else:
@@ -126,3 +150,26 @@ class BacSiService:
         cursor.close()
         conn.close()
         return thuoc_list
+    
+    @staticmethod
+    def get_all_phieukham():
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        query = """
+            SELECT pk.id, pk.trieuchung, pk.chandoan, pk.thongsoxetnghiem, pk.anhxetnghiem, pk.ngaykham, pk.tienkham,
+                   bn.id as benhnhan_id, bn.ten as benhnhan_ten, bn.dob as benhnhan_dob, bn.cccd as benhnhan_cccd, bn.sdt as benhnhan_sdt, bn.quequan as benhnhan_quequan, bn.img as benhnhan_img,
+                   bs.id as bacsi_id, bs.ten as bacsi_ten, bs.dob as bacsi_dob, bs.chuyenmon as bacsi_chuyenmon, bs.hocvan as bacsi_hocvan, bs.kinhnghiem as bacsi_kinhnghiem, bs.img as bacsi_img
+            FROM phieukham pk
+            JOIN benhnhan bn ON pk.benhnhanID = bn.id
+            JOIN bacsi bs ON pk.bacsiID = bs.id
+        """
+        cursor.execute(query)
+        phieukham_list = []
+        for row in cursor.fetchall():
+            benhnhan = BenhNhan(id=row["benhnhan_id"], ten=row["benhnhan_ten"], dob=row["benhnhan_dob"], cccd=row["benhnhan_cccd"], sdt=row["benhnhan_sdt"], quequan=row["benhnhan_quequan"], img=row["benhnhan_img"], username=None, password=None)
+            bacsi = BacSi(id=row["bacsi_id"], ten=row["bacsi_ten"], dob=row["bacsi_dob"], chuyenmon=row["bacsi_chuyenmon"], hocvan=row["bacsi_hocvan"], kinhnghiem=row["bacsi_kinhnghiem"], img=row["bacsi_img"], phongID=None, username=None, password=None)
+            phieukham = PhieuKham(id=row["id"], trieuchung=row["trieuchung"], chandoan=row["chandoan"], thongsoxetnghiem=row["thongsoxetnghiem"], anhxetnghiem=row["anhxetnghiem"], ngaykham=row["ngaykham"], tienkham=row["tienkham"], BenhNhan=benhnhan, BacSi=bacsi)
+            phieukham_list.append(phieukham)
+        cursor.close()
+        conn.close()
+        return [pk.to_dict() for pk in phieukham_list]

@@ -41,7 +41,13 @@
             text-align: center;
         }
         .prescription-table th {
-            background-color: #f2f2f2;
+            background-color: #4CAF50; /* Màu nền giống với màu của cột trong chonthuoc.html */
+            color: white; /* Màu chữ trắng */
+        }
+        .prescription-table input[type="number"] {
+            width: 60px; /* Giảm chiều rộng của trường nhập số lượng */
+            text-align: center; /* Căn giữa giá trị */
+            appearance: auto; /* Hiện luôn mũi tên để chỉnh số lượng */
         }
         .btn-container {
             text-align: center;
@@ -94,7 +100,7 @@
                         <th>Đơn Giá</th>
                         <th>Số Lượng</th>
                         <th>Thành Tiền</th>
-                        <th>Hành Động</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody id="prescription-details">
@@ -118,38 +124,48 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            const phieukhamStr = sessionStorage.getItem("phieukham");
             const bacsiStr = sessionStorage.getItem("bacsi");
             if (!bacsiStr) {
                 window.location.href = "dangnhap.html";
                 return; // Dừng thực thi các đoạn code phía dưới
             }
-            if (phieukhamStr && bacsiStr) {
-                const phieukham = JSON.parse(phieukhamStr);
-                console.log("Thông tin phiếu khám:", phieukham);
-                const bacsi = JSON.parse(bacsiStr);
-                console.log("Thông tin bác sĩ:", bacsi);
-                displayPhieuKham(phieukham,bacsi);
+            const phieukhamDataStr = sessionStorage.getItem("phieukhamData");
+            if (phieukhamDataStr) {
+                const phieukhamData = JSON.parse(phieukhamDataStr);
+                displayPhieuKhamData(phieukhamData);
             }
-            else
-            {
-                console.log("Không có thông tin gì cả, hichic");
+            const selectedMedicinesStr = sessionStorage.getItem("selectedMedicines");
+            if (selectedMedicinesStr) {
+                const selectedMedicines = JSON.parse(selectedMedicinesStr);
+                displaySelectedMedicines(selectedMedicines);
             }
-
         });
 
-        function displayPhieuKham(phieukham,bacsi) {
-            if (phieukham) {
-                document.getElementById("patient-name").textContent = `Họ Tên: ${phieukham.BenhNhan.ten}`;
-                document.getElementById("patient-dob").textContent = `Ngày Sinh: ${phieukham.BenhNhan.dob}`;
-                document.getElementById("patient-cccd").textContent = `CCCD: ${phieukham.BenhNhan.cccd}`;
-                document.getElementById("patient-phone").textContent = `SĐT: ${phieukham.BenhNhan.sdt}`;
-                document.getElementById("patient-address").textContent = `Quê quán: ${phieukham.BenhNhan.quequan}`;
-                document.getElementById("patient-diagnosis").textContent = `Chẩn đoán: ${phieukham.chandoan}`;
-                document.getElementById("bs").textContent = `${bacsi.ten}`;
+        function displayPhieuKhamData(data) {
+            if (data) {
+                const dob = new Date(data.benhnhan.dob);
+                const formattedDob = `${String(dob.getDate()).padStart(2, '0')}/${String(dob.getMonth() + 1).padStart(2, '0')}/${dob.getFullYear()}`;
+                document.getElementById("patient-name").textContent = `Họ Tên: ${data.benhnhan.ten}`;
+                document.getElementById("patient-dob").textContent = `Ngày Sinh: ${formattedDob}`;
+                document.getElementById("patient-cccd").textContent = `CCCD: ${data.benhnhan.cccd}`;
+                document.getElementById("patient-phone").textContent = `SĐT: ${data.benhnhan.sdt}`;
+                document.getElementById("patient-address").textContent = `Quê quán: ${data.benhnhan.quequan}`;
+                document.getElementById("patient-diagnosis").textContent = `Chẩn đoán: ${data.chandoan}`;
+                document.getElementById("bs").textContent = `${data.bacsi.ten}`;
             } else {
                 console.warn("Dữ liệu phiếu khám hoặc bệnh nhân không đầy đủ.");
             }
+        }
+
+        function displaySelectedMedicines(selectedMedicines) {
+            const tableBody = document.getElementById("prescription-details");
+            selectedMedicines.forEach(medicine => {
+                // Kiểm tra xem thuốc đã có trong chi tiết đơn thuốc hay chưa
+                const existingRow = Array.from(tableBody.rows).find(row => row.getAttribute("data-thuoc-id") === medicine.id);
+                if (!existingRow) {
+                    addMedicineRow(medicine.id, medicine.name, medicine.price, 1);
+                }
+            });
         }
 
         function selectMedicine() {
@@ -157,9 +173,10 @@
             window.location.href = `chonthuoc.html`;
         }
 
-        function addMedicineRow(medicine, price, quantity) {
+        function addMedicineRow(thuocID, medicine, price, quantity) {
             const tableBody = document.getElementById("prescription-details");
             const row = document.createElement("tr");
+            row.setAttribute("data-thuoc-id", thuocID); // Lưu ID của thuốc vào thuộc tính data-thuoc-id
 
             const medicineCell = document.createElement("td");
             medicineCell.textContent = medicine;
@@ -175,8 +192,8 @@
             quantityInput.value = quantity;
             quantityInput.min = 1;
             quantityInput.onchange = updateTotalAmount;
-            quantityCell.appendChild(quantityInput);
             row.appendChild(quantityCell);
+            quantityCell.appendChild(quantityInput);
 
             const amountCell = document.createElement("td");
             amountCell.textContent = price * quantity;
@@ -188,12 +205,19 @@
             removeButton.onclick = () => {
                 tableBody.removeChild(row);
                 updateTotalAmount();
+                removeMedicineFromSessionStorage(thuocID); // Cập nhật sessionStorage khi xóa thuốc
             };
             actionCell.appendChild(removeButton);
             row.appendChild(actionCell);
 
             tableBody.appendChild(row);
             updateTotalAmount();
+        }
+
+        function removeMedicineFromSessionStorage(thuocID) {
+            const selectedMedicines = JSON.parse(sessionStorage.getItem("selectedMedicines")) || [];
+            const updatedMedicines = selectedMedicines.filter(medicine => medicine.id !== thuocID);
+            sessionStorage.setItem("selectedMedicines", JSON.stringify(updatedMedicines));
         }
 
         function updateTotalAmount() {
@@ -210,24 +234,39 @@
         }
 
         async function savePrescription() {
-            const benhnhanID = JSON.parse(sessionStorage.getItem("phieukham")).BenhNhan.id;
-            const bacsiID = JSON.parse(sessionStorage.getItem("bacsi")).id;
-            const description = document.getElementById("prescription-description").value;
+            const benhnhan = JSON.parse(sessionStorage.getItem("benhnhan"));
+            const bacsi = JSON.parse(sessionStorage.getItem("bacsi"));
+            const mota = document.getElementById("prescription-description").value;
             const prescriptionDetails = [];
 
             const tableBody = document.getElementById("prescription-details");
+            let tonggia = 0;
             for (let row of tableBody.rows) {
-                const medicine = row.cells[0].textContent;
-                const price = parseFloat(row.cells[1].textContent);
-                const quantity = parseInt(row.cells[2].querySelector("input").value);
-                prescriptionDetails.push({ medicine, price, quantity });
+                const thuocID = row.getAttribute("data-thuoc-id"); // Lấy ID của thuốc từ thuộc tính data-thuoc-id
+                const ten = row.cells[0].textContent;
+                const dongia = parseFloat(row.cells[1].textContent);
+                const soluong = parseInt(row.cells[2].querySelector("input").value);
+                const amount = dongia * soluong;
+                prescriptionDetails.push({ thuocID, ten, dongia, soluong });
+                tonggia += amount;
             }
 
+            // Kiểm tra nếu không có chi tiết đơn thuốc nào
+            if (prescriptionDetails.length === 0) {
+                alert("Vui lòng thêm ít nhất một chi tiết đơn thuốc.");
+                return;
+            }
+
+            // Lấy ngày hiện tại
+            const ngaymua = new Date().toISOString().split('T')[0];
+
             const data = {
-                benhnhanID,
-                bacsiID,
-                description,
-                prescriptionDetails
+                benhnhan,
+                bacsi,
+                mota,
+                chitietdonthuoc: prescriptionDetails,
+                ngaymua,
+                tonggia
             };
 
             try {
@@ -241,7 +280,8 @@
 
                 if (response.ok) {
                     alert("Lưu đơn thuốc thành công!");
-                    window.location.href = `danhsachphieukham.html?benhnhanID=${benhnhanID}`;
+                    sessionStorage.setItem("prescriptionData", JSON.stringify(data)); // Lưu thông tin đơn thuốc vào sessionStorage
+                    window.location.replace(`getlichhen.html`); // Chuyển hướng đến giao diện getlichhen.html và thay thế trang hiện tại trong lịch sử trình duyệt
                 } else {
                     throw new Error("Lỗi khi lưu đơn thuốc");
                 }
