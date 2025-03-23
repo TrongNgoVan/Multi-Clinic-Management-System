@@ -161,6 +161,7 @@
             const tableBody = document.getElementById("prescription-details");
             selectedMedicines.forEach(medicine => {
                 // Kiểm tra xem thuốc đã có trong chi tiết đơn thuốc hay chưa
+                // oke đoạn này tốt, tức là có thể nó đã chọn từ lần trước rồi bây giờ nó laij chọn tiếp, thì cái thuốc trong session chính là cái nó chọn tiếp, nếu có rồi thì không thêm nữa.
                 const existingRow = Array.from(tableBody.rows).find(row => row.getAttribute("data-thuoc-id") === medicine.id);
                 if (!existingRow) {
                     addMedicineRow(medicine.id, medicine.name, medicine.price, 1);
