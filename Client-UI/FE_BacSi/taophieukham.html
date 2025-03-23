@@ -130,8 +130,10 @@
         });
 
         function displayPatientInfo(benhnhan) {
+            const dob = new Date(benhnhan.dob);
+            const formattedDob = `${String(dob.getDate()).padStart(2, '0')}/${String(dob.getMonth() + 1).padStart(2, '0')}/${dob.getFullYear()}`;
             document.getElementById("patient-name").textContent = `Họ Tên: ${benhnhan.ten}`;
-            document.getElementById("patient-dob").textContent = `Ngày Sinh: ${benhnhan.dob}`;
+            document.getElementById("patient-dob").textContent = `Ngày Sinh: ${formattedDob}`;
             document.getElementById("patient-cccd").textContent = `CCCD: ${benhnhan.cccd}`;
             document.getElementById("patient-phone").textContent = `SĐT: ${benhnhan.sdt}`;
             document.getElementById("patient-address").textContent = `Quê quán: ${benhnhan.quequan}`;
@@ -224,7 +226,8 @@
                     let result = await response.json();
                     alert("Tạo phiếu khám thành công!");
                     document.getElementById("create-prescription-btn").style.display = "inline-block";
-                    sessionStorage.setItem("phieukham", JSON.stringify(result));
+                    // sessionStorage.setItem("phieukham", JSON.stringify(result));
+                    sessionStorage.setItem("phieukhamData", JSON.stringify(data)); // Lưu dữ liệu vào sessionStorage
                 } else {
                     throw new Error("Lỗi khi tạo phiếu khám");
                 }
@@ -235,6 +238,8 @@
         }
 
         function createPrescription() {
+            // Xóa danh sách thuốc đã chọn trước đó
+            sessionStorage.removeItem("selectedMedicines");
             window.location.href = `kedonthuoc.html`;
         }
 

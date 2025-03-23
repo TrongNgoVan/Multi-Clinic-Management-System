@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lịch Hẹn Bác Sĩ</title>
-
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -24,7 +23,8 @@
         th, td {
             border: 1px solid #ddd;
             padding: 10px;
-            text-align: left;
+            text-align: center; /* Căn giữa nội dung */
+            vertical-align: middle; /* Căn giữa theo chiều dọc */
         }
         th {
             background-color: #4CAF50;
@@ -87,13 +87,6 @@
     </div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const bacsiStr = sessionStorage.getItem("bacsi");
-            if (!bacsiStr) {
-                window.location.href = "dangnhap.html";
-                return; // Dừng thực thi các đoạn code phía dưới
-            }
-        });
         async function fetchLichHen(bacsiID) {
             try {
                 let response = await fetch(`http://26.80.253.0:5000/bacsi/get_all_lichhen/${bacsiID}`);
@@ -105,10 +98,12 @@
 
                 data.forEach(lichhen => {
                     let row = document.createElement("tr");
+                    const dob = new Date(lichhen.benhnhan.dob);
+                    const formattedDob = `${String(dob.getDate()).padStart(2, '0')}/${String(dob.getMonth() + 1).padStart(2, '0')}/${dob.getFullYear()}`;
                     row.innerHTML = `
                         <td><img src="ava.jpg" alt="Ảnh Bệnh Nhân"></td>
                         <td>${lichhen.benhnhan.ten}</td>
-                        <td>${lichhen.benhnhan.dob}</td>
+                        <td>${formattedDob}</td>
                         <td>${lichhen.benhnhan.cccd}</td>
                         <td>${lichhen.benhnhan.sdt}</td>
                         <td>${lichhen.benhnhan.quequan}</td>
@@ -132,8 +127,8 @@
         }
 
         function goBack() {
-            // Chuyển hướng về trang trước đó
-            window.history.back();
+            // Chuyển hướng đến giao diện chính
+            window.location.href = 'giaodienchinh.html';
         }
 
         // GỌI HÀM KHI TẢI TRANG
@@ -146,6 +141,16 @@
             } else {
                 document.getElementById("error-message").textContent = "Không tìm thấy thông tin bác sĩ!";
                 document.getElementById("error-message").style.display = "block";
+                window.location.href = "dangnhap.html";
+                return; // Dừng thực thi các đoạn code phía dưới
+            }
+
+            // Lấy thông tin đơn thuốc từ sessionStorage và hiển thị qua console log
+            const prescriptionDataStr = sessionStorage.getItem("prescriptionData");
+            if (prescriptionDataStr) {
+                const prescriptionData = JSON.parse(prescriptionDataStr);
+                console.log("Thông tin đơn thuốc:", prescriptionData);
+                sessionStorage.removeItem("prescriptionData"); // Xóa thông tin đơn thuốc sau khi hiển thị
             }
         });
     </script>

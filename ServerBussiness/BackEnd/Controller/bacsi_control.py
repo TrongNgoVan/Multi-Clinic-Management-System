@@ -27,21 +27,11 @@ def login_bacsi():
         return jsonify(result), 200
     else:
         return jsonify(result), 401
-
-# @bacsi_bp.route("/get_phieu_kham_by_id", methods=["GET"])
-# def get_phieu_kham_by_id():
-#     phieukham = session.get("phieukham")
-#     print("Lấy từ session:", session.get("phieukham"))
-#     if phieukham:
-#         return jsonify(phieukham), 200
-#     else:
-#         return jsonify({"message": "Không tìm thấy phiếu khám"}), 404
     
 
 @bacsi_bp.route("/create_phieu_kham", methods=["POST"])
 def create_phieu_kham():
-    data = request.get_json()
-
+    data = request.get_json()   
     # Lấy dữ liệu từ request
     trieuchung = data.get("trieuchung")
     chandoan = data.get("chandoan")
@@ -56,14 +46,34 @@ def create_phieu_kham():
     result = BacSiService.create_phieu_kham(
         trieuchung, chandoan, thongsoxetnghiem, anhxetnghiem, ngaykham, benhnhan, bacsi, tienkham
     )
+    if result["success"]:
+        return jsonify(result), 201
+    else:
+        return jsonify(result), 400
 
-    return jsonify(result), 201  # Convert object to dictionary trước khi trả về
+@bacsi_bp.route("/create_prescription", methods=["POST"])
+def create_don_thuoc():
+    data = request.get_json()
+    ngaymua = data.get("ngaymua")
+    benhnhan = data.get("benhnhan")
+    bacsi = data.get("bacsi")
+    tonggia = data.get("tonggia")
+    mota = data.get("mota")
+    chitietdonthuoc = data.get("chitietdonthuoc")
 
-
-
+    # Gọi service để tạo đơn thuốc
+    result = BacSiService.create_prescription(
+        ngaymua, benhnhan, bacsi, tonggia, mota, chitietdonthuoc
+    )
+    return jsonify(result), 201
 
 @bacsi_bp.route("/get_thuoc", methods=["GET"])
 def get_thuoc():
     search_term = request.args.get("search", "")
     thuoc_list = BacSiService.get_thuoc(search_term)
     return jsonify(thuoc_list), 200
+
+@bacsi_bp.route("/get_all_phieukham", methods=["GET"])
+def get_all_phieukham():
+    ds_phieukham = BacSiService.get_all_phieukham()
+    return jsonify(ds_phieukham), 200
