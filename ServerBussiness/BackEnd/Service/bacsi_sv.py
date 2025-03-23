@@ -48,7 +48,7 @@ class BacSiService:
         return lichhen_list
 
     @staticmethod
-    def create_phieu_kham(trieuchung, chandoan, thongsoxetnghiem, anhxetnghiem, ngaykham, benhnhan, bacsi, tienkham):
+    def create_phieu_kham(trieuchung, chandoan, thongsoxetnghiem, anhxetnghiem, ngaykham, benhnhanID, bacsiID, tienkham):
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
         
@@ -58,7 +58,7 @@ class BacSiService:
                 INSERT INTO phieukham (trieuchung, chandoan, thongsoxetnghiem, anhxetnghiem, ngaykham, benhnhanID, bacsiID, tienkham)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
             """
-            cursor.execute(query, (trieuchung, chandoan, thongsoxetnghiem, anhxetnghiem, ngaykham, benhnhan.get("id"), bacsi.get("id"), tienkham))
+            cursor.execute(query, (trieuchung, chandoan, thongsoxetnghiem, anhxetnghiem, ngaykham, benhnhanID, bacsiID, tienkham))
             conn.commit()
             
             return {"success": True, "message": "Tạo phiếu khám thành công"}

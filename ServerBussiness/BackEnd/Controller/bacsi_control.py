@@ -38,13 +38,13 @@ def create_phieu_kham():
     thongsoxetnghiem = data.get("thongsoxetnghiem")
     anhxetnghiem = data.get("anhxetnghiem")
     ngaykham = data.get("ngaykham")
-    benhnhan = data.get("benhnhan")
-    bacsi = data.get("bacsi")
+    benhnhanID = data.get("benhnhanID")
+    bacsiID = data.get("bacsiID")
     tienkham = data.get("tienkham")
 
     # Gọi service để tạo phiếu khám
     result = BacSiService.create_phieu_kham(
-        trieuchung, chandoan, thongsoxetnghiem, anhxetnghiem, ngaykham, benhnhan, bacsi, tienkham
+        trieuchung, chandoan, thongsoxetnghiem, anhxetnghiem, ngaykham, benhnhanID, bacsiID, tienkham
     )
     if result["success"]:
         return jsonify(result), 201
