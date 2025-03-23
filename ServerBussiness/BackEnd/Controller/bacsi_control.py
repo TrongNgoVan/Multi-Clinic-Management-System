@@ -38,13 +38,13 @@ def create_phieu_kham():
     thongsoxetnghiem = data.get("thongsoxetnghiem")
     anhxetnghiem = data.get("anhxetnghiem")
     ngaykham = data.get("ngaykham")
-    benhnhan = data.get("benhnhan")
-    bacsi = data.get("bacsi")
+    benhnhanID = data.get("benhnhanID")
+    bacsiID = data.get("bacsiID")
     tienkham = data.get("tienkham")
 
     # Gọi service để tạo phiếu khám
     result = BacSiService.create_phieu_kham(
-        trieuchung, chandoan, thongsoxetnghiem, anhxetnghiem, ngaykham, benhnhan, bacsi, tienkham
+        trieuchung, chandoan, thongsoxetnghiem, anhxetnghiem, ngaykham, benhnhanID, bacsiID, tienkham
     )
     if result["success"]:
         return jsonify(result), 201
@@ -55,15 +55,15 @@ def create_phieu_kham():
 def create_don_thuoc():
     data = request.get_json()
     ngaymua = data.get("ngaymua")
-    benhnhan = data.get("benhnhan")
-    bacsi = data.get("bacsi")
+    benhnhanID = data.get("benhnhanID")
+    bacsiID = data.get("bacsiID")
     tonggia = data.get("tonggia")
     mota = data.get("mota")
     chitietdonthuoc = data.get("chitietdonthuoc")
 
     # Gọi service để tạo đơn thuốc
     result = BacSiService.create_prescription(
-        ngaymua, benhnhan, bacsi, tonggia, mota, chitietdonthuoc
+        ngaymua, benhnhanID, bacsiID, tonggia, mota, chitietdonthuoc
     )
     return jsonify(result), 201
 

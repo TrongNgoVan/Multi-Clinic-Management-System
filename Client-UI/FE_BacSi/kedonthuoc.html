@@ -123,180 +123,179 @@
     </div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const bacsiStr = sessionStorage.getItem("bacsi");
-            if (!bacsiStr) {
-                window.location.href = "dangnhap.html";
-                return; // Dừng thực thi các đoạn code phía dưới
-            }
-            const phieukhamDataStr = sessionStorage.getItem("phieukhamData");
-            if (phieukhamDataStr) {
-                const phieukhamData = JSON.parse(phieukhamDataStr);
-                displayPhieuKhamData(phieukhamData);
-            }
-            const selectedMedicinesStr = sessionStorage.getItem("selectedMedicines");
-            if (selectedMedicinesStr) {
-                const selectedMedicines = JSON.parse(selectedMedicinesStr);
-                displaySelectedMedicines(selectedMedicines);
+    document.addEventListener("DOMContentLoaded", () => {
+        const bacsiStr = sessionStorage.getItem("bacsi");
+        if (!bacsiStr) {
+            window.location.href = "dangnhap.html";
+            return; // Dừng thực thi các đoạn code phía dưới
+        }
+        const phieukhamDataStr = sessionStorage.getItem("phieukhamData");
+        if (phieukhamDataStr) {
+            const phieukhamData = JSON.parse(phieukhamDataStr);
+            displayPhieuKhamData(phieukhamData);
+        }
+        const selectedMedicinesStr = sessionStorage.getItem("selectedMedicines");
+        if (selectedMedicinesStr) {
+            const selectedMedicines = JSON.parse(selectedMedicinesStr);
+            displaySelectedMedicines(selectedMedicines);
+        }
+    });
+
+    function displayPhieuKhamData(data) {
+        if (data) {
+            const dob = new Date(data.benhnhan.dob);
+            const formattedDob = `${String(dob.getDate()).padStart(2, '0')}/${String(dob.getMonth() + 1).padStart(2, '0')}/${dob.getFullYear()}`;
+            document.getElementById("patient-name").textContent = `Họ Tên: ${data.benhnhan.ten}`;
+            document.getElementById("patient-dob").textContent = `Ngày Sinh: ${formattedDob}`;
+            document.getElementById("patient-cccd").textContent = `CCCD: ${data.benhnhan.cccd}`;
+            document.getElementById("patient-phone").textContent = `SĐT: ${data.benhnhan.sdt}`;
+            document.getElementById("patient-address").textContent = `Quê quán: ${data.benhnhan.quequan}`;
+            document.getElementById("patient-diagnosis").textContent = `Chẩn đoán: ${data.chandoan}`;
+            document.getElementById("bs").textContent = `${data.bacsi.ten}`;
+        } else {
+            console.warn("Dữ liệu phiếu khám hoặc bệnh nhân không đầy đủ.");
+        }
+    }
+
+    function displaySelectedMedicines(selectedMedicines) {
+        const tableBody = document.getElementById("prescription-details");
+        selectedMedicines.forEach(medicine => {
+            // Kiểm tra xem thuốc đã có trong chi tiết đơn thuốc hay chưa
+            const existingRow = Array.from(tableBody.rows).find(row => row.getAttribute("data-thuoc-id") === medicine.id);
+            if (!existingRow) {
+                addMedicineRow(medicine.id, medicine.name, medicine.price, 1);
             }
         });
+    }
 
-        function displayPhieuKhamData(data) {
-            if (data) {
-                const dob = new Date(data.benhnhan.dob);
-                const formattedDob = `${String(dob.getDate()).padStart(2, '0')}/${String(dob.getMonth() + 1).padStart(2, '0')}/${dob.getFullYear()}`;
-                document.getElementById("patient-name").textContent = `Họ Tên: ${data.benhnhan.ten}`;
-                document.getElementById("patient-dob").textContent = `Ngày Sinh: ${formattedDob}`;
-                document.getElementById("patient-cccd").textContent = `CCCD: ${data.benhnhan.cccd}`;
-                document.getElementById("patient-phone").textContent = `SĐT: ${data.benhnhan.sdt}`;
-                document.getElementById("patient-address").textContent = `Quê quán: ${data.benhnhan.quequan}`;
-                document.getElementById("patient-diagnosis").textContent = `Chẩn đoán: ${data.chandoan}`;
-                document.getElementById("bs").textContent = `${data.bacsi.ten}`;
-            } else {
-                console.warn("Dữ liệu phiếu khám hoặc bệnh nhân không đầy đủ.");
-            }
-        }
+    function selectMedicine() {
+        // Chuyển hướng đến giao diện chọn thuốc
+        window.location.href = `chonthuoc.html`;
+    }
 
-        function displaySelectedMedicines(selectedMedicines) {
-            const tableBody = document.getElementById("prescription-details");
-            selectedMedicines.forEach(medicine => {
-                // Kiểm tra xem thuốc đã có trong chi tiết đơn thuốc hay chưa
-                // oke đoạn này tốt, tức là có thể nó đã chọn từ lần trước rồi bây giờ nó laij chọn tiếp, thì cái thuốc trong session chính là cái nó chọn tiếp, nếu có rồi thì không thêm nữa.
-                const existingRow = Array.from(tableBody.rows).find(row => row.getAttribute("data-thuoc-id") === medicine.id);
-                if (!existingRow) {
-                    addMedicineRow(medicine.id, medicine.name, medicine.price, 1);
-                }
-            });
-        }
+    function addMedicineRow(thuocID, medicine, price, quantity) {
+        const tableBody = document.getElementById("prescription-details");
+        const row = document.createElement("tr");
+        row.setAttribute("data-thuoc-id", thuocID); // Lưu ID của thuốc vào thuộc tính data-thuoc-id
 
-        function selectMedicine() {
-            // Chuyển hướng đến giao diện chọn thuốc
-            window.location.href = `chonthuoc.html`;
-        }
+        const medicineCell = document.createElement("td");
+        medicineCell.textContent = medicine;
+        row.appendChild(medicineCell);
 
-        function addMedicineRow(thuocID, medicine, price, quantity) {
-            const tableBody = document.getElementById("prescription-details");
-            const row = document.createElement("tr");
-            row.setAttribute("data-thuoc-id", thuocID); // Lưu ID của thuốc vào thuộc tính data-thuoc-id
+        const priceCell = document.createElement("td");
+        priceCell.textContent = price;
+        row.appendChild(priceCell);
 
-            const medicineCell = document.createElement("td");
-            medicineCell.textContent = medicine;
-            row.appendChild(medicineCell);
+        const quantityCell = document.createElement("td");
+        const quantityInput = document.createElement("input");
+        quantityInput.type = "number";
+        quantityInput.value = quantity;
+        quantityInput.min = 1;
+        quantityInput.onchange = updateTotalAmount;
+        row.appendChild(quantityCell);
+        quantityCell.appendChild(quantityInput);
 
-            const priceCell = document.createElement("td");
-            priceCell.textContent = price;
-            row.appendChild(priceCell);
+        const amountCell = document.createElement("td");
+        amountCell.textContent = price * quantity;
+        row.appendChild(amountCell);
 
-            const quantityCell = document.createElement("td");
-            const quantityInput = document.createElement("input");
-            quantityInput.type = "number";
-            quantityInput.value = quantity;
-            quantityInput.min = 1;
-            quantityInput.onchange = updateTotalAmount;
-            row.appendChild(quantityCell);
-            quantityCell.appendChild(quantityInput);
-
-            const amountCell = document.createElement("td");
-            amountCell.textContent = price * quantity;
-            row.appendChild(amountCell);
-
-            const actionCell = document.createElement("td");
-            const removeButton = document.createElement("button");
-            removeButton.textContent = "Xóa";
-            removeButton.onclick = () => {
-                tableBody.removeChild(row);
-                updateTotalAmount();
-                removeMedicineFromSessionStorage(thuocID); // Cập nhật sessionStorage khi xóa thuốc
-            };
-            actionCell.appendChild(removeButton);
-            row.appendChild(actionCell);
-
-            tableBody.appendChild(row);
+        const actionCell = document.createElement("td");
+        const removeButton = document.createElement("button");
+        removeButton.textContent = "Xóa";
+        removeButton.onclick = () => {
+            tableBody.removeChild(row);
             updateTotalAmount();
+            removeMedicineFromSessionStorage(thuocID); // Cập nhật sessionStorage khi xóa thuốc
+        };
+        actionCell.appendChild(removeButton);
+        row.appendChild(actionCell);
+
+        tableBody.appendChild(row);
+        updateTotalAmount();
+    }
+
+    function removeMedicineFromSessionStorage(thuocID) {
+        const selectedMedicines = JSON.parse(sessionStorage.getItem("selectedMedicines")) || [];
+        const updatedMedicines = selectedMedicines.filter(medicine => medicine.id !== thuocID);
+        sessionStorage.setItem("selectedMedicines", JSON.stringify(updatedMedicines));
+    }
+
+    function updateTotalAmount() {
+        const tableBody = document.getElementById("prescription-details");
+        let totalAmount = 0;
+        for (let row of tableBody.rows) {
+            const price = parseFloat(row.cells[1].textContent);
+            const quantity = parseInt(row.cells[2].querySelector("input").value);
+            const amount = price * quantity;
+            row.cells[3].textContent = amount;
+            totalAmount += amount;
+        }
+        document.getElementById("total-amount").textContent = totalAmount;
+    }
+
+    async function savePrescription() {
+        const benhnhan = JSON.parse(sessionStorage.getItem("benhnhan"));
+        const bacsi = JSON.parse(sessionStorage.getItem("bacsi"));
+        const mota = document.getElementById("prescription-description").value;
+        const prescriptionDetails = [];
+
+        const tableBody = document.getElementById("prescription-details");
+        let tonggia = 0;
+        for (let row of tableBody.rows) {
+            const thuocID = row.getAttribute("data-thuoc-id"); // Lấy ID của thuốc từ thuộc tính data-thuoc-id
+            const ten = row.cells[0].textContent;
+            const dongia = parseFloat(row.cells[1].textContent);
+            const soluong = parseInt(row.cells[2].querySelector("input").value);
+            const amount = dongia * soluong;
+            prescriptionDetails.push({ thuocID, ten, dongia, soluong });
+            tonggia += amount;
         }
 
-        function removeMedicineFromSessionStorage(thuocID) {
-            const selectedMedicines = JSON.parse(sessionStorage.getItem("selectedMedicines")) || [];
-            const updatedMedicines = selectedMedicines.filter(medicine => medicine.id !== thuocID);
-            sessionStorage.setItem("selectedMedicines", JSON.stringify(updatedMedicines));
+        // Kiểm tra nếu không có chi tiết đơn thuốc nào
+        if (prescriptionDetails.length === 0) {
+            alert("Vui lòng thêm ít nhất một chi tiết đơn thuốc.");
+            return;
         }
 
-        function updateTotalAmount() {
-            const tableBody = document.getElementById("prescription-details");
-            let totalAmount = 0;
-            for (let row of tableBody.rows) {
-                const price = parseFloat(row.cells[1].textContent);
-                const quantity = parseInt(row.cells[2].querySelector("input").value);
-                const amount = price * quantity;
-                row.cells[3].textContent = amount;
-                totalAmount += amount;
+        // Lấy ngày hiện tại
+        const ngaymua = new Date().toISOString().split('T')[0];
+
+        const data = {
+            benhnhanID: benhnhan.id,
+            bacsiID: bacsi.id,
+            mota,
+            chitietdonthuoc: prescriptionDetails,
+            ngaymua,
+            tonggia
+        };
+
+        try {
+            let response = await fetch(`http://26.80.253.0:5000/bacsi/create_prescription`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            if (response.ok) {
+                alert("Lưu đơn thuốc thành công!");
+                // sessionStorage.setItem("prescriptionData", JSON.stringify(data)); // Lưu thông tin đơn thuốc vào sessionStorage
+                window.location.replace(`getlichhen.html`); // Chuyển hướng đến giao diện getlichhen.html và thay thế trang hiện tại trong lịch sử trình duyệt
+            } else {
+                throw new Error("Lỗi khi lưu đơn thuốc");
             }
-            document.getElementById("total-amount").textContent = totalAmount;
+        } catch (error) {
+            console.error("Lỗi khi lưu đơn thuốc:", error);
+            alert("Lỗi khi lưu đơn thuốc. Vui lòng thử lại.");
         }
+    }
 
-        async function savePrescription() {
-            const benhnhan = JSON.parse(sessionStorage.getItem("benhnhan"));
-            const bacsi = JSON.parse(sessionStorage.getItem("bacsi"));
-            const mota = document.getElementById("prescription-description").value;
-            const prescriptionDetails = [];
-
-            const tableBody = document.getElementById("prescription-details");
-            let tonggia = 0;
-            for (let row of tableBody.rows) {
-                const thuocID = row.getAttribute("data-thuoc-id"); // Lấy ID của thuốc từ thuộc tính data-thuoc-id
-                const ten = row.cells[0].textContent;
-                const dongia = parseFloat(row.cells[1].textContent);
-                const soluong = parseInt(row.cells[2].querySelector("input").value);
-                const amount = dongia * soluong;
-                prescriptionDetails.push({ thuocID, ten, dongia, soluong });
-                tonggia += amount;
-            }
-
-            // Kiểm tra nếu không có chi tiết đơn thuốc nào
-            if (prescriptionDetails.length === 0) {
-                alert("Vui lòng thêm ít nhất một chi tiết đơn thuốc.");
-                return;
-            }
-
-            // Lấy ngày hiện tại
-            const ngaymua = new Date().toISOString().split('T')[0];
-
-            const data = {
-                benhnhan,
-                bacsi,
-                mota,
-                chitietdonthuoc: prescriptionDetails,
-                ngaymua,
-                tonggia
-            };
-
-            try {
-                let response = await fetch(`http://26.80.253.0:5000/bacsi/create_prescription`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(data)
-                });
-
-                if (response.ok) {
-                    alert("Lưu đơn thuốc thành công!");
-                    sessionStorage.setItem("prescriptionData", JSON.stringify(data)); // Lưu thông tin đơn thuốc vào sessionStorage
-                    window.location.replace(`getlichhen.html`); // Chuyển hướng đến giao diện getlichhen.html và thay thế trang hiện tại trong lịch sử trình duyệt
-                } else {
-                    throw new Error("Lỗi khi lưu đơn thuốc");
-                }
-            } catch (error) {
-                console.error("Lỗi khi lưu đơn thuốc:", error);
-                alert("Lỗi khi lưu đơn thuốc. Vui lòng thử lại.");
-            }
-        }
-
-        function goBack() {
-            // Chuyển hướng về trang trước đó
-            window.history.back();
-        }
-    </script>
+    function goBack() {
+        // Chuyển hướng về trang trước đó
+        window.history.back();
+    }
+</script>
 
 </body>
 </html>
