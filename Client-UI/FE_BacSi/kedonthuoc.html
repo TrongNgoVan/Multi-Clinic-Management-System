@@ -124,16 +124,26 @@
 
     <script>
     document.addEventListener("DOMContentLoaded", () => {
+        const phieukhamStr = sessionStorage.getItem("phieukham");
         const bacsiStr = sessionStorage.getItem("bacsi");
+        const benhnhanStr = sessionStorage.getItem("benhnhan");
         if (!bacsiStr) {
-            window.location.href = "dangnhap.html";
-            return; // Dừng thực thi các đoạn code phía dưới
-        }
-        const phieukhamDataStr = sessionStorage.getItem("phieukhamData");
-        if (phieukhamDataStr) {
-            const phieukhamData = JSON.parse(phieukhamDataStr);
-            displayPhieuKhamData(phieukhamData);
-        }
+                window.location.href = "dangnhap.html";
+                return; // Dừng thực thi các đoạn code phía dưới
+            }
+        if (phieukhamStr && bacsiStr && benhnhanStr) {
+                const phieukham = JSON.parse(phieukhamStr);
+                console.log("Thông tin phiếu khám:", phieukham);
+                const bacsi = JSON.parse(bacsiStr);
+                console.log("Thông tin bác sĩ:", bacsi);
+                const benhnhan = JSON.parse(benhnhanStr);
+                console.log("Thông tin bệnh nhân:", benhnhan);
+                displayPhieuKham(phieukham,bacsi,benhnhan);
+            }
+        else
+            {
+                console.log("Không có thông tin gì cả, hichic");
+            }
         const selectedMedicinesStr = sessionStorage.getItem("selectedMedicines");
         if (selectedMedicinesStr) {
             const selectedMedicines = JSON.parse(selectedMedicinesStr);
@@ -141,21 +151,19 @@
         }
     });
 
-    function displayPhieuKhamData(data) {
-        if (data) {
-            const dob = new Date(data.benhnhan.dob);
-            const formattedDob = `${String(dob.getDate()).padStart(2, '0')}/${String(dob.getMonth() + 1).padStart(2, '0')}/${dob.getFullYear()}`;
-            document.getElementById("patient-name").textContent = `Họ Tên: ${data.benhnhan.ten}`;
-            document.getElementById("patient-dob").textContent = `Ngày Sinh: ${formattedDob}`;
-            document.getElementById("patient-cccd").textContent = `CCCD: ${data.benhnhan.cccd}`;
-            document.getElementById("patient-phone").textContent = `SĐT: ${data.benhnhan.sdt}`;
-            document.getElementById("patient-address").textContent = `Quê quán: ${data.benhnhan.quequan}`;
-            document.getElementById("patient-diagnosis").textContent = `Chẩn đoán: ${data.chandoan}`;
-            document.getElementById("bs").textContent = `${data.bacsi.ten}`;
-        } else {
-            console.warn("Dữ liệu phiếu khám hoặc bệnh nhân không đầy đủ.");
+    function displayPhieuKham(phieukham,bacsi,benhnhan) {
+            if (phieukham) {
+                document.getElementById("patient-name").textContent = `Họ Tên: ${benhnhan.ten}`;
+                document.getElementById("patient-dob").textContent = `Ngày Sinh: ${benhnhan.dob}`;
+                document.getElementById("patient-cccd").textContent = `CCCD: ${benhnhan.cccd}`;
+                document.getElementById("patient-phone").textContent = `SĐT: ${benhnhan.sdt}`;
+                document.getElementById("patient-address").textContent = `Quê quán: ${benhnhan.quequan}`;
+                document.getElementById("patient-diagnosis").textContent = `Chẩn đoán: ${phieukham.chandoan}`;
+                document.getElementById("bs").textContent = `${bacsi.ten}`;
+            } else {
+                console.warn("Dữ liệu phiếu khám hoặc bệnh nhân không đầy đủ.");
+            }
         }
-    }
 
     function displaySelectedMedicines(selectedMedicines) {
         const tableBody = document.getElementById("prescription-details");

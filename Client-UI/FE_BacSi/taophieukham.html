@@ -171,7 +171,7 @@
 
             try {
                 const base64Image = await getBase64(fileInput.files[0]); // Chuyển ảnh thành Base64
-                const response = await fetch("http://192.168.0.102:5001/ai_diagnosis", {
+                const response = await fetch("http://26.80.253.0:5001/ai_diagnosis", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
@@ -226,7 +226,8 @@
                     let result = await response.json();
                     alert("Tạo phiếu khám thành công!");
                     document.getElementById("create-prescription-btn").style.display = "inline-block";
-                    sessionStorage.setItem("phieukhamData", JSON.stringify(data)); // Lưu dữ liệu vào sessionStorage
+
+                    sessionStorage.setItem("phieukham", JSON.stringify(data)); // Lưu dữ liệu vào sessionStorage
                 } else {
                     throw new Error("Lỗi khi tạo phiếu khám");
                 }
