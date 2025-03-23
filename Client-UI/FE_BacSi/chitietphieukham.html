@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi Tiết Phiếu Khám</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: auto;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        .info {
+            margin-bottom: 20px;
+        }
+        .info div {
+            margin: 10px 0;
+        }
+        .btn-container {
+            text-align: center;
+        }
+        .btn {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+        .btn-back {
+            background-color: #2196F3;
+        }
+        .btn-back:hover {
+            background-color: #1E88E5;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Chi Tiết Phiếu Khám</h2>
+        <div class="info">
+            <div><strong>Bệnh Nhân:</strong> <span id="benhnhan"></span></div>
+            <div><strong>Bác Sĩ Khám:</strong> <span id="bacsi"></span></div>
+            <div><strong>Triệu Chứng:</strong> <span id="trieuchung"></span></div>
+            <div><strong>Chẩn Đoán:</strong> <span id="chandoan"></span></div>
+            <div><strong>Thông Số Xét Nghiệm:</strong> <span id="thongsoxetnghiem"></span></div>
+            <div><strong>Ảnh Xét Nghiệm:</strong> <span id="anhxetnghiem"></span></div>
+            <div><strong>Ngày Khám:</strong> <span id="ngaykham"></span></div>
+            <div><strong>Tiền Khám:</strong> <span id="tienkham"></span></div>
+        </div>
+        <div class="btn-container">
+            <button class="btn btn-back" onclick="goBack()">Quay lại</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const phieukhamStr = sessionStorage.getItem("selectedPhieuKham");
+            if (phieukhamStr) {
+                const phieukham = JSON.parse(phieukhamStr);
+                displayPhieuKhamDetails(phieukham);
+            } else {
+                alert("Không tìm thấy thông tin phiếu khám.");
+                window.location.href = "xemphieukham.html";
+            }
+        });
+
+        function displayPhieuKhamDetails(phieukham) {
+            const ngaykham = new Date(phieukham.ngaykham);
+            const formattedNgaykham = `${String(ngaykham.getDate()).padStart(2, '0')}/${String(ngaykham.getMonth() + 1).padStart(2, '0')}/${ngaykham.getFullYear()}`;
+            document.getElementById("benhnhan").textContent = `${phieukham.benhnhan.ten}`;
+            document.getElementById("bacsi").textContent = phieukham.bacsi.ten;
+            document.getElementById("trieuchung").textContent = phieukham.trieuchung;
+            document.getElementById("chandoan").textContent = phieukham.chandoan;
+            document.getElementById("thongsoxetnghiem").textContent = phieukham.thongsoxetnghiem;
+            document.getElementById("anhxetnghiem").textContent = phieukham.anhxetnghiem;
+            document.getElementById("ngaykham").textContent = formattedNgaykham;
+            document.getElementById("tienkham").textContent = phieukham.tienkham;
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+
+</body>
+</html>
