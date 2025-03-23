@@ -40,4 +40,4 @@ app.register_blueprint(chitietdonthuoc_bp, url_prefix="/chitietdonthuoc")
 app.register_blueprint(phongchucnang_bp, url_prefix="/phongchucnang")
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="26.80.253.0", port=5000)

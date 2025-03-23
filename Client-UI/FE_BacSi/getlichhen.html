@@ -96,7 +96,7 @@
         });
         async function fetchLichHen(bacsiID) {
             try {
-                let response = await fetch(`http://127.0.0.1:5000/bacsi/get_all_lichhen/${bacsiID}`);
+                let response = await fetch(`http://26.80.253.0:5000/bacsi/get_all_lichhen/${bacsiID}`);
                 if (!response.ok) throw new Error("Lỗi API, mã: " + response.status);
                 
                 let data = await response.json();
