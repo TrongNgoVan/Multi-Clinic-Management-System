@@ -99,7 +99,9 @@
         <div class="medical-info">
             <input type="text" id="symptoms" placeholder="Triệu chứng">
             <input type="text" id="test-results" placeholder="Thông số xét nghiệm">
-            <input type="text" id="anhxetnghiem" placeholder="Ảnh xét nghiệm">
+            <input type="file" id="anhxetnghiem" accept="image/*" onchange="previewImage(event)">
+            <img id="preview" src="" alt="Xem trước ảnh" style="max-width: 100%; margin-top: 10px;">
+
             <input type="text" id="diagnosis" placeholder="Kết quả chẩn đoán">
             <input type="text" id="tienkham" placeholder="Tiền khám">
         </div>
@@ -135,10 +137,59 @@
             document.getElementById("patient-address").textContent = `Quê quán: ${benhnhan.quequan}`;
         }
 
-        function smartDiagnosis() {
-            // Thực hiện chẩn đoán thông minh
-            alert("Chức năng chẩn đoán thông minh đang được phát triển.");
+                // Hàm xem trước ảnh khi upload
+        function previewImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById("preview").src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
         }
+
+        // Hàm chuyển ảnh thành Base64 để gửi đi
+        function getBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result.split(',')[1]); // Lấy phần dữ liệu sau "base64,"
+                reader.onerror = error => reject(error);
+            });
+        }
+
+        // Gửi ảnh đến server AI để chẩn đoán thông minh
+        async function smartDiagnosis() {
+            const fileInput = document.getElementById("anhxetnghiem");
+            if (fileInput.files.length === 0) {
+                alert("Vui lòng chọn ảnh xét nghiệm!");
+                return;
+            }
+
+            try {
+                const base64Image = await getBase64(fileInput.files[0]); // Chuyển ảnh thành Base64
+                const response = await fetch("http://192.168.0.102:5001/ai_diagnosis", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ image: base64Image })
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    document.getElementById("diagnosis").value = result.diagnosis; // Hiển thị kết quả chẩn đoán
+                    alert("Chẩn đoán hoàn tất!");
+                } else {
+                    throw new Error("Lỗi khi gửi ảnh đến AI");
+                }
+            } catch (error) {
+                console.error("Lỗi chẩn đoán:", error);
+                alert("Không thể chẩn đoán, vui lòng thử lại!");
+            }
+        }
+
 
         async function saveMedicalRecord() {
             const trieuchung = document.getElementById("symptoms").value;
