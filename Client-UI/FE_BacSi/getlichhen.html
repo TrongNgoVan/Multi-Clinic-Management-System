@@ -1,159 +1,243 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lịch Hẹn Bác Sĩ</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-        h2 {
-            text-align: center;
-            color: #333;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: center; /* Căn giữa nội dung */
-            vertical-align: middle; /* Căn giữa theo chiều dọc */
-        }
-        th {
-            background-color: #4CAF50;
-            color: white;
-        }
-        img {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-        }
-        .error-message {
-            text-align: center;
-            color: red;
-            font-weight: bold;
-        }
-        .btn {
-            padding: 5px 10px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            text-decoration: none;
-            text-align: center;
-        }
-        .btn:hover {
-            background-color: #45a049;
-        }
-        .btn-back {
-            background-color: #2196F3;
-        }
-        .btn-back:hover {
-            background-color: #1E88E5;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Xem Lịch Hẹn Của Bệnh Nhân</title>
+  <style>
+    /* Reset CSS */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+    }
+
+    /* Thanh trên cùng (header) */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: #c70d0d;
+      color: #fff;
+      padding: 10px 20px;
+      margin-bottom: 20px;
+    }
+
+    .header h2 {
+      margin: 0;
+      font-weight: bold;
+    }
+
+    .header button {
+      background-color: #fff;
+      color: #c70d0d;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.2s;
+    }
+
+    .header button:hover {
+      background-color: #f7dddd;
+    }
+
+    /* Container chung cho danh sách lịch hẹn */
+    .lichhen-container {
+      width: 90%;
+      max-width: 900px;
+      margin: 0 auto; /* Căn giữa */
+    }
+
+    /* Mỗi “card” cho 1 lịch hẹn */
+    .lichhen-card {
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+
+    .lichhen-card img {
+      width: 70px;
+      height: 70px;
+      /* Chỉnh sửa thành bo góc nhỏ thay vì hình tròn: */
+      border-radius: 8px; 
+      object-fit: cover;
+      margin-right: 10px;
+    }
+
+    .lichhen-info {
+      flex: 1; /* Chiếm khoảng trống còn lại */
+    }
+
+    .lichhen-info p {
+      margin: 4px 0;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .lichhen-actions {
+      display: flex;
+      flex-direction: column; /* 2 nút xếp dọc, hoặc row nếu muốn ngang */
+      gap: 5px;
+    }
+
+    .btn {
+      padding: 5px 10px;
+      background-color: #4CAF50;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.2s;
+      text-align: center;
+    }
+
+    .btn:hover {
+      background-color: #45a049;
+    }
+
+    /* Nút “Duyệt” riêng nếu muốn */
+    .btn-duyet {
+      background-color: #f57c00; /* màu cam */
+    }
+    .btn-duyet:hover {
+      background-color: #ef6c00;
+    }
+
+    /* Thông báo lỗi */
+    .error-message {
+      text-align: center;
+      color: red;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+  </style>
 </head>
 <body>
 
-    <h2>Lịch Hẹn Bác Sĩ</h2>
-    <p id="error-message" class="error-message" style="display: none;">Không thể lấy dữ liệu lịch hẹn!</p>
-    <table>
-        <thead>
-            <tr>
-                <th>Ảnh Bệnh Nhân</th>
-                <th>Tên Bệnh Nhân</th>
-                <th>Năm Sinh</th>
-                <th>CCCD</th>
-                <th>Số Điện Thoại</th>
-                <th>Quê Quán</th>
-                <th>Thời Gian Hẹn</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody id="lichhen-table-body">
-            <!-- Dữ liệu sẽ được thêm vào đây -->
-        </tbody>
-    </table>
-    <div style="text-align: center; margin-top: 20px;">
-        <button class="btn btn-back" onclick="goBack()">Quay lại</button>
-    </div>
+  <!-- Thanh trên cùng -->
+  <div class="header">
+    <h2>Xem Lịch Hẹn Của Bệnh Nhân</h2>
+    <button onclick="goBack()">Quay lại</button>
+  </div>
 
-    <script>
-        async function fetchLichHen(bacsiID) {
-            try {
-                let response = await fetch(`http://26.80.253.0:5000/bacsi/get_all_lichhen/${bacsiID}`);
-                if (!response.ok) throw new Error("Lỗi API, mã: " + response.status);
-                
-                let data = await response.json();
-                let tableBody = document.getElementById("lichhen-table-body");
-                tableBody.innerHTML = "";
+  <!-- Hiển thị lỗi nếu có -->
+  <p id="error-message" class="error-message" style="display: none;">Không thể lấy dữ liệu lịch hẹn!</p>
 
-                data.forEach(lichhen => {
-                    let row = document.createElement("tr");
-                    const dob = new Date(lichhen.benhnhan.dob);
-                    const formattedDob = `${String(dob.getDate()).padStart(2, '0')}/${String(dob.getMonth() + 1).padStart(2, '0')}/${dob.getFullYear()}`;
-                    row.innerHTML = `
-                        <td><img src="ava.jpg" alt="Ảnh Bệnh Nhân"></td>
-                        <td>${lichhen.benhnhan.ten}</td>
-                        <td>${formattedDob}</td>
-                        <td>${lichhen.benhnhan.cccd}</td>
-                        <td>${lichhen.benhnhan.sdt}</td>
-                        <td>${lichhen.benhnhan.quequan}</td>
-                        <td>${lichhen.thoigianhen}</td>
-                        <td><button class="btn" onclick='khamBenh(${JSON.stringify(lichhen.benhnhan)})'>Khám</button></td>
-                    `;
-                    tableBody.appendChild(row);
-                });
+  <!-- Container chứa danh sách lịch hẹn -->
+  <div class="lichhen-container" id="lichhen-container">
+    <!-- Các “card” lịch hẹn sẽ được thêm vào bằng JavaScript -->
+  </div>
 
-            } catch (error) {
-                document.getElementById("error-message").style.display = "block";
-                console.error("Lỗi khi lấy danh sách lịch hẹn:", error);
-            }
-        }
+  <script>
+    // Gọi hàm fetchLichHen khi trang tải xong
+    document.addEventListener("DOMContentLoaded", () => {
+      const bacsiStr = sessionStorage.getItem("bacsi");
+      if (!bacsiStr) {
+        document.getElementById("error-message").textContent = "Không tìm thấy thông tin bác sĩ!";
+        document.getElementById("error-message").style.display = "block";
+        window.location.href = "dangnhap.html";
+        return;
+      }
 
-        function khamBenh(benhnhan) {
-            // Lưu thông tin bệnh nhân vào sessionStorage
-            sessionStorage.setItem("benhnhan", JSON.stringify(benhnhan));
-            // Chuyển hướng đến trang tạo phiếu khám
-            window.location.href = `taophieukham.html`;
-        }
+      const bacsi = JSON.parse(bacsiStr);
+      fetchLichHen(bacsi.id);
+    });
 
-        function goBack() {
-            // Chuyển hướng đến giao diện chính
-            window.location.href = 'giaodienchinh.html';
-        }
+    async function fetchLichHen(bacsiID) {
+      try {
+        let response = await fetch(`http://26.80.253.0:5000/bacsi/get_all_lichhen/${bacsiID}`);
+        if (!response.ok) throw new Error("Lỗi API, mã: " + response.status);
 
-        // GỌI HÀM KHI TẢI TRANG
-        document.addEventListener("DOMContentLoaded", () => {
-            // Lấy thông tin bác sĩ từ sessionStorage
-            const bacsiStr = sessionStorage.getItem("bacsi");
-            if (bacsiStr) {
-                const bacsi = JSON.parse(bacsiStr);
-                fetchLichHen(bacsi.id);
-            } else {
-                document.getElementById("error-message").textContent = "Không tìm thấy thông tin bác sĩ!";
-                document.getElementById("error-message").style.display = "block";
-                window.location.href = "dangnhap.html";
-                return; // Dừng thực thi các đoạn code phía dưới
-            }
+        let data = await response.json();
+        let container = document.getElementById("lichhen-container");
+        container.innerHTML = ""; // Xoá nội dung cũ
 
-            // Lấy thông tin đơn thuốc từ sessionStorage và hiển thị qua console log
-            // const prescriptionDataStr = sessionStorage.getItem("prescriptionData");
-            // if (prescriptionDataStr) {
-            //     const prescriptionData = JSON.parse(prescriptionDataStr);
-            //     console.log("Thông tin đơn thuốc:", prescriptionData);
-            //     sessionStorage.removeItem("prescriptionData"); // Xóa thông tin đơn thuốc sau khi hiển thị
-            // }
+        data.forEach(lichhen => {
+          // Xử lý ngày sinh
+          const dob = new Date(lichhen.benhnhan.dob);
+          const formattedDob = `${String(dob.getDate()).padStart(2, '0')}/${String(dob.getMonth() + 1).padStart(2, '0')}/${dob.getFullYear()}`;
+
+          // Tạo 1 card
+          let card = document.createElement("div");
+          card.className = "lichhen-card";
+
+          // Ảnh
+          let img = document.createElement("img");
+          img.src = "ava.jpg"; // Đường dẫn ảnh đại diện
+          img.alt = "Ảnh Bệnh Nhân";
+
+          // Thông tin
+          let infoDiv = document.createElement("div");
+          infoDiv.className = "lichhen-info";
+          infoDiv.innerHTML = `
+            <p><strong>Họ Tên:</strong> ${lichhen.benhnhan.ten}</p>
+            <p><strong>Năm Sinh:</strong> ${formattedDob}</p>
+            <p><strong>CCCD:</strong> ${lichhen.benhnhan.cccd}</p>
+            <p><strong>SĐT:</strong> ${lichhen.benhnhan.sdt}</p>
+            <p><strong>Quê Quán:</strong> ${lichhen.benhnhan.quequan}</p>
+            <p><strong>Thời Gian Hẹn:</strong> ${lichhen.thoigianhen}</p>
+          `;
+
+          // Nút hành động
+          let actionsDiv = document.createElement("div");
+          actionsDiv.className = "lichhen-actions";
+
+          let btnDuyet = document.createElement("button");
+          btnDuyet.className = "btn btn-duyet";
+          btnDuyet.textContent = "Duyệt";
+          // Thêm sự kiện khi click “Duyệt”
+          btnDuyet.onclick = () => {
+            alert("Đã duyệt lịch hẹn cho bệnh nhân: " + lichhen.benhnhan.ten);
+          };
+
+          let btnKham = document.createElement("button");
+          btnKham.className = "btn";
+          btnKham.textContent = "Khám";
+          btnKham.onclick = () => {
+            khamBenh(lichhen.benhnhan);
+          };
+
+          actionsDiv.appendChild(btnDuyet);
+          actionsDiv.appendChild(btnKham);
+
+          // Thêm các phần tử vào card
+          card.appendChild(img);
+          card.appendChild(infoDiv);
+          card.appendChild(actionsDiv);
+
+          container.appendChild(card);
         });
-    </script>
+
+      } catch (error) {
+        document.getElementById("error-message").style.display = "block";
+        console.error("Lỗi khi lấy danh sách lịch hẹn:", error);
+      }
+    }
+
+    function khamBenh(benhnhan) {
+      // Lưu thông tin bệnh nhân vào sessionStorage
+      sessionStorage.setItem("benhnhan", JSON.stringify(benhnhan));
+      // Chuyển hướng đến trang tạo phiếu khám
+      window.location.href = `taophieukham.html`;
+    }
+
+    function goBack() {
+      // Chuyển hướng đến giao diện chính
+      window.location.href = 'giaodienchinh.html';
+    }
+  </script>
 
 </body>
 </html>

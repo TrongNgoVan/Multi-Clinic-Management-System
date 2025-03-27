@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Phòng Khám Đa Khoa PTIT</title>
-  <!-- <link rel="stylesheet" href="css/styles.css"> -->
+  <link rel="stylesheet" href="css/styles.css">
   <link rel="icon" href="img/ptit.png" type="image/x-icon"> 
   <style>
     /* Reset mặc định */
@@ -68,7 +68,7 @@
     .hero {
       position: relative;
       width: 100%;
-      height: 95vh;
+      height: 80vh;
       background: url("img/ptitnen.jpg") no-repeat center center; 
       /* Thay đường dẫn ảnh nền của bạn */
       background-size: cover;
@@ -139,35 +139,23 @@
 
   <!-- Thanh điều hướng -->
   <nav class="navbar">
-    <div class="navbar__logo">Phòng Khám Đa Khoa PTIT</div>
-    <ul class="navbar__links">
-      <li><a href="getlichhen.html">Xem lịch hẹn</a></li>
-      <li><a href="xemphieukham.html">Xem phiếu khám</a></li>
-  
-    </ul>
+
     <a href="thongtincanhan.html" style="text-decoration: none; color: white;">
       <strong>Bác sĩ:</strong>
       <strong id="bacsi-name"></strong>
     </a>
-    
-      
     <div class="navbar__user" onclick="logout()">
 
       <button class="logout-btn">Đăng Xuất</button>
     </div>
   </nav>
 
-  <!-- Hero Section -->
-  <section class="hero">
-    <div class="hero__overlay"></div>
-    <div class="hero__content">
-      <h1>Phòng Khám Đa Khoa PTIT</h1>
-      <p>Nơi Quy Tụ Các Bác Sĩ <br>
-         Tài Năng - Tâm Huyết - Trách Nhiệm</p>
-    </div>
-  </section>
 
 
+  <!-- Container hiển thị thông tin bác sĩ (nếu cần) -->
+  <div class="info-container" id="bacsi-info">
+    <!-- Thông tin bác sĩ sẽ được hiển thị qua JS nếu cần -->
+  </div>
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
@@ -190,7 +178,15 @@
         bacsiNameSpan.textContent = bacsi.ten || "Bác Sĩ";
       }
 
-   
+      // Thông tin chi tiết hiển thị dưới hero
+      const bacsiInfoDiv = document.getElementById("bacsi-info");
+      if (bacsiInfoDiv) {
+        bacsiInfoDiv.innerHTML = `
+          <p>Họ Tên: ${bacsi.ten}</p>
+          <p>Chuyên Môn: ${bacsi.chuyenmon}</p>
+          <p>Kinh Nghiệm: ${bacsi.kinhnghiem}</p>
+        `;
+      }
     }
 
     function logout() {

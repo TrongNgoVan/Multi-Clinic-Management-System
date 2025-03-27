@@ -1,253 +1,387 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tạo Phiếu Khám</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Khám Bệnh</title>
+  <style>
+    /* Reset CSS */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
-            margin: 0;
-            padding: 20px;
-        }
-        .container {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
-            margin: auto;
-        }
-        h2 {
-            text-align: center;
-            color: #333;
-        }
-        .patient-info, .medical-form {
-            margin-bottom: 20px;
-        }
-        .patient-info img {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            display: block;
-            margin: auto;
-        }
-        .patient-info div, .medical-info div {
-            text-align: center;
-            margin: 10px 0;
-        }
-        .medical-info {
-            border-top: 1px solid #ddd;
-            padding-top: 20px;
-        }
-        .medical-info input, .medical-info textarea {
-            width: 50%;
-            padding: 10px;
-            margin: 10px auto;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            display: block;
-        }
-        .btn-container {
-            text-align: center;
-        }
-        .btn {
-            width: 30%;
-            padding: 10px;
-            margin: 10px 1%;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            text-align: center;
-        }
-        .btn:hover {
-            background-color: #45a049;
-        }
-        .btn-red {
-            background-color: #f44336;
-        }
-        .btn-red:hover {
-            background-color: #e53935;
-        }
-        .btn-back {
-            background-color: #2196F3;
-        }
-        .btn-back:hover {
-            background-color: #1E88E5;
-        }
-        .btn-create-prescription {
-            display: none;
-        }
-    </style>
+    html, body {
+      width: 100%;
+      height: 100%;
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+    }
+
+    /* Thanh trên cùng (header) */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: #c70d0d;
+      color: #fff;
+      padding: 10px 20px;
+    }
+    .header h2 {
+      margin: 0;
+      font-weight: bold;
+      font-size: 20px;
+    }
+    .header button {
+      background-color: #fff;
+      color: #c70d0d;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.2s;
+    }
+    .header button:hover {
+      background-color: #f7dddd;
+    }
+
+    /* Container tổng quát */
+    .container {
+      width: 95%;
+      max-width: 900px;
+      margin: 20px auto;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      padding: 20px;
+    }
+
+    /* Khối thông tin bệnh nhân */
+    .patient-info {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 10px;
+    }
+    .patient-info img {
+      width: 80px;
+      height: 80px;
+      border-radius: 8px;
+      object-fit: cover;
+      margin-right: 15px;
+      border: 2px solid #ccc;
+    }
+    .patient-details {
+      flex: 1;
+    }
+    .patient-details p {
+      margin: 4px 0;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    .patient-details p strong {
+      color: #333;
+    }
+
+    /* Khối “Phiếu Khám” */
+    .phieu-kham {
+      margin-top: 20px;
+      text-align: center;
+    }
+    .phieu-kham h3 {
+      background-color: #c70d0d;
+      color: #fff;
+      padding: 8px;
+      border-radius: 4px;
+      margin-bottom: 15px;
+      font-size: 16px;
+      display: inline-block;
+      text-transform: uppercase;
+    }
+
+    /* Lưới cho 4 ô (triệu chứng, thông số 1, thông số 2, ảnh) */
+    .phieu-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    .phieu-grid .box {
+      border: 1px solid #ddd;
+      padding: 10px;
+      border-radius: 4px;
+      min-height: 100px;
+    }
+    .phieu-grid .box textarea {
+      width: 100%;
+      height: 60px;
+      resize: none;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      padding: 5px;
+    }
+    .phieu-grid .box img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+
+    /* Kết quả chẩn đoán */
+    .diagnosis {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    .diagnosis textarea {
+      width: 70%;
+      height: 60px;
+      resize: none;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      padding: 5px;
+    }
+    .btn-smart {
+      background-color: #4CAF50;
+      color: #fff;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.2s;
+    }
+    .btn-smart:hover {
+      background-color: #45a049;
+    }
+
+    /* Nút footer */
+    .btn-container {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .btn {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 5px;
+      font-weight: bold;
+      transition: background-color 0.2s;
+    }
+    .btn:hover {
+      background-color: #45a049;
+    }
+    .btn-red {
+      background-color: #f44336;
+    }
+    .btn-red:hover {
+      background-color: #e53935;
+    }
+
+    /* Ẩn ban đầu nút “Tạo đơn thuốc” (nếu muốn) */
+    #create-prescription-btn {
+      display: none;
+    }
+  </style>
 </head>
 <body>
 
-    <div class="container">
-        <h2>Khám Bệnh</h2>
-        <div class="patient-info">
-            <img id="patient-img" src="ava.jpg" alt="Ảnh Bệnh Nhân">
-            <div id="patient-name">Họ Tên: </div>
-            <div id="patient-dob">Ngày Sinh: </div>
-            <div id="patient-cccd">CCCD: </div>
-            <div id="patient-phone">SĐT: </div>
-            <div id="patient-address">Quê quán: </div>
-        </div>
-        <div class="medical-info">
-            <input type="text" id="symptoms" placeholder="Triệu chứng">
-            <input type="text" id="test-results" placeholder="Thông số xét nghiệm">
-            <input type="file" id="anhxetnghiem" accept="image/*" onchange="previewImage(event)">
-            <img id="preview" src="" alt="Xem trước ảnh" style="max-width: 100%; margin-top: 10px;">
+  <!-- Thanh trên cùng -->
+  <div class="header">
+    <h2>Khám bệnh</h2>
+    <button onclick="goBack()">Quay lại</button>
+  </div>
 
-            <input type="text" id="diagnosis" placeholder="Kết quả chẩn đoán">
-            <input type="text" id="tienkham" placeholder="Tiền khám">
-        </div>
-        <div class="btn-container">
-            <button class="btn" onclick="smartDiagnosis()">Chẩn đoán thông minh</button>
-            <button class="btn btn-red" onclick="saveMedicalRecord()">Lưu Phiếu Khám</button>
-            <button class="btn btn-back" onclick="goBack()">Quay lại</button>
-            <button class="btn btn-create-prescription" id="create-prescription-btn" onclick="createPrescription()">Tạo Đơn Thuốc</button>
-        </div>
+  <!-- Container chính -->
+  <div class="container">
+
+    <!-- Thông tin bệnh nhân -->
+    <div class="patient-info">
+      <img id="patient-img" src="ava.jpg" alt="Ảnh Bệnh Nhân">
+      <div class="patient-details">
+        <p><strong>Họ Tên:</strong> <span id="patient-name"></span></p>
+        <p><strong>Năm Sinh:</strong> <span id="patient-dob"></span></p>
+        <p><strong>CCCD:</strong> <span id="patient-cccd"></span></p>
+        <p><strong>SĐT:</strong> <span id="patient-phone"></span></p>
+        <p><strong>Quê Quán:</strong> <span id="patient-address"></span></p>
+        <p><strong>Thời Gian Hẹn:</strong> <span id="patient-time"></span></p>
+      </div>
     </div>
 
-    <script>
+    <!-- Phiếu Khám -->
+    <div class="phieu-kham">
+      <h3>Phiếu Khám</h3>
 
-        document.addEventListener("DOMContentLoaded", () => {
-            const bacsiStr = sessionStorage.getItem("bacsi");
-            if (!bacsiStr) {
-                window.location.href = "dangnhap.html";
-                return; // Dừng thực thi các đoạn code phía dưới
-            }
-            const benhnhanStr = sessionStorage.getItem("benhnhan");
-            if (benhnhanStr) {
-                const benhnhan = JSON.parse(benhnhanStr);
-                console.log("Thông tin phiếu khám:", benhnhan);
-                displayPatientInfo(benhnhan);
-            }
+      <!-- Grid 2 cột -->
+      <div class="phieu-grid">
+        <!-- Box 1: Triệu chứng -->
+        <div class="box">
+          <p><strong>Triệu chứng</strong></p>
+          <textarea id="symptoms" placeholder="VD: Ho, đau đầu dài ngày..."></textarea>
+        </div>
+
+        <!-- Box 2: Thông số xét nghiệm 1 -->
+        <div class="box">
+          <p><strong>Thông số xét nghiệm (VD: cholesterol)</strong></p>
+          <textarea id="test-results"></textarea>
+        </div>
+
+        <!-- Box 3: Thông số xét nghiệm 2 -->
+        <div class="box">
+          <p><strong>Thông số xét nghiệm (VD: Xquang)</strong></p>
+          <input type="file" id="anhxetnghiem" accept="image/*" onchange="previewImage(event)">
+          <img id="preview" src="" alt="Ảnh Xét Nghiệm" style="margin-top: 5px;">
+        </div>
+
+        <!-- Box 4: Ảnh CT/MRI (nếu có) -->
+        <div class="box">
+          <p><strong>Ảnh CT/MRI</strong></p>
+          <!-- Hoặc bạn có thể dùng 1 input file khác, tùy nhu cầu -->
+          <img src="img/brain.jpg" alt="Ảnh minh họa CT" style="max-width: 100%;">
+        </div>
+      </div>
+
+      <!-- Kết quả chẩn đoán + Chẩn đoán thông minh -->
+      <div class="diagnosis">
+        <textarea id="diagnosis" placeholder="Kết quả chẩn đoán"></textarea>
+        <button class="btn-smart" onclick="smartDiagnosis()">Chẩn đoán thông minh</button>
+      </div>
+
+    </div>
+
+    <!-- Nút tạo đơn thuốc, lưu phiếu khám -->
+    <div class="btn-container">
+      <button class="btn" id="create-prescription-btn" onclick="createPrescription()">Tạo Đơn Thuốc</button>
+      <button class="btn btn-red" onclick="saveMedicalRecord()">Lưu Phiếu Khám</button>
+    </div>
+
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const bacsiStr = sessionStorage.getItem("bacsi");
+      if (!bacsiStr) {
+        // Nếu chưa đăng nhập, quay về trang đăng nhập
+        window.location.href = "dangnhap.html";
+        return;
+      }
+
+      // Lấy thông tin bệnh nhân
+      const benhnhanStr = sessionStorage.getItem("benhnhan");
+      if (benhnhanStr) {
+        const benhnhan = JSON.parse(benhnhanStr);
+        displayPatientInfo(benhnhan);
+      }
+    });
+
+    function displayPatientInfo(benhnhan) {
+      // Định dạng ngày sinh
+      const dob = new Date(benhnhan.dob);
+      const formattedDob = `${String(dob.getDate()).padStart(2, '0')}/${String(dob.getMonth() + 1).padStart(2, '0')}/${dob.getFullYear()}`;
+
+      document.getElementById("patient-name").textContent = benhnhan.ten;
+      document.getElementById("patient-dob").textContent = formattedDob;
+      document.getElementById("patient-cccd").textContent = benhnhan.cccd;
+      document.getElementById("patient-phone").textContent = benhnhan.sdt;
+      document.getElementById("patient-address").textContent = benhnhan.quequan;
+
+      // Nếu bạn có thông tin "thoigianhen" trong object benhnhan, hiển thị
+      // Hoặc trong lichhen, tuỳ cấu trúc JSON
+      document.getElementById("patient-time").textContent = benhnhan.thoigianhen || "15h00";
+    }
+
+    // Xem trước ảnh Xét Nghiệm
+    function previewImage(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById("preview").src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    // Chuyển ảnh thành Base64 (nếu cần gửi AI)
+    function getBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result.split(',')[1]);
+        reader.onerror = error => reject(error);
+      });
+    }
+
+    // Chẩn đoán thông minh (gửi ảnh đến server AI)
+    async function smartDiagnosis() {
+      // Tuỳ logic AI của bạn
+      alert("Chức năng chẩn đoán thông minh đang phát triển...");
+    }
+
+    // Lưu phiếu khám
+    async function saveMedicalRecord() {
+      // Lấy dữ liệu
+      const trieuchung = document.getElementById("symptoms").value;
+      const chandoan = document.getElementById("diagnosis").value;
+      const thongsoxetnghiem = document.getElementById("test-results").value;
+      const benhnhan = JSON.parse(sessionStorage.getItem("benhnhan"));
+      const bacsi = JSON.parse(sessionStorage.getItem("bacsi"));
+      const ngaykham = new Date().toISOString().split('T')[0];
+
+      // Tuỳ logic server
+      const data = {
+        trieuchung,
+        chandoan,
+        thongsoxetnghiem,
+        ngaykham,
+        benhnhanID: benhnhan.id,
+        bacsiID: bacsi.id,
+        tienkham: 300000 // ví dụ
+      };
+
+      // Gọi API backend
+      try {
+        let response = await fetch(`http://26.80.253.0:5000/bacsi/create_phieu_kham`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
         });
 
-        function displayPatientInfo(benhnhan) {
-            const dob = new Date(benhnhan.dob);
-            const formattedDob = `${String(dob.getDate()).padStart(2, '0')}/${String(dob.getMonth() + 1).padStart(2, '0')}/${dob.getFullYear()}`;
-            document.getElementById("patient-name").textContent = `Họ Tên: ${benhnhan.ten}`;
-            document.getElementById("patient-dob").textContent = `Ngày Sinh: ${formattedDob}`;
-            document.getElementById("patient-cccd").textContent = `CCCD: ${benhnhan.cccd}`;
-            document.getElementById("patient-phone").textContent = `SĐT: ${benhnhan.sdt}`;
-            document.getElementById("patient-address").textContent = `Quê quán: ${benhnhan.quequan}`;
+        if (response.ok) {
+          alert("Tạo phiếu khám thành công!");
+          // Hiển thị nút Tạo Đơn Thuốc
+          document.getElementById("create-prescription-btn").style.display = "inline-block";
+          // Lưu vào sessionStorage
+          sessionStorage.setItem("phieukham", JSON.stringify(data));
+        } else {
+          throw new Error("Lỗi khi tạo phiếu khám");
         }
+      } catch (error) {
+        console.error("Lỗi khi tạo phiếu khám:", error);
+        alert("Lỗi khi tạo phiếu khám. Vui lòng thử lại.");
+      }
+    }
 
-                // Hàm xem trước ảnh khi upload
-        function previewImage(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById("preview").src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            }
-        }
+    // Tạo đơn thuốc
+    function createPrescription() {
+      sessionStorage.removeItem("selectedMedicines");
+      window.location.href = `kedonthuoc.html`;
+    }
 
-        // Hàm chuyển ảnh thành Base64 để gửi đi
-        function getBase64(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = () => resolve(reader.result.split(',')[1]); // Lấy phần dữ liệu sau "base64,"
-                reader.onerror = error => reject(error);
-            });
-        }
-
-        // Gửi ảnh đến server AI để chẩn đoán thông minh
-        async function smartDiagnosis() {
-            const fileInput = document.getElementById("anhxetnghiem");
-            if (fileInput.files.length === 0) {
-                alert("Vui lòng chọn ảnh xét nghiệm!");
-                return;
-            }
-
-            try {
-                const base64Image = await getBase64(fileInput.files[0]); // Chuyển ảnh thành Base64
-                const response = await fetch("http://26.80.253.0:5001/ai_diagnosis", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({ image: base64Image })
-                });
-
-                if (response.ok) {
-                    const result = await response.json();
-                    document.getElementById("diagnosis").value = result.diagnosis; // Hiển thị kết quả chẩn đoán
-                    alert("Chẩn đoán hoàn tất!");
-                } else {
-                    throw new Error("Lỗi khi gửi ảnh đến AI");
-                }
-            } catch (error) {
-                console.error("Lỗi chẩn đoán:", error);
-                alert("Không thể chẩn đoán, vui lòng thử lại!");
-            }
-        }
-
-
-        async function saveMedicalRecord() {
-            const trieuchung = document.getElementById("symptoms").value;
-            const chandoan = document.getElementById("diagnosis").value;
-            const thongsoxetnghiem = document.getElementById("test-results").value;
-            const anhxetnghiem = document.getElementById("anhxetnghiem").value;
-            const ngaykham = new Date().toISOString().split('T')[0];
-            const tienkham = document.getElementById("tienkham").value;
-            const benhnhan = JSON.parse(sessionStorage.getItem("benhnhan"));
-            const bacsi = JSON.parse(sessionStorage.getItem("bacsi"));
-            const data = {
-                trieuchung,
-                chandoan,
-                thongsoxetnghiem,
-                anhxetnghiem,
-                ngaykham,
-                benhnhanID: benhnhan.id,
-                bacsiID: bacsi.id,
-                tienkham
-            };
-
-            try {
-                let response = await fetch(`http://26.80.253.0:5000/bacsi/create_phieu_kham`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(data)
-                });
-
-                if (response.ok) {
-                    let result = await response.json();
-                    alert("Tạo phiếu khám thành công!");
-                    document.getElementById("create-prescription-btn").style.display = "inline-block";
-
-                    sessionStorage.setItem("phieukham", JSON.stringify(data)); // Lưu dữ liệu vào sessionStorage
-                } else {
-                    throw new Error("Lỗi khi tạo phiếu khám");
-                }
-            } catch (error) {
-                console.error("Lỗi khi tạo phiếu khám:", error);
-                alert("Lỗi khi tạo phiếu khám. Vui lòng thử lại.");
-            }
-        }
-
-        function createPrescription() {
-            // Xóa danh sách thuốc đã chọn trước đó
-            sessionStorage.removeItem("selectedMedicines");
-            window.location.href = `kedonthuoc.html`;
-        }
-
-        function goBack() {
-            // Chuyển hướng về trang trước đó
-            window.history.back();
-        }
-    </script>
-
+    // Quay lại trang trước
+    function goBack() {
+      window.history.back();
+    }
+  </script>
 </body>
 </html>
