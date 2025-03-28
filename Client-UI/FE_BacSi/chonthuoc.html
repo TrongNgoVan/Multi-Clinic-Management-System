@@ -1,182 +1,285 @@
 <!DOCTYPE html>
 <html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="img/ptit.png" type="image/x-icon" />
     <title>Chọn Thuốc</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
-            margin: 0;
-            padding: 20px;
-        }
-        .container {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            max-width: 800px;
-            margin: auto;
-        }
-        h2 {
-            text-align: center;
-            color: #333;
-        }
-        .search-bar {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-        .search-bar input {
-            width: 70%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        .search-bar button {
-            padding: 10px;
-            margin-left: 10px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .search-bar button:hover {
-            background-color: #45a049;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: center;
-        }
-        th {
-            background-color: #4CAF50;
-            color: white;
-        }
-        .btn-container {
-            text-align: center;
-        }
-        .btn {
-            width: 30%;
-            padding: 10px;
-            margin: 10px 1%;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            text-align: center;
-        }
-        .btn:hover {
-            background-color: #45a049;
-        }
-        .btn-back {
-            background-color: #2196F3;
-        }
-        .btn-back:hover {
-            background-color: #1E88E5;
-        }
-    </style>
-</head>
-<body>
 
+    <!-- Dùng Font Awesome để có icon Home -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+
+    <style>
+      /* Đặt margin và padding = 0 để header bám sát mép trên */
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        background-color: #f5f5f5;
+      }
+
+      /* Header */
+      .header {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        background-color: #c70d0d; /* Màu đỏ */
+        color: #fff;
+        padding: 10px 20px;
+        box-sizing: border-box; /* Đảm bảo padding không đẩy rộng phần tử */
+      }
+
+      /* Nút Home dưới dạng icon */
+      .header .home-btn {
+        text-decoration: none;
+        color: #fff;
+        background-color: #d61414;
+        padding: 8px 12px;
+        border-radius: 4px;
+        margin-right: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .header .home-btn:hover {
+        background-color: #d21111;
+      }
+
+      /* Chữ Đơn Thuốc */
+      .header h2 {
+        margin: 0;
+        font-weight: bold;
+        font-size: 20px;
+        color: #fff;
+        text-transform: uppercase;
+      }
+
+      /* Container chính */
+      .container {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        max-width: 800px;
+        margin: 20px auto; /* Thêm khoảng cách với header */
+      }
+
+      h2 {
+        text-align: center;
+        color: #333;
+      }
+
+      .search-bar {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+      }
+      .search-bar input {
+        width: 70%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
+      .search-bar button {
+        padding: 10px;
+        margin-left: 10px;
+        background-color: #b30909;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .search-bar button:hover {
+        background-color: #d21111;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: center;
+        vertical-align: middle;
+      }
+      th {
+        background-color: #b30909;
+        color: white;
+      }
+
+      /* Thu nhỏ ảnh, giữ tỉ lệ và canh giữa */
+      .medicine-image {
+        width: 70px;
+        height: 70px;
+        object-fit: cover;
+        border-radius: 4px;
+      }
+
+      .btn-container {
+        text-align: center;
+      }
+      .btn {
+        width: 30%;
+        padding: 10px;
+        margin: 10px 1%;
+        background-color: #b30909;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        text-align: center;
+      }
+      .btn:hover {
+        background-color: #d21111;
+      }
+      .btn-back {
+        background-color: #b30909;
+      }
+      .btn-back:hover {
+        background-color: #d21111;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header -->
+    <div class="header">
+      <!-- Nút Home dạng icon -->
+      <a href="index.html" class="home-btn">
+        <i class="fas fa-home"></i>
+      </a>
+      <h2>Đơn Thuốc</h2>
+    </div>
+
+    <!-- Phần nội dung -->
     <div class="container">
-        <h2>Chọn Thuốc</h2>
-        <div class="search-bar">
-            <input type="text" id="search-input" placeholder="Tìm kiếm thuốc...">
-            <button onclick="searchMedicine()">Tìm kiếm</button>
-        </div>
-        <table>
-            <thead>
-                <tr>
-                    <th>Chọn</th>
-                    <th>Tên Thuốc</th>
-                    <th>Mô Tả</th>
-                    <th>NSX</th>
-                    <th>HSD</th>
-                    <th>Đơn Giá</th>
-                </tr>
-            </thead>
-            <tbody id="medicine-list">
-                <!-- Danh sách thuốc sẽ được thêm vào đây -->
-            </tbody>
-        </table>
-        <div class="btn-container">
-            <button class="btn" onclick="selectMedicine()">Chọn Thuốc</button>
-            <button class="btn btn-back" onclick="goBack()">Quay lại</button>
-        </div>
+      <h2>Chọn Thuốc</h2>
+      <div class="search-bar">
+        <input type="text" id="search-input" placeholder="Tìm kiếm thuốc..." />
+        <button onclick="searchMedicine()">Tìm kiếm</button>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Chọn</th>
+            <th>Ảnh Thuốc</th>
+            <!-- Cột mới để hiển thị ảnh -->
+            <th>Tên Thuốc</th>
+            <th>Mô Tả</th>
+            <th>NSX</th>
+            <th>HSD</th>
+            <th>Đơn Giá</th>
+          </tr>
+        </thead>
+        <tbody id="medicine-list">
+          <!-- Danh sách thuốc sẽ được thêm vào đây -->
+        </tbody>
+      </table>
+      <div class="btn-container">
+        <button class="btn" onclick="selectMedicine()">Chọn Thuốc</button>
+        <button class="btn btn-back" onclick="goBack()">Quay lại</button>
+      </div>
     </div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const bacsiStr = sessionStorage.getItem("bacsi");
-            if (!bacsiStr) {
-                window.location.href = "dangnhap.html";
-                return; // Dừng thực thi các đoạn code phía dưới
-            }
-            fetchMedicineList();
+      document.addEventListener("DOMContentLoaded", () => {
+        const bacsiStr = sessionStorage.getItem("bacsi");
+        if (!bacsiStr) {
+          window.location.href = "dangnhap.html";
+          return;
+        }
+        fetchMedicineList();
+      });
+
+      async function fetchMedicineList(searchTerm = "") {
+        try {
+          let response = await fetch(
+            `http://26.80.253.0:5000/bacsi/get_thuoc?search=${encodeURIComponent(
+              searchTerm
+            )}`
+          );
+          if (!response.ok) throw new Error("Lỗi API, mã: " + response.status);
+
+          let data = await response.json();
+          const medicineList = document.getElementById("medicine-list");
+          medicineList.innerHTML = "";
+
+          data.forEach((medicine) => {
+            // Nếu API có trường image (đường dẫn ảnh), ta dùng, nếu không thì ảnh mặc định
+            const imageURL = medicine.image
+              ? medicine.image
+              : "img/no_image.png"; // ảnh mặc định nếu không có
+
+            const row = document.createElement("tr");
+            row.innerHTML = `
+            <td>
+              <input type="checkbox"
+                     class="medicine-checkbox"
+                     data-id="${medicine.id}"
+                     data-name="${medicine.ten}"
+                     data-price="${medicine.dongia}">
+            </td>
+            <!-- Cột ảnh -->
+            <td>
+              <img src="thuoc.jpg" 
+                   alt="${medicine.ten}" 
+                   class="medicine-image">
+            </td>
+            <td>${medicine.ten}</td>
+            <td>${medicine.mota}</td>
+            <td>${medicine.nsx}</td>
+            <td>${medicine.hsd}</td>
+            <td>${medicine.dongia}</td>
+          `;
+            medicineList.appendChild(row);
+          });
+        } catch (error) {
+          console.error("Lỗi khi lấy danh sách thuốc:", error);
+        }
+      }
+
+      function searchMedicine() {
+        const searchInput = document
+          .getElementById("search-input")
+          .value.toLowerCase();
+        fetchMedicineList(searchInput);
+      }
+
+      function selectMedicine() {
+        const selectedMedicines =
+          JSON.parse(sessionStorage.getItem("selectedMedicines")) || [];
+        const checkboxes = document.querySelectorAll(
+          ".medicine-checkbox:checked"
+        );
+        checkboxes.forEach((checkbox) => {
+          const medicine = {
+            id: checkbox.getAttribute("data-id"),
+            name: checkbox.getAttribute("data-name"),
+            price: parseFloat(checkbox.getAttribute("data-price")),
+            image: checkbox.getAttribute("data-image") || "thuoc.jpg",
+          };
+          const existingMedicine = selectedMedicines.find(
+            (m) => m.id === medicine.id
+          );
+          if (!existingMedicine) {
+            selectedMedicines.push(medicine);
+          }
         });
+        sessionStorage.setItem(
+          "selectedMedicines",
+          JSON.stringify(selectedMedicines)
+        );
+        window.location.href = `kedonthuoc.html`;
+      }
 
-        async function fetchMedicineList(searchTerm = "") {
-            try {
-                let response = await fetch(`http://26.80.253.0:5000/bacsi/get_thuoc?search=${encodeURIComponent(searchTerm)}`);
-                if (!response.ok) throw new Error("Lỗi API, mã: " + response.status);
-                
-                let data = await response.json();
-                const medicineList = document.getElementById("medicine-list");
-                medicineList.innerHTML = "";
-                data.forEach(medicine => {
-                    const row = document.createElement("tr");
-                    row.innerHTML = `
-                        <td><input type="checkbox" class="medicine-checkbox" data-id="${medicine.id}" data-name="${medicine.ten}" data-price="${medicine.dongia}"></td>
-                        <td>${medicine.ten}</td>
-                        <td>${medicine.mota}</td>
-                        <td>${medicine.nsx}</td>
-                        <td>${medicine.hsd}</td>
-                        <td>${medicine.dongia}</td>
-                    `;
-                    medicineList.appendChild(row);
-                });
-            } catch (error) {
-                console.error("Lỗi khi lấy danh sách thuốc:", error);
-            }
-        }
-
-        function searchMedicine() {
-            const searchInput = document.getElementById("search-input").value.toLowerCase();
-            fetchMedicineList(searchInput);
-        }
-
-        function selectMedicine() {
-            const selectedMedicines = JSON.parse(sessionStorage.getItem("selectedMedicines")) || [];
-            const checkboxes = document.querySelectorAll(".medicine-checkbox:checked");
-            checkboxes.forEach(checkbox => {
-                const medicine = {
-                    id: checkbox.getAttribute("data-id"),
-                    name: checkbox.getAttribute("data-name"),
-                    price: parseFloat(checkbox.getAttribute("data-price"))
-                };
-                // Kiểm tra xem thuốc đã có trong chi tiết đơn thuốc hay chưa
-                const existingMedicine = selectedMedicines.find(m => m.id === medicine.id);
-                if (!existingMedicine) {
-                    selectedMedicines.push(medicine);
-                }
-            });
-            sessionStorage.setItem("selectedMedicines", JSON.stringify(selectedMedicines));
-            window.location.href = `kedonthuoc.html`;
-        }
-
-        function goBack() {
-            window.history.back();
-        }
+      function goBack() {
+        window.history.back();
+      }
     </script>
-
-</body>
+  </body>
 </html>

@@ -1,309 +1,468 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tạo Đơn Thuốc</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
-            margin: 0;
-            padding: 20px;
-        }
-        .container {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            max-width: 800px;
-            margin: auto;
-        }
-        h2 {
-            text-align: center;
-            color: #333;
-        }
-        .patient-info, .prescription-form {
-            margin-bottom: 20px;
-        }
-        .patient-info div {
-            text-align: center;
-            margin: 10px 0;
-        }
-        .prescription-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-        .prescription-table th, .prescription-table td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: center;
-        }
-        .prescription-table th {
-            background-color: #4CAF50; /* Màu nền giống với màu của cột trong chonthuoc.html */
-            color: white; /* Màu chữ trắng */
-        }
-        .prescription-table input[type="number"] {
-            width: 60px; /* Giảm chiều rộng của trường nhập số lượng */
-            text-align: center; /* Căn giữa giá trị */
-            appearance: auto; /* Hiện luôn mũi tên để chỉnh số lượng */
-        }
-        .btn-container {
-            text-align: center;
-        }
-        .btn {
-            width: 30%;
-            padding: 10px;
-            margin: 10px 1%;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            text-align: center;
-        }
-        .btn:hover {
-            background-color: #45a049;
-        }
-        .btn-red {
-            background-color: #f44336;
-        }
-        .btn-red:hover {
-            background-color: #e53935;
-        }
-        .btn-back {
-            background-color: #2196F3;
-        }
-        .btn-back:hover {
-            background-color: #1E88E5;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+  />
+  <link rel="icon" href="img/ptit.png" type="image/x-icon"> 
+  <title>Đơn Thuốc</title>
+  <style>
+    /* Reset CSS */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+    }
+
+    /* Thanh trên cùng (header) */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #c70d0d; /* Màu đỏ */
+      color: #fff;
+      padding: 10px 20px;
+      position: relative;
+      margin-bottom: 20px;
+    }
+    .header h2 {
+      margin: 0;
+      font-weight: bold;
+      font-size: 18px;
+      text-transform: uppercase;
+    }
+    .header .home-btn {
+      text-decoration: none;
+      color: #fff;
+      background-color: #d61414;
+      padding: 8px 12px;
+      border-radius: 4px;
+      margin-right: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .header .home-btn:hover {
+      background-color: #d21111;
+    }
+
+    /* Container tổng quát */
+    .container {
+      width: 95%;
+      max-width: 900px;
+      margin: 0 auto;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      padding: 20px;
+    }
+
+    /* Thông tin bệnh nhân */
+    .patient-info {
+      display: grid;
+      grid-template-columns: 120px 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 20px;
+      border: 2px solid #000;
+      padding: 10px;
+      border-radius: 10px;
+    }
+    .photo-block {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .photo-block img {
+      width: 70%;
+      height: 100%;
+      border-radius: 10px;
+      object-fit: cover;
+    }
+    .info-block {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .info-block p {
+      font-size: 16px;
+      line-height: 2.0;
+    }
+    .info-block p strong {
+      color: #333;
+    }
+
+    /* Tiêu đề Đơn Thuốc */
+    .prescription-title {
+      text-align: center;
+      font-weight: bold;
+      font-size: 16px;
+      background-color: #c70d0d;
+      color: #fff;
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 4px;
+      margin-bottom: 15px;
+      text-transform: uppercase;
+    }
+
+    /* Bảng đơn thuốc */
+    .prescription-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 10px;
+    }
+    .prescription-table th,
+    .prescription-table td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+      vertical-align: middle;
+    }
+    .prescription-table th {
+      background-color: #c70d0d;
+      color: #fff;
+      font-size: 14px;
+      text-transform: uppercase;
+    }
+
+    /* Ảnh thuốc trong bảng kê đơn */
+    .medicine-image {
+      width: 50px;
+      height: 50px;
+      object-fit: cover;
+      border-radius: 4px;
+    }
+
+    /* Input số lượng */
+    .prescription-table input[type="number"] {
+      width: 60px;
+      text-align: center;
+    }
+
+    /* Tổng tiền, mô tả */
+    .prescription-summary {
+      margin: 10px 0;
+      text-align: right;
+      font-size: 16px;
+      font-weight: bold;
+    }
+    .prescription-description {
+      width: 100%;
+      height: 60px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 5px;
+      margin: 10px 0;
+    }
+    .doctor-name {
+      text-align: right;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+
+    /* Khu vực nút hành động */
+    .btn-container {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .btn {
+      padding: 10px 20px;
+      margin: 5px;
+      background-color: #b91307;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.2s;
+      text-align: center;
+    }
+    .btn:hover {
+      background-color: #da1d19;
+    }
+    .btn-red {
+      background-color: #b91307;
+    }
+    .btn-red:hover {
+      background-color: #da1d19;
+    }
+    .btn-back {
+      background-color: #b91307;
+    }
+    .btn-back:hover {
+      background-color: #da1d19;
+    }
+  </style>
 </head>
 <body>
 
-    <div class="container">
-        <h2>Tạo Đơn Thuốc</h2>
-        <div class="patient-info">
-            <div id="patient-name">Họ Tên: </div>
-            <div id="patient-dob">Ngày Sinh: </div>
-            <div id="patient-cccd">CCCD: </div>
-            <div id="patient-phone">SĐT: </div>
-            <div id="patient-address">Quê quán: </div>
-            <div id="patient-diagnosis">Chẩn đoán: </div>
-        </div>
-        <div class="prescription-form">
-            <table class="prescription-table">
-                <thead>
-                    <tr>
-                        <th>Thuốc</th>
-                        <th>Đơn Giá</th>
-                        <th>Số Lượng</th>
-                        <th>Thành Tiền</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody id="prescription-details">
-                    <!-- Các chi tiết đơn thuốc sẽ được thêm vào đây -->
-                </tbody>
-            </table>
-            <div style="text-align: right; margin-bottom: 20px;">
-                <strong>Thành Tiền: </strong><span id="total-amount">0</span> VND
-            </div>
-            <textarea id="prescription-description" placeholder="Mô tả đơn thuốc" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;"></textarea>
-            <div style="text-align: right; margin-bottom: 20px;">
-                <strong>Bác sĩ kê đơn: </strong><span id="bs"></span>
-            </div>
-        </div>
-        <div class="btn-container">
-            <button class="btn" onclick="selectMedicine()">Chọn Thuốc</button>
-            <button class="btn btn-red" onclick="savePrescription()">Lưu Đơn Thuốc</button>
-            <button class="btn btn-back" onclick="goBack()">Quay lại</button>
-        </div>
+  <!-- Thanh trên cùng -->
+  <div class="header">
+    <a href="index.html" class="home-btn">
+      <i class="fas fa-home"></i>
+    </a>
+    <h2>Đơn thuốc</h2>
+  </div>
+
+  <div class="container">
+
+    <!-- Thông tin bệnh nhân -->
+    <div class="patient-info">
+      <!-- Cột 1: Ảnh bệnh nhân -->
+      <div class="photo-block">
+        <img src="ava.jpg" alt="Ảnh bệnh nhân">
+      </div>
+
+      <!-- Cột 2: Thông tin 1 -->
+      <div class="info-block">
+        <p><strong>Họ Tên:</strong> <span id="patient-name"></span></p>
+        <p><strong>Năm Sinh:</strong> <span id="patient-dob"></span></p>
+        <p><strong>CCCD:</strong> <span id="patient-cccd"></span></p>
+      </div>
+
+      <!-- Cột 3: Thông tin 2 -->
+      <div class="info-block">
+        <p><strong>SĐT:</strong> <span id="patient-phone"></span></p>
+        <p><strong>Quê Quán:</strong> <span id="patient-address"></span></p>
+        <p><strong>Chẩn đoán bệnh:</strong> <span id="patient-diagnosis"></span></p>
+      </div>
     </div>
 
-    <script>
+    <!-- Tiêu đề “Đơn Thuốc” -->
+    <div class="prescription-title">Đơn Thuốc</div>
+
+    <!-- Bảng đơn thuốc -->
+    <table class="prescription-table">
+      <thead>
+        <tr>
+          <th>Ảnh Thuốc</th>  <!-- Thêm cột Ảnh -->
+          <th>Thuốc</th>
+          <th>Đơn Giá</th>
+          <th>Số Lượng</th>
+          <th>Thành Tiền</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="prescription-details">
+        <!-- Các chi tiết đơn thuốc sẽ được thêm vào đây -->
+      </tbody>
+    </table>
+
+    <!-- Tổng tiền -->
+    <div class="prescription-summary">
+      Thành Tiền: <span id="total-amount">0</span> VND
+    </div>
+
+    <!-- Mô tả đơn thuốc (Lưu ý, hướng dẫn dùng thuốc) -->
+    <textarea class="prescription-description" id="prescription-description" placeholder="Lưu ý về sử dụng thuốc (VD: Uống trước bữa ăn 30 phút)..."></textarea>
+
+    <!-- Tên bác sĩ kê đơn -->
+    <div class="doctor-name">
+      <strong>Bác sĩ kê đơn:</strong> <span id="bs"></span>
+    </div>
+
+    <!-- Nút hành động -->
+    <div class="btn-container">
+      <button class="btn" onclick="selectMedicine()">Chọn Thuốc</button>
+      <button class="btn btn-red" onclick="savePrescription()">Lưu Đơn Thuốc</button>
+      <button class="btn btn-back" onclick="goBack()">Quay lại</button>
+    </div>
+  </div>
+
+  <script>
     document.addEventListener("DOMContentLoaded", () => {
-        const phieukhamStr = sessionStorage.getItem("phieukham");
-        const bacsiStr = sessionStorage.getItem("bacsi");
-        const benhnhanStr = sessionStorage.getItem("benhnhan");
-        if (!bacsiStr) {
-                window.location.href = "dangnhap.html";
-                return; // Dừng thực thi các đoạn code phía dưới
-            }
-        if (phieukhamStr && bacsiStr && benhnhanStr) {
-                const phieukham = JSON.parse(phieukhamStr);
-                console.log("Thông tin phiếu khám:", phieukham);
-                const bacsi = JSON.parse(bacsiStr);
-                console.log("Thông tin bác sĩ:", bacsi);
-                const benhnhan = JSON.parse(benhnhanStr);
-                console.log("Thông tin bệnh nhân:", benhnhan);
-                displayPhieuKham(phieukham,bacsi,benhnhan);
-            }
-        else
-            {
-                console.log("Không có thông tin gì cả, hichic");
-            }
-        const selectedMedicinesStr = sessionStorage.getItem("selectedMedicines");
-        if (selectedMedicinesStr) {
-            const selectedMedicines = JSON.parse(selectedMedicinesStr);
-            displaySelectedMedicines(selectedMedicines);
-        }
+      const phieukhamStr = sessionStorage.getItem("phieukham");
+      const bacsiStr = sessionStorage.getItem("bacsi");
+      const benhnhanStr = sessionStorage.getItem("benhnhan");
+
+      if (!bacsiStr) {
+        window.location.href = "dangnhap.html";
+        return;
+      }
+      if (phieukhamStr && bacsiStr && benhnhanStr) {
+        const phieukham = JSON.parse(phieukhamStr);
+        const bacsi = JSON.parse(bacsiStr);
+        const benhnhan = JSON.parse(benhnhanStr);
+        displayPhieuKham(phieukham, bacsi, benhnhan);
+      }
+      const selectedMedicinesStr = sessionStorage.getItem("selectedMedicines");
+      if (selectedMedicinesStr) {
+        const selectedMedicines = JSON.parse(selectedMedicinesStr);
+        displaySelectedMedicines(selectedMedicines);
+      }
     });
 
-    function displayPhieuKham(phieukham,bacsi,benhnhan) {
-            if (phieukham) {
-                document.getElementById("patient-name").textContent = `Họ Tên: ${benhnhan.ten}`;
-                document.getElementById("patient-dob").textContent = `Ngày Sinh: ${benhnhan.dob}`;
-                document.getElementById("patient-cccd").textContent = `CCCD: ${benhnhan.cccd}`;
-                document.getElementById("patient-phone").textContent = `SĐT: ${benhnhan.sdt}`;
-                document.getElementById("patient-address").textContent = `Quê quán: ${benhnhan.quequan}`;
-                document.getElementById("patient-diagnosis").textContent = `Chẩn đoán: ${phieukham.chandoan}`;
-                document.getElementById("bs").textContent = `${bacsi.ten}`;
-            } else {
-                console.warn("Dữ liệu phiếu khám hoặc bệnh nhân không đầy đủ.");
-            }
-        }
+    function displayPhieuKham(phieukham, bacsi, benhnhan) {
+      if (phieukham) {
+        document.getElementById("patient-name").textContent = benhnhan.ten;
+        document.getElementById("patient-dob").textContent = benhnhan.dob;
+        document.getElementById("patient-cccd").textContent = benhnhan.cccd;
+        document.getElementById("patient-phone").textContent = benhnhan.sdt;
+        document.getElementById("patient-address").textContent = benhnhan.quequan;
+        document.getElementById("patient-diagnosis").textContent = phieukham.chandoan;
+        document.getElementById("bs").textContent = bacsi.ten;
+      } else {
+        console.warn("Dữ liệu phiếu khám hoặc bệnh nhân không đầy đủ.");
+      }
+    }
 
     function displaySelectedMedicines(selectedMedicines) {
-        const tableBody = document.getElementById("prescription-details");
-        selectedMedicines.forEach(medicine => {
-            // Kiểm tra xem thuốc đã có trong chi tiết đơn thuốc hay chưa
-            const existingRow = Array.from(tableBody.rows).find(row => row.getAttribute("data-thuoc-id") === medicine.id);
-            if (!existingRow) {
-                addMedicineRow(medicine.id, medicine.name, medicine.price, 1);
-            }
-        });
+      const tableBody = document.getElementById("prescription-details");
+      selectedMedicines.forEach(medicine => {
+        // Kiểm tra xem thuốc đã có trong chi tiết đơn thuốc hay chưa
+        const existingRow = Array.from(tableBody.rows).find(
+          row => row.getAttribute("data-thuoc-id") === medicine.id
+        );
+        if (!existingRow) {
+          addMedicineRow(medicine.id, medicine.name, medicine.price, 1, medicine.image);
+        }
+      });
     }
 
     function selectMedicine() {
-        // Chuyển hướng đến giao diện chọn thuốc
-        window.location.href = `chonthuoc.html`;
+      // Chuyển hướng đến giao diện chọn thuốc
+      window.location.href = "chonthuoc.html";
     }
 
-    function addMedicineRow(thuocID, medicine, price, quantity) {
-        const tableBody = document.getElementById("prescription-details");
-        const row = document.createElement("tr");
-        row.setAttribute("data-thuoc-id", thuocID); // Lưu ID của thuốc vào thuộc tính data-thuoc-id
+    function addMedicineRow(thuocID, medicineName, price, quantity, imageURL) {
+      const tableBody = document.getElementById("prescription-details");
+      const row = document.createElement("tr");
+      row.setAttribute("data-thuoc-id", thuocID);
 
-        const medicineCell = document.createElement("td");
-        medicineCell.textContent = medicine;
-        row.appendChild(medicineCell);
+      // Cột ảnh
+      const imageCell = document.createElement("td");
+      const imgElem = document.createElement("img");
+      imgElem.src = imageURL || "img/no_image.png"; // nếu không có ảnh thì dùng ảnh mặc định
+      imgElem.alt = medicineName;
+      imgElem.className = "medicine-image";
+      imageCell.appendChild(imgElem);
+      row.appendChild(imageCell);
 
-        const priceCell = document.createElement("td");
-        priceCell.textContent = price;
-        row.appendChild(priceCell);
+      // Tên thuốc
+      const medicineCell = document.createElement("td");
+      medicineCell.textContent = medicineName;
+      row.appendChild(medicineCell);
 
-        const quantityCell = document.createElement("td");
-        const quantityInput = document.createElement("input");
-        quantityInput.type = "number";
-        quantityInput.value = quantity;
-        quantityInput.min = 1;
-        quantityInput.onchange = updateTotalAmount;
-        row.appendChild(quantityCell);
-        quantityCell.appendChild(quantityInput);
+      // Đơn giá
+      const priceCell = document.createElement("td");
+      priceCell.textContent = price;
+      row.appendChild(priceCell);
 
-        const amountCell = document.createElement("td");
-        amountCell.textContent = price * quantity;
-        row.appendChild(amountCell);
+      // Số lượng (input)
+      const quantityCell = document.createElement("td");
+      const quantityInput = document.createElement("input");
+      quantityInput.type = "number";
+      quantityInput.value = quantity;
+      quantityInput.min = 1;
+      quantityInput.onchange = updateTotalAmount;
+      quantityCell.appendChild(quantityInput);
+      row.appendChild(quantityCell);
 
-        const actionCell = document.createElement("td");
-        const removeButton = document.createElement("button");
-        removeButton.textContent = "Xóa";
-        removeButton.onclick = () => {
-            tableBody.removeChild(row);
-            updateTotalAmount();
-            removeMedicineFromSessionStorage(thuocID); // Cập nhật sessionStorage khi xóa thuốc
-        };
-        actionCell.appendChild(removeButton);
-        row.appendChild(actionCell);
+      // Thành tiền
+      const amountCell = document.createElement("td");
+      amountCell.textContent = price * quantity;
+      row.appendChild(amountCell);
 
-        tableBody.appendChild(row);
+      // Nút Xoá
+      const actionCell = document.createElement("td");
+      const removeButton = document.createElement("button");
+      removeButton.textContent = "Xóa";
+      removeButton.onclick = () => {
+        tableBody.removeChild(row);
         updateTotalAmount();
+        removeMedicineFromSessionStorage(thuocID);
+      };
+      actionCell.appendChild(removeButton);
+      row.appendChild(actionCell);
+
+      tableBody.appendChild(row);
+      updateTotalAmount();
     }
 
     function removeMedicineFromSessionStorage(thuocID) {
-        const selectedMedicines = JSON.parse(sessionStorage.getItem("selectedMedicines")) || [];
-        const updatedMedicines = selectedMedicines.filter(medicine => medicine.id !== thuocID);
-        sessionStorage.setItem("selectedMedicines", JSON.stringify(updatedMedicines));
+      const selectedMedicines = JSON.parse(sessionStorage.getItem("selectedMedicines")) || [];
+      const updatedMedicines = selectedMedicines.filter(medicine => medicine.id !== thuocID);
+      sessionStorage.setItem("selectedMedicines", JSON.stringify(updatedMedicines));
     }
 
     function updateTotalAmount() {
-        const tableBody = document.getElementById("prescription-details");
-        let totalAmount = 0;
-        for (let row of tableBody.rows) {
-            const price = parseFloat(row.cells[1].textContent);
-            const quantity = parseInt(row.cells[2].querySelector("input").value);
-            const amount = price * quantity;
-            row.cells[3].textContent = amount;
-            totalAmount += amount;
-        }
-        document.getElementById("total-amount").textContent = totalAmount;
+      const tableBody = document.getElementById("prescription-details");
+      let totalAmount = 0;
+      for (let row of tableBody.rows) {
+        const price = parseFloat(row.cells[2].textContent);
+        const quantity = parseInt(row.cells[3].querySelector("input").value);
+        const amount = price * quantity;
+        row.cells[4].textContent = amount;
+        totalAmount += amount;
+      }
+      document.getElementById("total-amount").textContent = totalAmount;
     }
 
     async function savePrescription() {
-        const benhnhan = JSON.parse(sessionStorage.getItem("benhnhan"));
-        const bacsi = JSON.parse(sessionStorage.getItem("bacsi"));
-        const mota = document.getElementById("prescription-description").value;
-        const prescriptionDetails = [];
+      const benhnhan = JSON.parse(sessionStorage.getItem("benhnhan"));
+      const bacsi = JSON.parse(sessionStorage.getItem("bacsi"));
+      const mota = document.getElementById("prescription-description").value;
+      const prescriptionDetails = [];
 
-        const tableBody = document.getElementById("prescription-details");
-        let tonggia = 0;
-        for (let row of tableBody.rows) {
-            const thuocID = row.getAttribute("data-thuoc-id"); // Lấy ID của thuốc từ thuộc tính data-thuoc-id
-            const ten = row.cells[0].textContent;
-            const dongia = parseFloat(row.cells[1].textContent);
-            const soluong = parseInt(row.cells[2].querySelector("input").value);
-            const amount = dongia * soluong;
-            prescriptionDetails.push({ thuocID, ten, dongia, soluong });
-            tonggia += amount;
+      const tableBody = document.getElementById("prescription-details");
+      let tonggia = 0;
+      for (let row of tableBody.rows) {
+        const thuocID = row.getAttribute("data-thuoc-id");
+        const ten = row.cells[1].textContent; // Tên thuốc ở cột 2
+        const dongia = parseFloat(row.cells[2].textContent); // Đơn giá ở cột 3
+        const soluong = parseInt(row.cells[3].querySelector("input").value);
+        const amount = dongia * soluong;
+        prescriptionDetails.push({ thuocID, ten, dongia, soluong });
+        tonggia += amount;
+      }
+
+      if (prescriptionDetails.length === 0) {
+        alert("Vui lòng thêm ít nhất một chi tiết đơn thuốc.");
+        return;
+      }
+
+      // Lấy ngày hiện tại
+      const ngaymua = new Date().toISOString().split('T')[0];
+
+      const data = {
+        benhnhan,
+        bacsi,
+        mota,
+        chitietdonthuoc: prescriptionDetails,
+        ngaymua,
+        tonggia
+      };
+
+      try {
+        let response = await fetch(`http://26.80.253.0:5000/bacsi/create_prescription`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+          alert("Lưu đơn thuốc thành công!");
+          window.location.replace(`getlichhen.html`);
+        } else {
+          throw new Error("Lỗi khi lưu đơn thuốc");
         }
-
-        // Kiểm tra nếu không có chi tiết đơn thuốc nào
-        if (prescriptionDetails.length === 0) {
-            alert("Vui lòng thêm ít nhất một chi tiết đơn thuốc.");
-            return;
-        }
-
-        // Lấy ngày hiện tại
-        const ngaymua = new Date().toISOString().split('T')[0];
-
-        const data = {
-            benhnhan,
-            bacsi,
-            mota,
-            chitietdonthuoc: prescriptionDetails,
-            ngaymua,
-            tonggia
-        };
-
-        try {
-            let response = await fetch(`http://26.80.253.0:5000/bacsi/create_prescription`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            });
-
-            if (response.ok) {
-                alert("Lưu đơn thuốc thành công!");
-                // sessionStorage.setItem("prescriptionData", JSON.stringify(data)); // Lưu thông tin đơn thuốc vào sessionStorage
-                window.location.replace(`getlichhen.html`); // Chuyển hướng đến giao diện getlichhen.html và thay thế trang hiện tại trong lịch sử trình duyệt
-            } else {
-                throw new Error("Lỗi khi lưu đơn thuốc");
-            }
-        } catch (error) {
-            console.error("Lỗi khi lưu đơn thuốc:", error);
-            alert("Lỗi khi lưu đơn thuốc. Vui lòng thử lại.");
-        }
+      } catch (error) {
+        console.error("Lỗi khi lưu đơn thuốc:", error);
+        alert("Lỗi khi lưu đơn thuốc. Vui lòng thử lại.");
+      }
     }
 
     function goBack() {
-        // Chuyển hướng về trang trước đó
-        window.history.back();
+      window.history.back();
     }
-</script>
-
+  </script>
 </body>
 </html>

@@ -116,7 +116,7 @@
                 if (response.ok) {
                     let result = await response.json();
                     sessionStorage.setItem("bacsi", JSON.stringify(result.bacsi));
-                    window.location.href = `giaodienchinh.html`;
+                    window.location.href = `index.html`;
                 } else {
                     document.getElementById("error-message").style.display = "block";
                 }

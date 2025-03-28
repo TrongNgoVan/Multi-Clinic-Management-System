@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="img/ptit.png" type="image/x-icon"> 
   <title>Xem Lịch Hẹn Của Bệnh Nhân</title>
   <style>
     /* Reset CSS */
@@ -21,19 +22,24 @@
     .header {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: center; /* Tiêu đề ở giữa */
       background-color: #c70d0d;
       color: #fff;
       padding: 10px 20px;
+      position: relative; /* Để đặt nút Quay lại bên phải */
       margin-bottom: 20px;
     }
-
     .header h2 {
       margin: 0;
       font-weight: bold;
+      font-size: 18px;
+      text-transform: uppercase;
     }
 
+    /* Nút Quay lại (ở góc phải) */
     .header button {
+      position: absolute;
+      right: 20px;
       background-color: #fff;
       color: #c70d0d;
       border: none;
@@ -43,7 +49,6 @@
       font-weight: bold;
       transition: background 0.2s;
     }
-
     .header button:hover {
       background-color: #f7dddd;
     }
@@ -58,42 +63,59 @@
     /* Mỗi “card” cho 1 lịch hẹn */
     .lichhen-card {
       background-color: #fff;
-      border: 1px solid #ddd;
+      border: 2px solid #464343;
       border-radius: 8px;
-      display: flex;
+      display: grid;
+      grid-template-columns: 100px 1fr 80px; /* 3 cột: ảnh - thông tin - nút */
       align-items: center;
+      column-gap: 10px;
       padding: 10px;
       margin-bottom: 10px;
     }
 
+    /* Ảnh bệnh nhân */
     .lichhen-card img {
-      width: 70px;
-      height: 70px;
-      /* Chỉnh sửa thành bo góc nhỏ thay vì hình tròn: */
-      border-radius: 8px; 
+      width: 80px;
+      height: 100px; 
       object-fit: cover;
-      margin-right: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
     }
 
+    /* Khối thông tin (cột 2) */
     .lichhen-info {
-      flex: 1; /* Chiếm khoảng trống còn lại */
+      display: flex;
+      flex-direction: column;
+      gap: 25px; /* Khoảng cách giữa 2 hàng */
     }
 
-    .lichhen-info p {
-      margin: 4px 0;
+    /* Mỗi hàng hiển thị 3 cột thông tin */
+    .row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      column-gap: 15px; /* Khoảng cách giữa các cột */
       font-size: 14px;
       line-height: 1.4;
     }
+    .row span {
+      /* Có thể thêm margin hoặc padding nếu muốn */
+    }
+    .row span strong {
+      color: #333;
+    }
 
+    /* Khu vực nút hành động (cột 3) */
     .lichhen-actions {
       display: flex;
-      flex-direction: column; /* 2 nút xếp dọc, hoặc row nếu muốn ngang */
+      flex-direction: column;
+      align-items: flex-end;
       gap: 5px;
     }
 
+    /* Nút chung */
     .btn {
       padding: 5px 10px;
-      background-color: #4CAF50;
+      background-color: #a70606; /* màu đỏ sậm */
       color: #fff;
       border: none;
       border-radius: 4px;
@@ -102,17 +124,16 @@
       transition: background-color 0.2s;
       text-align: center;
     }
-
     .btn:hover {
-      background-color: #45a049;
+      background-color: #de1414;
     }
 
-    /* Nút “Duyệt” riêng nếu muốn */
+    /* Nút “Duyệt” màu khác (VD: tím) */
     .btn-duyet {
-      background-color: #f57c00; /* màu cam */
+      background-color: #3e04b2; 
     }
     .btn-duyet:hover {
-      background-color: #ef6c00;
+      background-color: #562ae9;
     }
 
     /* Thông báo lỗi */
@@ -141,7 +162,6 @@
   </div>
 
   <script>
-    // Gọi hàm fetchLichHen khi trang tải xong
     document.addEventListener("DOMContentLoaded", () => {
       const bacsiStr = sessionStorage.getItem("bacsi");
       if (!bacsiStr) {
@@ -181,13 +201,18 @@
           // Thông tin
           let infoDiv = document.createElement("div");
           infoDiv.className = "lichhen-info";
+          // 2 hàng, mỗi hàng 3 cột
           infoDiv.innerHTML = `
-            <p><strong>Họ Tên:</strong> ${lichhen.benhnhan.ten}</p>
-            <p><strong>Năm Sinh:</strong> ${formattedDob}</p>
-            <p><strong>CCCD:</strong> ${lichhen.benhnhan.cccd}</p>
-            <p><strong>SĐT:</strong> ${lichhen.benhnhan.sdt}</p>
-            <p><strong>Quê Quán:</strong> ${lichhen.benhnhan.quequan}</p>
-            <p><strong>Thời Gian Hẹn:</strong> ${lichhen.thoigianhen}</p>
+            <div class="row">
+              <span><strong>Họ Tên:</strong> ${lichhen.benhnhan.ten}</span>
+              <span><strong>Năm Sinh:</strong> ${formattedDob}</span>
+              <span><strong>CCCD:</strong> ${lichhen.benhnhan.cccd}</span>
+            </div>
+            <div class="row">
+              <span><strong>SĐT:</strong> ${lichhen.benhnhan.sdt}</span>
+              <span><strong>Quê Quán:</strong> ${lichhen.benhnhan.quequan}</span>
+              <span><strong>Thời Gian Hẹn:</strong> ${lichhen.thoigianhen}</span>
+            </div>
           `;
 
           // Nút hành động
@@ -197,7 +222,6 @@
           let btnDuyet = document.createElement("button");
           btnDuyet.className = "btn btn-duyet";
           btnDuyet.textContent = "Duyệt";
-          // Thêm sự kiện khi click “Duyệt”
           btnDuyet.onclick = () => {
             alert("Đã duyệt lịch hẹn cho bệnh nhân: " + lichhen.benhnhan.ten);
           };
@@ -234,8 +258,8 @@
     }
 
     function goBack() {
-      // Chuyển hướng đến giao diện chính
-      window.location.href = 'giaodienchinh.html';
+      // Quay lại giao diện chính
+      window.location.href = 'index.html';
     }
   </script>
 

@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="img/ptit.png" type="image/x-icon"> 
   <title>Khám Bệnh</title>
   <style>
     /* Reset CSS */
@@ -60,29 +61,44 @@
 
     /* Khối thông tin bệnh nhân */
     .patient-info {
-      display: flex;
-      align-items: center;
+      display: grid;
+      grid-template-columns: 100px 1fr; /* 2 cột: ảnh - thông tin */
+      column-gap: 15px;
       margin-bottom: 20px;
       border-bottom: 1px solid #ddd;
       padding-bottom: 10px;
     }
+    /* Ảnh bệnh nhân */
     .patient-info img {
       width: 80px;
-      height: 80px;
+      height: 100px;
       border-radius: 8px;
       object-fit: cover;
-      margin-right: 15px;
       border: 2px solid #ccc;
     }
+    /* Khu vực chi tiết */
     .patient-details {
-      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
-    .patient-details p {
-      margin: 4px 0;
+    .info-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 20px; /* Khoảng cách giữa 2 hàng */
+    }
+    /* Mỗi hàng hiển thị 3 cột (VD: Họ Tên - Năm Sinh - CCCD) */
+    .row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      column-gap: 20px; /* Khoảng cách giữa các cột */
       font-size: 14px;
       line-height: 1.4;
     }
-    .patient-details p strong {
+    .row span {
+      /* Có thể thêm margin hoặc padding nếu muốn */
+    }
+    .row span strong {
       color: #333;
     }
 
@@ -147,7 +163,7 @@
       padding: 5px;
     }
     .btn-smart {
-      background-color: #4CAF50;
+      background-color: #2217bc;
       color: #fff;
       border: none;
       padding: 10px 15px;
@@ -157,7 +173,7 @@
       transition: background-color 0.2s;
     }
     .btn-smart:hover {
-      background-color: #45a049;
+      background-color: #0f1eed;
     }
 
     /* Nút footer */
@@ -166,7 +182,7 @@
       margin-top: 20px;
     }
     .btn {
-      background-color: #4CAF50;
+      background-color: #0f0db0;
       color: white;
       border: none;
       padding: 8px 16px;
@@ -177,10 +193,10 @@
       transition: background-color 0.2s;
     }
     .btn:hover {
-      background-color: #45a049;
+      background-color: #2c2fd2;
     }
     .btn-red {
-      background-color: #f44336;
+      background-color: #c70f02;
     }
     .btn-red:hover {
       background-color: #e53935;
@@ -207,12 +223,18 @@
     <div class="patient-info">
       <img id="patient-img" src="ava.jpg" alt="Ảnh Bệnh Nhân">
       <div class="patient-details">
-        <p><strong>Họ Tên:</strong> <span id="patient-name"></span></p>
-        <p><strong>Năm Sinh:</strong> <span id="patient-dob"></span></p>
-        <p><strong>CCCD:</strong> <span id="patient-cccd"></span></p>
-        <p><strong>SĐT:</strong> <span id="patient-phone"></span></p>
-        <p><strong>Quê Quán:</strong> <span id="patient-address"></span></p>
-        <p><strong>Thời Gian Hẹn:</strong> <span id="patient-time"></span></p>
+        <div class="info-grid">
+          <div class="row">
+            <span><strong>Họ Tên:</strong> <span id="patient-name"></span></span>
+            <span><strong>Năm Sinh:</strong> <span id="patient-dob"></span></span>
+            <span><strong>CCCD:</strong> <span id="patient-cccd"></span></span>
+          </div>
+          <div class="row">
+            <span><strong>SĐT:</strong> <span id="patient-phone"></span></span>
+            <span><strong>Quê Quán:</strong> <span id="patient-address"></span></span>
+            <!-- <span><strong>Thời Gian Hẹn:</strong> <span id="patient-time"></span></span> -->
+          </div>
+        </div>
       </div>
     </div>
 
@@ -230,13 +252,13 @@
 
         <!-- Box 2: Thông số xét nghiệm 1 -->
         <div class="box">
-          <p><strong>Thông số xét nghiệm (VD: cholesterol)</strong></p>
-          <textarea id="test-results"></textarea>
+          <p><strong>Thông số xét nghiệm</strong></p>
+          <textarea id="test-results" placeholder="VD: Cholesterol.."></textarea>
         </div>
 
         <!-- Box 3: Thông số xét nghiệm 2 -->
         <div class="box">
-          <p><strong>Thông số xét nghiệm (VD: Xquang)</strong></p>
+          <p><strong>Ảnh xét nghiệm</strong></p>
           <input type="file" id="anhxetnghiem" accept="image/*" onchange="previewImage(event)">
           <img id="preview" src="" alt="Ảnh Xét Nghiệm" style="margin-top: 5px;">
         </div>
@@ -244,7 +266,6 @@
         <!-- Box 4: Ảnh CT/MRI (nếu có) -->
         <div class="box">
           <p><strong>Ảnh CT/MRI</strong></p>
-          <!-- Hoặc bạn có thể dùng 1 input file khác, tùy nhu cầu -->
           <img src="img/brain.jpg" alt="Ảnh minh họa CT" style="max-width: 100%;">
         </div>
       </div>
@@ -276,6 +297,7 @@
 
       // Lấy thông tin bệnh nhân
       const benhnhanStr = sessionStorage.getItem("benhnhan");
+      
       if (benhnhanStr) {
         const benhnhan = JSON.parse(benhnhanStr);
         displayPatientInfo(benhnhan);
@@ -292,10 +314,7 @@
       document.getElementById("patient-cccd").textContent = benhnhan.cccd;
       document.getElementById("patient-phone").textContent = benhnhan.sdt;
       document.getElementById("patient-address").textContent = benhnhan.quequan;
-
-      // Nếu bạn có thông tin "thoigianhen" trong object benhnhan, hiển thị
-      // Hoặc trong lichhen, tuỳ cấu trúc JSON
-      document.getElementById("patient-time").textContent = benhnhan.thoigianhen || "15h00";
+    //   document.getElementById("patient-time").textContent = lichhen.thoigianhen;
     }
 
     // Xem trước ảnh Xét Nghiệm
@@ -310,16 +329,6 @@
       }
     }
 
-    // Chuyển ảnh thành Base64 (nếu cần gửi AI)
-    function getBase64(file) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result.split(',')[1]);
-        reader.onerror = error => reject(error);
-      });
-    }
-
     // Chẩn đoán thông minh (gửi ảnh đến server AI)
     async function smartDiagnosis() {
       // Tuỳ logic AI của bạn
@@ -328,7 +337,6 @@
 
     // Lưu phiếu khám
     async function saveMedicalRecord() {
-      // Lấy dữ liệu
       const trieuchung = document.getElementById("symptoms").value;
       const chandoan = document.getElementById("diagnosis").value;
       const thongsoxetnghiem = document.getElementById("test-results").value;
@@ -336,7 +344,6 @@
       const bacsi = JSON.parse(sessionStorage.getItem("bacsi"));
       const ngaykham = new Date().toISOString().split('T')[0];
 
-      // Tuỳ logic server
       const data = {
         trieuchung,
         chandoan,
@@ -344,10 +351,9 @@
         ngaykham,
         benhnhanID: benhnhan.id,
         bacsiID: bacsi.id,
-        tienkham: 300000 // ví dụ
+        tienkham: 300000 
       };
 
-      // Gọi API backend
       try {
         let response = await fetch(`http://26.80.253.0:5000/bacsi/create_phieu_kham`, {
           method: 'POST',
@@ -359,9 +365,7 @@
 
         if (response.ok) {
           alert("Tạo phiếu khám thành công!");
-          // Hiển thị nút Tạo Đơn Thuốc
           document.getElementById("create-prescription-btn").style.display = "inline-block";
-          // Lưu vào sessionStorage
           sessionStorage.setItem("phieukham", JSON.stringify(data));
         } else {
           throw new Error("Lỗi khi tạo phiếu khám");
