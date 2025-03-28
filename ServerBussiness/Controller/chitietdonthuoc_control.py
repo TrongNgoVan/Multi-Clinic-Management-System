@@ -1,8 +1,7 @@
 import mysql.connector
 from flask import Blueprint, request, jsonify, render_template
 from werkzeug.security import generate_password_hash, check_password_hash
-from BackEnd.DB.db_connection import get_db_connection
+from DB.db_connection import get_db_connection
 
 
-
-thuoc_bp = Blueprint("thuoc", __name__)
+chitietdonthuoc_bp = Blueprint("chitietdonthuoc", __name__)

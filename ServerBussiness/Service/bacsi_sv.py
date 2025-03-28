@@ -1,9 +1,9 @@
-from BackEnd.DB.db_connection import get_db_connection
-from BackEnd.Model.bacsi import BacSi
-from BackEnd.Model.benhnhan import BenhNhan
-from BackEnd.Model.lichhen import LichHen
-from BackEnd.Model.phieukham import PhieuKham
-from BackEnd.Model.thuoc import Thuoc
+from DB.db_connection import get_db_connection
+from Model.bacsi import BacSi
+from Model.benhnhan import BenhNhan
+from Model.lichhen import LichHen
+from Model.phieukham import PhieuKham
+from Model.thuoc import Thuoc
 
 class BacSiService:
 

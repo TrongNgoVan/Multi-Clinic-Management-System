@@ -1,17 +1,17 @@
 import secrets
 from flask import Flask
-from BackEnd.Controller.home_control import home_bp
-from BackEnd.Controller.bacsi_control import bacsi_bp
-from BackEnd.Controller.benhnhan_control import benhnhan_bp
-from BackEnd.Controller.donthuoc_control import donthuoc_bp
-from BackEnd.Controller.lichhen_control import lichhen_bp
-from BackEnd.Controller.phieukham_control import phieukham_bp
-from BackEnd.Controller.thuoc_control import thuoc_bp
-from BackEnd.Controller.chitietdonthuoc_control import chitietdonthuoc_bp
-from BackEnd.Controller.phongchucnang_control import phongchucnang_bp
+from Controller.home_control import home_bp
+from Controller.bacsi_control import bacsi_bp
+from Controller.benhnhan_control import benhnhan_bp
+from Controller.donthuoc_control import donthuoc_bp
+from Controller.lichhen_control import lichhen_bp
+from Controller.phieukham_control import phieukham_bp
+from Controller.thuoc_control import thuoc_bp
+from Controller.chitietdonthuoc_control import chitietdonthuoc_bp
+from Controller.phongchucnang_control import phongchucnang_bp
 from flask_cors import CORS
 
-app = Flask(__name__, template_folder="templates", static_folder="static")
+app = Flask(__name__, static_folder="static")
 CORS(app)
 # ae nhớ thêm CORS sẽ giúp trình duyệt không chặn request từ router của FrontEnd đến API của BackEnd nhé ae!
 # cái này là thêm mã hóa bảo mật cho bất cứ trang web nào dùng session nhé ae

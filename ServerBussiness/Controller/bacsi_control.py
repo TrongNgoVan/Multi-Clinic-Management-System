@@ -1,8 +1,8 @@
 import mysql.connector
 from flask import Blueprint, request, jsonify, render_template, redirect, url_for, session, flash
-from BackEnd.DB.db_connection import get_db_connection
+from DB.db_connection import get_db_connection
 
-from BackEnd.Service.bacsi_sv import BacSiService
+from Service.bacsi_sv import BacSiService
 
 bacsi_bp = Blueprint("bacsi", __name__)
 
