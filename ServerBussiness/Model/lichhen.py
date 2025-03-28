@@ -1,5 +1,5 @@
-from BackEnd.Model.bacsi import BacSi
-from BackEnd.Model.benhnhan import BenhNhan
+from Model.bacsi import BacSi
+from Model.benhnhan import BenhNhan
 
 class LichHen:
     def __init__(self, id, thoigianhen, Bacsi, BenhNhan):

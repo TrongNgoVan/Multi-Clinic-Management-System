@@ -1,6 +1,6 @@
 import secrets
 from flask import Flask
-from Controller.home_control import home_bp
+
 from Controller.bacsi_control import bacsi_bp
 from Controller.benhnhan_control import benhnhan_bp
 from Controller.donthuoc_control import donthuoc_bp
@@ -29,7 +29,6 @@ app.secret_key = secrets.token_hex(32)
 #  Server khởi động khi chạy file này, server sẽ khởi động trên cổng http://127.0.0.1:5000  .  
 # ae muón try cập vào 1 route nào đó thì thêm tên của router ( nhớ thêm tiền tố nếu có của blueprint) vào sau cổng 
 
-app.register_blueprint(home_bp)
 app.register_blueprint(bacsi_bp, url_prefix="/bacsi")
 app.register_blueprint(benhnhan_bp, url_prefix="/benhnhan")
 app.register_blueprint(donthuoc_bp, url_prefix="/donthuoc")
