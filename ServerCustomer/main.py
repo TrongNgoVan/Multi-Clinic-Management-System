@@ -39,10 +39,10 @@ app.register_blueprint(chitietdonthuoc_bp, url_prefix="/chitietdonthuoc")
 app.register_blueprint(phongchucnang_bp, url_prefix="/phongchucnang")
 
 if __name__ == "__main__":
-    app.run(host="172.11.34.197", port=5000)
+    app.run(host="172.11.43.16", port=5000)
 
 # chạy node.js server cho fe live-server --host=26.80.253.0 --port=5500
-#  ipv4 wifi trường 172.11.34.197
+#  ipv4 wifi trường  172.11.43.16
 #  ipv4 wifi trọng 192.168.43.20
 # ipv4 vpn trọng 26.80.253.0
 

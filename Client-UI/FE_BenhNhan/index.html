@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Trang Chủ Bệnh Nhân</title>
+  <style>
+    /* Đặt lại margin, padding cho toàn bộ trang */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f3f3f3;
+    }
+
+    /* Thanh điều hướng (navbar) */
+    .navbar {
+      display: flex;
+      align-items: center;
+      background-color: #d60000; /* Màu đỏ PTIT (có thể đổi) */
+      padding: 10px 20px;
+      color: #fff;
+      justify-content: space-between;
+    }
+
+    .navbar-left,
+    .navbar-right {
+      display: flex;
+      align-items: center;
+    }
+
+    .navbar-left a,
+    .navbar-right a {
+      color: #fff;
+      text-decoration: none;
+      margin: 0 10px;
+      font-weight: bold;
+    }
+
+    .navbar-left a:hover,
+    .navbar-right a:hover {
+      text-decoration: underline;
+    }
+
+    /* Logo / Tên trang */
+    .navbar-left .logo {
+      font-size: 18px;
+      margin-right: 20px;
+      font-weight: bold;
+    }
+
+    /* Phần nội dung chính */
+    .hero {
+      position: relative;
+      width: 100%;
+      height: 400px; /* chiều cao vùng ảnh */
+      background: url("img/ptitnen.jpg") center/cover no-repeat;
+      /* Thay link ảnh ở trên bằng link ảnh phòng khám của bạn */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: 28px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+    }
+
+    .hero p {
+      font-size: 18px;
+      margin-bottom: 5px;
+      text-shadow: 1px 1px 4px rgba(0,0,0,0.2);
+    }
+
+    /* Container giới thiệu */
+    .intro-section {
+      max-width: 1000px;
+      margin: 30px auto;
+      background-color: #fff;
+      padding: 20px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    }
+
+    .intro-section h2 {
+      margin-bottom: 10px;
+      color: #d60000;
+    }
+
+    .intro-section p {
+      line-height: 1.6;
+      margin-bottom: 10px;
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 10px;
+      background-color: #d60000;
+      color: #fff;
+      position: relative;
+      bottom: 0;
+      width: 100%;
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Thanh điều hướng -->
+  <div class="navbar">
+    <div class="navbar-left">
+      <div class="logo">Phòng Khám PTIT</div>
+      <!-- Các menu chính -->
+      <a href="#">Đặt lịch khám</a>
+      <a href="#">Xem phiếu khám</a>
+      <a href="#">Xem đơn thuốc</a>
+      <a href="#">Xem lịch hẹn</a>
+    </div>
+    <div class="navbar-right">
+        <a id="patientName" href="#"></a>
+    </div>
+  </div>
+
+  <!-- Phần hình ảnh chính (hero) -->
+  <div class="hero">
+    <h1>Phòng Khám Đa Khoa PTIT</h1>
+    <p>Nơi quy tụ các bác sĩ Tài Năng - Tâm Huyết - Trách Nhiệm</p>
+  </div>
+
+  <!-- Giới thiệu thêm về phòng khám -->
+  <div class="intro-section">
+    <h2>Giới thiệu</h2>
+    <p>
+      Phòng khám Đa khoa PTIT là một trong những đơn vị tiên phong
+      trong việc ứng dụng công nghệ và trí tuệ nhân tạo vào y tế.
+      Với đội ngũ bác sĩ giàu kinh nghiệm, chúng tôi luôn đặt sức khỏe
+      và sự hài lòng của bệnh nhân lên hàng đầu.
+    </p>
+    <p>
+      Tại PTIT, chúng tôi cung cấp các dịch vụ khám chữa bệnh đa dạng:
+      từ khám tổng quát, tư vấn chuyên sâu, đến điều trị ngoại trú và nội trú.
+      Đội ngũ nhân viên nhiệt tình, cơ sở vật chất hiện đại,
+      sẵn sàng phục vụ quý bệnh nhân.
+    </p>
+    <p>
+      Hãy đặt lịch khám trực tuyến, xem kết quả khám bệnh, đơn thuốc,
+      và quản lý lịch hẹn mọi lúc mọi nơi.
+      Chúng tôi tin tưởng rằng, với Phòng khám Đa khoa PTIT,
+      sức khỏe của bạn sẽ được chăm sóc toàn diện.
+    </p>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    &copy; 2025 Phòng Khám Đa Khoa PTIT. Mọi quyền được bảo lưu.
+  </div>
+  <script>
+    // Lấy benhnhan từ sessionStorage
+    const benhnhanStr = sessionStorage.getItem("benhnhan");
+    if (!benhnhanStr) {
+      // Nếu chưa đăng nhập, quay lại trang login
+      alert("Bạn chưa đăng nhập!");
+      window.location.href = "dangnhap.html";
+    } else {
+      const benhnhan = JSON.parse(benhnhanStr);
+      document.getElementById("patientName").textContent = benhnhan.ten;
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng Nhập & Đăng Ký Bệnh Nhân</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        .container { width: 300px; margin: auto; }
+        input { display: block; width: 100%; margin: 5px 0; padding: 8px; }
+        button { width: 100%; padding: 10px; margin-top: 10px; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div class="container" id="loginForm">
+        <h2>Đăng Nhập</h2>
+        <input type="text" id="login_username" placeholder="Tên đăng nhập">
+        <input type="password" id="login_password" placeholder="Mật khẩu">
+        <button onclick="login()">Đăng Nhập</button>
+        <p><a href="#" onclick="toggleForms()">Chưa có tài khoản? Đăng ký</a></p>
+    </div>
+    
+    <div class="container hidden" id="registerForm">
+        <h2>Đăng Ký</h2>
+        <input type="text" id="reg_ten" placeholder="Họ tên">
+        <input type="text" id="reg_sdt" placeholder="Số điện thoại">
+        <input type="text" id="reg_cccd" placeholder="CCCD">
+        <input type="date" id="reg_dob">
+        <input type="text" id="reg_username" placeholder="Tên đăng nhập">
+        <input type="password" id="reg_password" placeholder="Mật khẩu">
+        <button onclick="register()">Đăng Ký</button>
+        <p><a href="#" onclick="toggleForms()">Đã có tài khoản? Đăng nhập</a></p>
+    </div>
+
+    <script>
+        function toggleForms() {
+            document.getElementById('loginForm').classList.toggle('hidden');
+            document.getElementById('registerForm').classList.toggle('hidden');
+        }
+        
+        function login() {
+            const data = {
+                username: document.getElementById('login_username').value,
+                password: document.getElementById('login_password').value
+            };
+            fetch('http://172.11.43.16:5000/benhnhan/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            })
+            .then(res => res.json())
+            .then(response => {
+                if (response.success) {
+                    alert("Đăng nhập thành công!");
+                    
+                    // Lưu thông tin benhnhan vào sessionStorage
+                    sessionStorage.setItem("benhnhan", JSON.stringify(response.benhnhan));
+
+                    // Chuyển sang trang chủ
+                    window.location.href = "index.html"; 
+                } else {
+                    alert(response.message);
+                }
+            })
+            .catch(error => console.error('Lỗi:', error));
+        }
+
+        function register() {
+            const data = {
+                ten: document.getElementById('reg_ten').value,
+                sdt: document.getElementById('reg_sdt').value,
+                cccd: document.getElementById('reg_cccd').value,
+                dob: document.getElementById('reg_dob').value,
+                username: document.getElementById('reg_username').value,
+                password: document.getElementById('reg_password').value
+            };
+            fetch('http://172.11.43.16:5000/benhnhan/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            })
+            .then(res => res.json())
+            .then(response => {
+                if (response.success) {
+                    alert("Đăng ký thành công! Vui lòng đăng nhập.");
+                    toggleForms();
+                } else {
+                    alert(response.message);
+                }
+            })
+            .catch(error => console.error('Lỗi:', error));
+        }
+    </script>
+</body>
+</html>
