@@ -154,3 +154,23 @@ class BenhNhanService:
         
         # Để đơn giản, ta trả về dữ liệu đã gửi (có thể bổ sung truy vấn lại từ DB nếu cần)
         return {"success": True, "message": "Cập nhật thành công"}
+    
+    @staticmethod
+    def get_phongkham():
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor(dictionary=True)
+            cursor.execute("SELECT * FROM phongchucnang")
+            return {
+                "success": True,
+                "data": cursor.fetchall()
+            }
+        except Exception as e:
+            return {
+                "success": False,
+                "message": f"Lỗi database: {str(e)}",
+                "data": []
+            }
+        finally:
+            if 'cursor' in locals(): cursor.close()
+            if 'conn' in locals(): conn.close()

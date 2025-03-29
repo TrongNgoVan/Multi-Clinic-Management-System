@@ -150,3 +150,9 @@ def change_password():
     except Exception as e:
         return jsonify({"success": False, "message": str(e)}), 500
 
+
+
+@benhnhan_bp.route("/phongkham", methods=["GET"])
+def get_phongkham():
+    ds_phongkham = BenhNhanService.get_phongkham()
+    return jsonify(ds_phongkham)

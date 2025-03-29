@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Danh sách Phòng Khám</title>
+  <link rel="icon" href="img/ptit.png" type="image/x-icon">
+  <style>
+    /* Giữ nguyên phần CSS của bạn */
+    .container {
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 20px;
+    }
+
+    .phongkham-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .phongkham-card {
+      background: white;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .phongkham-card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 5px;
+    }
+
+    .btn-detail {
+      background: #c80d0d;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Danh sách Phòng Khám</h1>
+    <div class="phongkham-list" id="phongkhamList">
+      <!-- Hiển thị loading khi đang tải dữ liệu -->
+     
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const response = await fetch('http://172.11.43.16:5000/benhnhan/phongkham');
+        
+        if (!response.ok) {
+          throw new Error(`Lỗi HTTP: ${response.status}`);
+        }
+
+        const result = await response.json();
+        
+        const container = document.getElementById('phongkhamList');
+        container.innerHTML = ''; // Xóa thông báo loading
+
+        if (result.success) {
+          result.data.forEach(phongkham => {
+            const card = document.createElement('div');
+            card.className = 'phongkham-card';
+            card.innerHTML = `
+              <img src="img/ptit.png" alt="${phongkham.chucNang}">
+              <h3>${phongkham.chucNang}</h3>
+              <p>${phongkham.moTa}</p>
+              <button class="btn-detail" onclick="viewDetail(${phongkham.ID})">Xem chi tiết</button>
+            `;
+            container.appendChild(card);
+          });
+        } else {
+          container.innerHTML = '<p class="error">Không thể lấy dữ liệu từ server</p>';
+        }
+      } catch (error) {
+        console.error('Lỗi khi tải dữ liệu:', error);
+        document.getElementById('phongkhamList').innerHTML = `
+          <p class="error">Lỗi kết nối đến server: ${error.message}</p>
+        `;
+      }
+    });
+
+    function viewDetail(id) {
+      window.location.href = `chitietphongkham.html?id=${id}`;
+    }
+  </script>
+</body>
+</html>
