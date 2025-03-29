@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Thông Tin Cá Nhân</title>
+    <link rel="icon" href="img/ptit.png" type="image/x-icon" />
+    <style>
+      /* Đặt lại một số thuộc tính mặc định */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f8f8f8;
+      }
+      /* Header và thanh điều hướng */
+      header {
+        background-color: #d60000; /* Màu đỏ PTIT */
+        color: #fff;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 20px;
+      }
+      .logo {
+        font-weight: bold;
+        font-size: 18px;
+      }
+      nav a {
+        color: #fff;
+        text-decoration: none;
+        margin: 0 10px;
+        font-weight: 500;
+      }
+      nav a:hover {
+        text-decoration: underline;
+      }
+      /* Phần user-info góc phải header */
+      .user-info {
+        display: flex;
+        align-items: center;
+      }
+      .user-info span {
+        margin-right: 10px;
+        font-weight: bold;
+      }
+      .top-avatar {
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid #fff;
+      }
+      /* Breadcrumb */
+      .breadcrumb {
+        background-color: #f1f1f1;
+        padding: 10px 20px;
+        font-size: 14px;
+        color: #555;
+      }
+      /* Khu vực chứa nội dung chính */
+      .container {
+        display: flex;
+        justify-content: space-between;
+        max-width: 1200px;
+        margin: 20px auto;
+        gap: 20px;
+      }
+      /* Cột chính chứa form cập nhật */
+      .main-content {
+        flex: 2;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 6px;
+        box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+      }
+      .main-content h2 {
+        color: #d60000;
+        margin-bottom: 20px;
+      }
+      /* Form cập nhật thông tin */
+      .update-form label {
+        font-weight: bold;
+        display: block;
+        margin: 10px 0 5px;
+      }
+      .update-form input {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+      .update-form button {
+        width: 100%;
+        padding: 10px;
+        background-color: #28a745;
+        border: none;
+        color: #fff;
+        font-size: 16px;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .update-form button:hover {
+        background-color: #218838;
+      }
+      /* Ảnh đại diện xem trước */
+      #avatar-preview {
+        display: block;
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin: 10px auto;
+        border: 2px solid #ccc;
+      }
+      #message {
+        text-align: center;
+        margin-top: 15px;
+        font-weight: bold;
+      }
+      /* Cột bên phải chứa liên hệ & giới thiệu */
+      .sidebar {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+      .sidebar-section {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 6px;
+        box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+      }
+      .sidebar-section h3 {
+        color: #d60000;
+        margin-bottom: 10px;
+      }
+      .sidebar-section p {
+        line-height: 1.6;
+      }
+      /* Footer */
+      footer {
+        background-color: #d60000;
+        color: #fff;
+        text-align: center;
+        padding: 10px;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header + Nav -->
+    <header>
+      <div class="logo">Phòng Khám PTIT</div>
+      <nav>
+        <a href="#">Trang chủ</a>
+        <a href="#">Đặt lịch hẹn</a>
+        <a href="#">Xem phiếu khám</a>
+        <a href="#">Xem đơn thuốc</a>
+        <a href="#">Xem thông tin phòng khám</a>
+      </nav>
+      <div class="user-info">
+        <span id="username">ngovanntrong1308</span>
+        <img
+          id="top-avatar"
+          class="top-avatar"
+          src="https://via.placeholder.com/35"
+          alt="Ảnh đại diện"
+        />
+      </div>
+    </header>
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">Trang chủ / Quản lý Tài Khoản</div>
+
+    <!-- Container Chính -->
+    <div class="container">
+      <!-- Cột chính: Form cập nhật -->
+      <div class="main-content">
+        <h2>Thông tin cơ bản</h2>
+        <div class="update-form">
+          <label for="ten">Họ và Tên:</label>
+          <input type="text" id="ten" placeholder="Nhập họ và tên" />
+
+          <label for="sdt">Số Điện Thoại:</label>
+          <input type="text" id="sdt" placeholder="Nhập số điện thoại" />
+
+          <label for="quequan">Quê Quán:</label>
+          <input type="text" id="quequan" placeholder="Nhập quê quán" />
+
+          <label for="cccd">CCCD:</label>
+          <input type="text" id="cccd" placeholder="Nhập số CCCD" />
+
+          <label for="dob">Ngày Sinh:</label>
+          <input type="date" class="form-control" id="dob" name="dob" />
+
+          <label for="password">Mật Khẩu Mới:</label>
+          <input
+            type="password"
+            id="password"
+            placeholder="Nhập mật khẩu mới"
+          />
+
+          <label for="repassword">Nhập Lại Mật Khẩu:</label>
+          <input
+            type="password"
+            id="repassword"
+            placeholder="Nhập lại mật khẩu"
+          />
+
+          <label for="avatar">Ảnh Đại Diện:</label>
+          <input type="file" id="avatar" accept="image/*" />
+          <img id="avatar-preview" src="" alt="Ảnh đại diện" />
+
+          <button onclick="updateInfo()">Cập Nhật</button>
+          <p id="message"></p>
+        </div>
+      </div>
+
+      <!-- Cột phụ: Thông tin liên hệ & Giới thiệu -->
+      <div class="sidebar">
+        <div class="sidebar-section">
+          <h3>Thông tin liên hệ</h3>
+          <p>
+            - Địa chỉ: Số 1, Nguyễn Trãi, Hà Đông, Hà Nội <br />
+            - Điện thoại: 0123.456.789 <br />
+            - Email: contact@ptit.vn
+          </p>
+        </div>
+        <div class="sidebar-section">
+          <h3>Giới thiệu</h3>
+          <p>
+            Phòng Trọ PTIT là hệ thống cung cấp phòng trọ, nhà nguyên căn uy tín
+            cho sinh viên Học viện Công nghệ Bưu chính Viễn thông và các khu vực
+            lân cận. Với mục tiêu giúp sinh viên và người lao động có môi trường
+            sống tốt nhất, chúng tôi luôn cập nhật thông tin phòng trọ, tin tức
+            và hỗ trợ khách hàng nhanh chóng.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>&copy; 2025 Phòng Trọ PTIT - All Rights Reserved.</footer>
+
+    <script>
+      // Khi trang load, điền thông tin bệnh nhân từ sessionStorage (đã lưu sau đăng nhập)
+      (function () {
+        try {
+          const benhnhanStr = sessionStorage.getItem("benhnhan");
+          if (!benhnhanStr) {
+            console.error(
+              "Không tìm thấy dữ liệu bệnh nhân trong sessionStorage"
+            );
+            alert(
+              "Không tìm thấy thông tin bệnh nhân, vui lòng đăng nhập lại."
+            );
+            window.location.href = "login_register.html";
+            return;
+          }
+
+          console.log("Dữ liệu bệnh nhân từ sessionStorage:", benhnhanStr);
+          const benhnhan = JSON.parse(benhnhanStr);
+          console.log("Dữ liệu sau khi parse:", benhnhan);
+
+          // Đổ dữ liệu lên form
+          document.getElementById("ten").value = benhnhan.ten || "";
+          document.getElementById("sdt").value = benhnhan.sdt || "";
+          document.getElementById("quequan").value = benhnhan.quequan || "";
+          document.getElementById("cccd").value = benhnhan.cccd || "";
+
+          // Xử lý ngày sinh
+          // Xử lý ngày sinh
+          if (benhnhan.dob) {
+            console.log("Giá trị dob gốc:", benhnhan.dob);
+            let dobValue = benhnhan.dob;
+
+            // Xử lý các định dạng ngày khác nhau
+            if (typeof dobValue === "string") {
+              // Trường hợp chuỗi có định dạng GMT
+              if (dobValue.includes("GMT")) {
+                try {
+                  const dateObj = new Date(dobValue);
+                  if (isNaN(dateObj.getTime())) {
+                    throw new Error("Ngày sinh không hợp lệ");
+                  }
+                  const year = dateObj.getFullYear();
+                  const month = String(dateObj.getMonth() + 1).padStart(2, "0");
+                  const day = String(dateObj.getDate()).padStart(2, "0");
+                  dobValue = `${year}-${month}-${day}`;
+                } catch (error) {
+                  console.error("Lỗi xử lý ngày sinh GMT:", error);
+                  dobValue = ""; // Hoặc gán giá trị mặc định
+                }
+              }
+              // Xử lý định dạng ISO (có chứa 'T')
+              else if (dobValue.includes("T")) {
+                dobValue = dobValue.split("T")[0];
+              }
+              // Xử lý định dạng MM/DD/YYYY
+              else if (dobValue.includes("/")) {
+                const parts = dobValue.split("/");
+                if (parts.length === 3) {
+                  const month = parts[0].padStart(2, "0");
+                  const day = parts[1].padStart(2, "0");
+                  const year = parts[2];
+                  dobValue = `${year}-${month}-${day}`;
+                }
+              }
+            } else if (dobValue instanceof Date) {
+              // Xử lý nếu dobValue là đối tượng Date
+              const year = dobValue.getFullYear();
+              const month = String(dobValue.getMonth() + 1).padStart(2, "0");
+              const day = String(dobValue.getDate()).padStart(2, "0");
+              dobValue = `${year}-${month}-${day}`;
+            }
+
+            console.log("Giá trị dob sau khi xử lý:", dobValue);
+            document.getElementById("dob").value = dobValue;
+          } else {
+            console.warn("Không có dữ liệu ngày sinh");
+          }
+
+          // Avatar hiển thị ở form + trên header
+          if (benhnhan.img) {
+            document.getElementById("avatar-preview").src = benhnhan.img;
+            document.getElementById("top-avatar").src = benhnhan.img;
+          }
+
+          // Tên hiển thị góc phải header
+          if (benhnhan.ten) {
+            document.getElementById("username").innerText = benhnhan.ten;
+          }
+        } catch (error) {
+          console.error("Lỗi khi xử lý dữ liệu:", error);
+          alert("Có lỗi xảy ra khi tải thông tin. Vui lòng thử lại.");
+        }
+      })();
+
+      // Hiển thị preview của file ảnh khi chọn
+      document
+        .getElementById("avatar")
+        .addEventListener("change", function (event) {
+          const file = event.target.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+              document.getElementById("avatar-preview").src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+          }
+        });
+
+      // Hàm cập nhật thông tin
+      function updateInfo() {
+        try {
+          const benhnhanStr = sessionStorage.getItem("benhnhan");
+          if (!benhnhanStr) {
+            document.getElementById("message").innerText =
+              "Không tìm thấy thông tin bệnh nhân!";
+            document.getElementById("message").style.color = "red";
+            return;
+          }
+
+          const benhnhan = JSON.parse(benhnhanStr);
+          const password = document.getElementById("password").value;
+          const repassword = document.getElementById("repassword").value;
+
+          // Kiểm tra mật khẩu nhập lại
+          if (password && password !== repassword) {
+            document.getElementById("message").innerText =
+              "Mật khẩu nhập lại không khớp!";
+            document.getElementById("message").style.color = "red";
+            return;
+          }
+
+          // Tạo FormData để gửi cả file ảnh và dữ liệu text
+          const formData = new FormData();
+          formData.append("id", benhnhan.id);
+          formData.append("ten", document.getElementById("ten").value);
+          formData.append("sdt", document.getElementById("sdt").value);
+          formData.append("quequan", document.getElementById("quequan").value);
+          formData.append("cccd", document.getElementById("cccd").value);
+          formData.append("dob", document.getElementById("dob").value);
+
+          // Chỉ gửi mật khẩu nếu người dùng nhập vào
+          if (password) {
+            formData.append("password", password);
+          }
+
+          // Ảnh đại diện mới
+          const avatarFile = document.getElementById("avatar").files[0];
+          if (avatarFile) {
+            formData.append("img", avatarFile);
+          }
+
+          // Log dữ liệu gửi lên để debug
+          console.log("Dữ liệu gửi lên server:");
+          for (let pair of formData.entries()) {
+            // Không log password ra console
+            if (pair[0] !== "password") {
+              console.log(pair[0] + ": " + pair[1]);
+            }
+          }
+
+          fetch("http://192.168.43.20:5000/benhnhan/update", {
+            method: "PUT",
+            body: formData,
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              const messageEl = document.getElementById("message");
+              if (data.success) {
+                messageEl.innerText = "Cập nhật thành công!";
+                messageEl.style.color = "green";
+                // Cập nhật lại sessionStorage nếu API trả về thông tin mới
+                sessionStorage.setItem(
+                  "benhnhan",
+                  JSON.stringify(data.benhnhan)
+                );
+                console.log("Dữ liệu mới từ server:", data.benhnhan);
+
+                // Cập nhật avatar hiển thị trên header nếu có
+                if (data.benhnhan.img) {
+                  document.getElementById("top-avatar").src = data.benhnhan.img;
+                }
+
+                // Cập nhật tên hiển thị nếu có thay đổi
+                if (data.benhnhan.ten) {
+                  document.getElementById("username").innerText =
+                    data.benhnhan.ten;
+                }
+              } else {
+                messageEl.innerText = data.message || "Cập nhật thất bại";
+                messageEl.style.color = "red";
+              }
+            })
+            .catch((error) => {
+              console.error("Lỗi:", error);
+              document.getElementById("message").innerText =
+                "Có lỗi xảy ra. Vui lòng thử lại sau!";
+              document.getElementById("message").style.color = "red";
+            });
+        } catch (error) {
+          console.error("Lỗi trong quá trình xử lý:", error);
+          document.getElementById("message").innerText =
+            "Đã xảy ra lỗi trong quá trình xử lý.";
+          document.getElementById("message").style.color = "red";
+        }
+      }
+    </script>
+  </body>
+</html>

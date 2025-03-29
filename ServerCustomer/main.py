@@ -1,6 +1,27 @@
 import secrets
 from flask import Flask
+from flask_cors import CORS
+from flask_jwt_extended import JWTManager
 
+# Khởi tạo Flask app trước
+app = Flask(__name__, static_folder="static")
+
+# # Cấu hình JWT
+# app.config['JWT_SECRET_KEY'] = 'your_secret_key_here'  # Thay bằng secret key thực tế
+# app.config['JWT_TOKEN_LOCATION'] = ['headers']  # Đảm bảo token được lấy từ header
+# app.config['JWT_HEADER_NAME'] = 'Authorization'  # Tên header chứa JWT token
+# app.config['JWT_HEADER_TYPE'] = 'Bearer'  # Loại token, thường là Bearer
+
+# # Khởi tạo JWTManager
+# jwt = JWTManager(app)
+
+# CORS để cho phép request từ frontend
+CORS(app)
+
+# Secret key để bảo mật session
+app.secret_key = secrets.token_hex(32)
+
+# Import các blueprint
 from Controller.bacsi_control import bacsi_bp
 from Controller.benhnhan_control import benhnhan_bp
 from Controller.donthuoc_control import donthuoc_bp
@@ -9,26 +30,8 @@ from Controller.phieukham_control import phieukham_bp
 from Controller.thuoc_control import thuoc_bp
 from Controller.chitietdonthuoc_control import chitietdonthuoc_bp
 from Controller.phongchucnang_control import phongchucnang_bp
-from flask_cors import CORS
 
-app = Flask(__name__, static_folder="static")
-CORS(app)
-# ae nhớ thêm CORS sẽ giúp trình duyệt không chặn request từ router của FrontEnd đến API của BackEnd nhé ae!
-# cái này là thêm mã hóa bảo mật cho bất cứ trang web nào dùng session nhé ae
-
-app.secret_key = secrets.token_hex(32)
-
-
-# Đoạn này là đăng ký các Blueprint cho toàn bộ các controller mỗi khi ae  khởi chạy server nhé!
-#  ae cứ hiể BluePrint như một cái tên đaij diện cho 1 module lớn( liên quan đến 1 đối tượng)
-# nó chứa nhiều route( hay API, URL) , mỗi route sẽ đại diện cho 1 hàm hay 1 tính năng cụ thể của 1 đối tượng
-#  ví dụ BluePrint bacsi_bp chứa các route liên quan đến bác sĩ như: bacsi/dangnhap, bacsi/get_all_bacsi
-# khi ae gọi đến route này thì nó sẽ gọi đến hàm tương ứng trong controller để xử lý
-#  còn url_prefix là tiền tố của blueprint, nó sẽ thêm vào trước tất cả các route trong blueprint, muốn truy cập vào 1 route nào đó thì ae phải thêm tiền tố đó vào trước
-#  ví dụ: bacsi_bp có url_prefix là "/bacsi" thì route dangnhap sẽ là "/bacsi/dangnhap"
-#  Server khởi động khi chạy file này, server sẽ khởi động trên cổng http://127.0.0.1:5000  .  
-# ae muón try cập vào 1 route nào đó thì thêm tên của router ( nhớ thêm tiền tố nếu có của blueprint) vào sau cổng 
-
+# Đăng ký các blueprint
 app.register_blueprint(bacsi_bp, url_prefix="/bacsi")
 app.register_blueprint(benhnhan_bp, url_prefix="/benhnhan")
 app.register_blueprint(donthuoc_bp, url_prefix="/donthuoc")
@@ -38,11 +41,7 @@ app.register_blueprint(thuoc_bp, url_prefix="/thuoc")
 app.register_blueprint(chitietdonthuoc_bp, url_prefix="/chitietdonthuoc")
 app.register_blueprint(phongchucnang_bp, url_prefix="/phongchucnang")
 
+# Chạy server
 if __name__ == "__main__":
-    app.run(host="172.11.43.16", port=5000)
-
-# chạy node.js server cho fe live-server --host=26.80.253.0 --port=5500
-#  ipv4 wifi trường  172.11.43.16
-#  ipv4 wifi trọng 192.168.43.20
-# ipv4 vpn trọng 26.80.253.0
-
+    app.run(host="192.168.43.20", port=5000)
+    # ipv4 wifi trọng 192.168.43.20

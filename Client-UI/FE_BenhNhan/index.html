@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Trang Chủ Bệnh Nhân</title>
+  <link rel="icon" href="img/ptit.png" type="image/x-icon"> 
   <style>
     /* Đặt lại margin, padding cho toàn bộ trang */
     * {
@@ -20,7 +21,7 @@
     .navbar {
       display: flex;
       align-items: center;
-      background-color: #d60000; /* Màu đỏ PTIT (có thể đổi) */
+      background-color: #d60000; /* Màu đỏ PTIT */
       padding: 10px 20px;
       color: #fff;
       justify-content: space-between;
@@ -38,6 +39,7 @@
       text-decoration: none;
       margin: 0 10px;
       font-weight: bold;
+      cursor: pointer;
     }
 
     .navbar-left a:hover,
@@ -52,13 +54,22 @@
       font-weight: bold;
     }
 
+    /* Ảnh đại diện */
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%; /* Làm tròn ảnh */
+      margin-left: 10px;
+      border: 2px solid #fff; /* Viền trắng giúp nổi bật */
+      object-fit: cover;
+    }
+    
     /* Phần nội dung chính */
     .hero {
       position: relative;
       width: 100%;
-      height: 400px; /* chiều cao vùng ảnh */
+      height: 400px; /* Chiều cao vùng ảnh */
       background: url("img/ptitnen.jpg") center/cover no-repeat;
-      /* Thay link ảnh ở trên bằng link ảnh phòng khám của bạn */
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -105,8 +116,6 @@
       padding: 10px;
       background-color: #d60000;
       color: #fff;
-      position: relative;
-      bottom: 0;
       width: 100%;
       margin-top: 30px;
     }
@@ -118,14 +127,17 @@
   <div class="navbar">
     <div class="navbar-left">
       <div class="logo">Phòng Khám PTIT</div>
-      <!-- Các menu chính -->
       <a href="#">Đặt lịch khám</a>
       <a href="#">Xem phiếu khám</a>
       <a href="#">Xem đơn thuốc</a>
       <a href="#">Xem lịch hẹn</a>
+      <a href="#">Xem thông tin phòng khám</a>
     </div>
     <div class="navbar-right">
-        <a id="patientName" href="#"></a>
+        <a id="patientName" href="thongtin.html"></a>
+        <img id="avatar" class="avatar" src="img/logo1.jpg" alt="Ảnh đại diện">
+        <!-- Thêm nút đăng xuất -->
+        <a id="logout" onclick="logout()">Đăng xuất</a>
     </div>
   </div>
 
@@ -147,14 +159,10 @@
     <p>
       Tại PTIT, chúng tôi cung cấp các dịch vụ khám chữa bệnh đa dạng:
       từ khám tổng quát, tư vấn chuyên sâu, đến điều trị ngoại trú và nội trú.
-      Đội ngũ nhân viên nhiệt tình, cơ sở vật chất hiện đại,
-      sẵn sàng phục vụ quý bệnh nhân.
     </p>
     <p>
       Hãy đặt lịch khám trực tuyến, xem kết quả khám bệnh, đơn thuốc,
       và quản lý lịch hẹn mọi lúc mọi nơi.
-      Chúng tôi tin tưởng rằng, với Phòng khám Đa khoa PTIT,
-      sức khỏe của bạn sẽ được chăm sóc toàn diện.
     </p>
   </div>
 
@@ -162,16 +170,32 @@
   <div class="footer">
     &copy; 2025 Phòng Khám Đa Khoa PTIT. Mọi quyền được bảo lưu.
   </div>
+
+  <!-- JavaScript -->
   <script>
-    // Lấy benhnhan từ sessionStorage
+    // Lấy thông tin bệnh nhân từ sessionStorage
     const benhnhanStr = sessionStorage.getItem("benhnhan");
+
     if (!benhnhanStr) {
-      // Nếu chưa đăng nhập, quay lại trang login
       alert("Bạn chưa đăng nhập!");
       window.location.href = "dangnhap.html";
     } else {
       const benhnhan = JSON.parse(benhnhanStr);
+      // In toàn bộ thông tin session ra console
+      console.log("Thông tin session:", benhnhan);
       document.getElementById("patientName").textContent = benhnhan.ten;
+
+      // Cập nhật ảnh đại diện nếu có
+      const avatarImg = document.getElementById("avatar");
+      if (benhnhan.img) {
+        avatarImg.src = benhnhan.img;
+      }
+    }
+
+    // Hàm đăng xuất: xóa sessionStorage và chuyển hướng về trang đăng nhập
+    function logout() {
+      sessionStorage.clear();
+      window.location.href = "dangnhap.html";
     }
   </script>
 

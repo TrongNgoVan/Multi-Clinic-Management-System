@@ -43,4 +43,4 @@ if __name__ == "__main__":
 
 # chạy node.js server cho fe live-server --host=26.80.253.0 --port=5500
 #  ip wifi trường 172.11.34.197
-#  ip trọng
+#  ip trọng 192.168.43.20
