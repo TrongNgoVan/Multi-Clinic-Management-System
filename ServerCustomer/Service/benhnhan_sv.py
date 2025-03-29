@@ -174,3 +174,23 @@ class BenhNhanService:
         finally:
             if 'cursor' in locals(): cursor.close()
             if 'conn' in locals(): conn.close()
+    
+    @staticmethod
+    def get_bacsi(idphong):
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor(dictionary=True)
+            cursor.execute("SELECT * FROM bacsi WHERE phongID = %s", (idphong,))
+            return {
+                "success": True,
+                "data": cursor.fetchall()
+            }
+        except Exception as e:
+            return {
+                "success": False,
+                "message": f"Lỗi database: {str(e)}",
+                "data": []
+            }
+        finally:
+            if 'cursor' in locals(): cursor.close()
+            if 'conn' in locals(): conn.close()

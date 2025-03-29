@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="img/ptit.png" type="image/x-icon" />
+    <title>Danh sách Bác sĩ</title>
+    <style>
+      /* Giữ nguyên toàn bộ CSS từ trang lịch hẹn */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f5f5f5;
+      }
+
+      .header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #c70d0d;
+        color: #fff;
+        padding: 10px 20px;
+        position: relative;
+        margin-bottom: 20px;
+      }
+
+      .header h2 {
+        margin: 0;
+        font-weight: bold;
+        font-size: 18px;
+        text-transform: uppercase;
+      }
+
+      .header button {
+        position: absolute;
+        right: 20px;
+        background-color: #fff;
+        color: #c70d0d;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: background 0.2s;
+      }
+
+      .header button:hover {
+        background-color: #f7dddd;
+      }
+
+      .container {
+        width: 90%;
+        max-width: 900px;
+        margin: 20px auto;
+      }
+
+      .phongkham-info {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      .bacsi-list {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      .bacsi-card {
+        border: 2px solid #464343;
+        border-radius: 8px;
+        display: grid;
+        grid-template-columns: 100px 1fr 120px;
+        align-items: center;
+        column-gap: 10px;
+        padding: 10px;
+        margin-bottom: 10px;
+      }
+
+      .bacsi-card img {
+        width: 80px;
+        height: 100px;
+        object-fit: cover;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+      }
+
+      .bacsi-info {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .bacsi-info .row {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        font-size: 14px;
+      }
+
+      .bacsi-actions {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 5px;
+      }
+
+      .btn {
+        padding: 5px 10px;
+        background-color: #a70606;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: background-color 0.2s;
+        width: 100px;
+      }
+
+      .btn:hover {
+        background-color: #de1414;
+      }
+
+      .error-message {
+        text-align: center;
+        color: red;
+        font-weight: bold;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h2>Thông tin Phòng khám và Bác sĩ</h2>
+      <button onclick="goBack()">Quay lại</button>
+    </div>
+
+    <div class="container">
+      <!-- Phần hiển thị thông tin phòng khám -->
+      <div class="phongkham-info" id="phongkhamInfo"></div>
+
+      <!-- Phần danh sách bác sĩ -->
+      <div class="bacsi-list" id="bacsiList">
+        <!-- Các card bác sĩ sẽ được thêm vào đây -->
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // Lấy thông tin phòng khám từ sessionStorage
+        const phongkham = JSON.parse(
+          sessionStorage.getItem("selectedPhongKham")
+        );
+
+        if (!phongkham) {
+          alert("Không tìm thấy thông tin phòng khám!");
+          window.location.href = "index.html";
+          return;
+        }
+
+        // Hiển thị thông tin phòng khám
+        const phongkhamInfo = document.getElementById("phongkhamInfo");
+        phongkhamInfo.innerHTML = `
+        <h3>${phongkham.chucNang}</h3>
+        <p>${phongkham.moTa}</p>
+      `;
+
+        // Gọi API lấy danh sách bác sĩ
+        fetch(`http://172.11.43.16:5000/benhnhan/bacsi/${phongkham.ID}`)
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              renderBacsiList(data.data);
+            } else {
+              showError("Không thể lấy danh sách bác sĩ");
+            }
+          })
+          .catch((error) => {
+            console.error("Lỗi:", error);
+            showError("Lỗi kết nối máy chủ");
+          });
+      });
+
+      function renderBacsiList(bacsiList) {
+        const container = document.getElementById("bacsiList");
+        container.innerHTML = "";
+
+        bacsiList.forEach((bacsi) => {
+          const card = document.createElement("div");
+          card.className = "bacsi-card";
+          card.innerHTML = `
+          <img src="${bacsi.img || "img/ptit.png"}" alt="Ảnh bác sĩ">
+          <div class="bacsi-info">
+            <div class="row">
+              <span><strong>Họ tên:</strong> ${bacsi.ten}</span>
+              <span><strong>Chuyên môn:</strong> ${bacsi.chuyenmon}</span>
+            </div>
+            <div class="row">
+              <span><strong>Học vấn:</strong> ${bacsi.hocvan}</span>
+              <span><strong>Kinh nghiệm:</strong> ${bacsi.kinhnghiem}</span>
+            </div>
+          </div>
+          <div class="bacsi-actions">
+            <button class="btn" 
+              onclick="chonBacsi(${JSON.stringify(bacsi).replace(
+                /"/g,
+                "&quot;"
+              )})">
+              Chọn
+            </button>
+          </div>
+        `;
+          container.appendChild(card);
+        });
+      }
+
+      function chonBacsi(bacsi) {
+        try {
+          // Kiểm tra và chuyển đổi nếu cần
+          if (typeof bacsi === "string") {
+            bacsi = JSON.parse(bacsi);
+          }
+
+          // Lưu toàn bộ đối tượng bác sĩ vào sessionStorage
+          sessionStorage.setItem("selectedBacsi", JSON.stringify(bacsi));
+
+          // Chuyển hướng đến trang đặt lịch
+          window.location.href = "datlich.html";
+        } catch (error) {
+          console.error("Lỗi khi xử lý dữ liệu bác sĩ:", error);
+          alert("Có lỗi xảy ra khi chọn bác sĩ");
+        }
+      }
+
+      function goBack() {
+        window.history.back();
+      }
+
+      function showError(message) {
+        const container = document.getElementById("bacsiList");
+        container.innerHTML = `<p class="error-message">${message}</p>`;
+      }
+    </script>
+  </body>
+</html>

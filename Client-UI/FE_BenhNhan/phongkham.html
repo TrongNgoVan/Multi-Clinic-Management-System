@@ -46,10 +46,7 @@
 <body>
   <div class="container">
     <h1>Danh sách Phòng Khám</h1>
-    <div class="phongkham-list" id="phongkhamList">
-      <!-- Hiển thị loading khi đang tải dữ liệu -->
-     
-    </div>
+    <div class="phongkham-list" id="phongkhamList"></div>
   </div>
 
   <script>
@@ -64,17 +61,21 @@
         const result = await response.json();
         
         const container = document.getElementById('phongkhamList');
-        container.innerHTML = ''; // Xóa thông báo loading
+        container.innerHTML = '';
 
         if (result.success) {
           result.data.forEach(phongkham => {
             const card = document.createElement('div');
             card.className = 'phongkham-card';
             card.innerHTML = `
-              <img src="img/ptit.png" alt="${phongkham.chucNang}">
+              <img src="img/ptitnen.jpg" alt="${phongkham.chucNang}">
               <h3>${phongkham.chucNang}</h3>
               <p>${phongkham.moTa}</p>
-              <button class="btn-detail" onclick="viewDetail(${phongkham.ID})">Xem chi tiết</button>
+              <button class="btn-detail" 
+                data-phongkham='${JSON.stringify(phongkham).replace(/'/g, "&#39;")}'
+                onclick="handleViewDetail(this)">
+                Xem chi tiết
+              </button>
             `;
             container.appendChild(card);
           });
@@ -89,8 +90,21 @@
       }
     });
 
-    function viewDetail(id) {
-      window.location.href = `chitietphongkham.html?id=${id}`;
+    function handleViewDetail(button) {
+      try {
+        // Lấy dữ liệu từ thuộc tính data
+        const phongkhamData = button.getAttribute('data-phongkham');
+        const phongkham = JSON.parse(phongkhamData);
+        
+        // Lưu vào sessionStorage
+        sessionStorage.setItem('selectedPhongKham', JSON.stringify(phongkham));
+        
+        // Chuyển hướng sang trang bacsi.html
+        window.location.href = 'bacsi.html';
+      } catch (error) {
+        console.error('Lỗi khi xử lý dữ liệu:', error);
+        alert('Có lỗi xảy ra khi xem chi tiết phòng khám');
+      }
     }
   </script>
 </body>

@@ -156,3 +156,8 @@ def change_password():
 def get_phongkham():
     ds_phongkham = BenhNhanService.get_phongkham()
     return jsonify(ds_phongkham)
+
+@benhnhan_bp.route("/bacsi/<int:phongkhamID>", methods=["GET"])
+def get_bacsi(phongkhamID):
+    ds_bs = BenhNhanService.get_bacsi(phongkhamID)
+    return jsonify(ds_bs)
