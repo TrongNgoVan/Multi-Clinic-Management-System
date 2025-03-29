@@ -308,7 +308,9 @@
       // Định dạng ngày sinh
       const dob = new Date(benhnhan.dob);
       const formattedDob = `${String(dob.getDate()).padStart(2, '0')}/${String(dob.getMonth() + 1).padStart(2, '0')}/${dob.getFullYear()}`;
-
+        // Cập nhật ảnh đại diện
+      const patientImg = document.getElementById("patient-img");
+      patientImg.src = benhnhan.img || 'ava.jpg'; 
       document.getElementById("patient-name").textContent = benhnhan.ten;
       document.getElementById("patient-dob").textContent = formattedDob;
       document.getElementById("patient-cccd").textContent = benhnhan.cccd;

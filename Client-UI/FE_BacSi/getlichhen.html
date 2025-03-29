@@ -185,6 +185,7 @@
         container.innerHTML = ""; // Xoá nội dung cũ
 
         data.forEach(lichhen => {
+          // consolog(lichhen);
           // Xử lý ngày sinh
           const dob = new Date(lichhen.benhnhan.dob);
           const formattedDob = `${String(dob.getDate()).padStart(2, '0')}/${String(dob.getMonth() + 1).padStart(2, '0')}/${dob.getFullYear()}`;
@@ -195,7 +196,7 @@
 
           // Ảnh
           let img = document.createElement("img");
-          img.src = "ava.jpg"; // Đường dẫn ảnh đại diện
+          img.src = lichhen.benhnhan.img; // Đường dẫn ảnh đại diện
           img.alt = "Ảnh Bệnh Nhân";
 
           // Thông tin

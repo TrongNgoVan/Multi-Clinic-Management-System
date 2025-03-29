@@ -206,6 +206,7 @@
 
   <!-- Thanh trên cùng -->
   <div class="header">
+
     <a href="index.html" class="home-btn">
       <i class="fas fa-home"></i>
     </a>
@@ -218,7 +219,7 @@
     <div class="patient-info">
       <!-- Cột 1: Ảnh bệnh nhân -->
       <div class="photo-block">
-        <img src="ava.jpg" alt="Ảnh bệnh nhân">
+        <img id = "patient-img" src="ava.jpg" alt="Ảnh bệnh nhân">
       </div>
 
       <!-- Cột 2: Thông tin 1 -->
@@ -302,6 +303,9 @@
 
     function displayPhieuKham(phieukham, bacsi, benhnhan) {
       if (phieukham) {
+        const patientImg = document.getElementById("patient-img");
+        patientImg.src = benhnhan.img || 'ava.jpg'; 
+
         document.getElementById("patient-name").textContent = benhnhan.ten;
         document.getElementById("patient-dob").textContent = benhnhan.dob;
         document.getElementById("patient-cccd").textContent = benhnhan.cccd;
