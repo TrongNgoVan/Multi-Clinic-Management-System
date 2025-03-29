@@ -161,3 +161,12 @@ def get_phongkham():
 def get_bacsi(phongkhamID):
     ds_bs = BenhNhanService.get_bacsi(phongkhamID)
     return jsonify(ds_bs)
+
+@benhnhan_bp.route("/lichhen/add", methods= ["POST"])
+def add_lichhen():
+    try:
+        data = request.get_json()
+        result = BenhNhanService.add_lichhen(data)
+        return jsonify(result), 201 if result["success"] else 400
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)}), 500

@@ -194,3 +194,20 @@ class BenhNhanService:
         finally:
             if 'cursor' in locals(): cursor.close()
             if 'conn' in locals(): conn.close()
+    @staticmethod
+    def add_lichhen(data):
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor(dictionary=True)
+            query = """
+                INSERT INTO lichhen (bacsiID, benhnhanID, thoigianhen, ghichu)
+                VALUES (%s, %s, %s, %s)
+            """
+            cursor.execute(query, (data.get("bacsiID"), data.get("benhnhanID"), data.get("thoigian"), data.get("ghichu")))
+            conn.commit()
+            return {"success": True, "message": "Tạo lịch hẹn thành công"}
+        except Exception as e:
+            return {"success": False, "message": f"Lỗi khi tạo lịch hẹn: {str(e)}"}
+        finally:
+            if 'cursor' in locals(): cursor.close()
+            if 'conn' in locals(): conn.close()

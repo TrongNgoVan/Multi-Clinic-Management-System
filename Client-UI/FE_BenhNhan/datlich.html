@@ -1,193 +1,199 @@
 <!DOCTYPE html>
 <html lang="vi">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" href="img/ptit.png" type="image/x-icon">
-  <title>Đặt Lịch Khám</title>
-  <style>
-    /* Giữ nguyên CSS từ các trang trước */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f5f5f5;
-    }
-
-    .header {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background-color: #c70d0d;
-      color: #fff;
-      padding: 10px 20px;
-      position: relative;
-      margin-bottom: 20px;
-    }
-
-    .header h2 {
-      margin: 0;
-      font-weight: bold;
-      font-size: 18px;
-      text-transform: uppercase;
-    }
-
-    .header button {
-      position: absolute;
-      right: 20px;
-      background-color: #fff;
-      color: #c70d0d;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-weight: bold;
-      transition: background 0.2s;
-    }
-
-    .container {
-      width: 90%;
-      max-width: 900px;
-      margin: 20px auto;
-    }
-
-    .phongkham-info {
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-
-    .bacsi-card {
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      margin-bottom: 20px;
-    }
-
-    .bacsi-info {
-      display: grid;
-      grid-template-columns: 100px 1fr;
-      gap: 20px;
-      align-items: center;
-    }
-
-    .bacsi-img {
-      width: 100px;
-      height: 120px;
-      object-fit: cover;
-      border-radius: 5px;
-    }
-
-    .form-group {
-      margin-bottom: 20px;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: bold;
-      color: #333;
-    }
-
-    input[type="datetime-local"],
-    textarea {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      font-size: 14px;
-    }
-
-    textarea {
-      height: 100px;
-      resize: vertical;
-    }
-
-    .btn-submit {
-      background: #c70d0d;
-      color: white;
-      padding: 12px 30px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 16px;
-      display: block;
-      width: 100%;
-      transition: background 0.3s;
-    }
-
-    .btn-submit:hover {
-      background: #a00b0b;
-    }
-
-    .error-message {
-      color: red;
-      margin-top: 10px;
-    }
-  </style>
-</head>
-<body>
-  <div class="header">
-    <h2>Đặt Lịch Khám</h2>
-    <button onclick="goBack()">Quay lại</button>
-  </div>
-
-  <div class="container">
-    <!-- Thông tin phòng khám -->
-    <div class="phongkham-info" id="phongkhamInfo"></div>
-
-    <!-- Thông tin bác sĩ -->
-    <div class="bacsi-card" id="bacsiInfo"></div>
-
-    <!-- Form đặt lịch -->
-    <form id="datLichForm">
-      <div class="form-group">
-        <label for="thoiGian">Chọn thời gian khám:</label>
-        <input type="datetime-local" id="thoiGian" required>
-      </div>
-
-      <div class="form-group">
-        <label for="ghiChu">Thông tin bổ sung:</label>
-        <textarea 
-          id="ghiChu" 
-          placeholder="Vui lòng nhập các thông tin cần thiết (ví dụ: tình trạng cấp cứu, triệu chứng đặc biệt, yêu cầu đặc biệt...)"
-        ></textarea>
-      </div>
-
-      <button type="button" class="btn-submit" onclick="submitForm()">Xác nhận đặt lịch</button>
-      <div id="errorMessage" class="error-message"></div>
-    </form>
-  </div>
-
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      // Lấy thông tin từ sessionStorage
-      const phongkham = JSON.parse(sessionStorage.getItem('selectedPhongKham'));
-      const bacsi = JSON.parse(sessionStorage.getItem('selectedBacsi'));
-
-      if (!phongkham || !bacsi) {
-        alert('Vui lòng chọn phòng khám và bác sĩ trước khi đặt lịch!');
-        window.location.href = 'index.html';
-        return;
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="img/ptit.png" type="image/x-icon" />
+    <title>Đặt Lịch Khám</title>
+    <style>
+      /* Giữ nguyên CSS từ các trang trước */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
       }
 
-      // Hiển thị thông tin phòng khám
-      document.getElementById('phongkhamInfo').innerHTML = `
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f5f5f5;
+      }
+
+      .header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #c70d0d;
+        color: #fff;
+        padding: 10px 20px;
+        position: relative;
+        margin-bottom: 20px;
+      }
+
+      .header h2 {
+        margin: 0;
+        font-weight: bold;
+        font-size: 18px;
+        text-transform: uppercase;
+      }
+
+      .header button {
+        position: absolute;
+        right: 20px;
+        background-color: #fff;
+        color: #c70d0d;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: background 0.2s;
+      }
+
+      .container {
+        width: 90%;
+        max-width: 900px;
+        margin: 20px auto;
+      }
+
+      .phongkham-info {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      .bacsi-card {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+      }
+
+      .bacsi-info {
+        display: grid;
+        grid-template-columns: 100px 1fr;
+        gap: 20px;
+        align-items: center;
+      }
+
+      .bacsi-img {
+        width: 100px;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 5px;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+        color: #333;
+      }
+
+      input[type="datetime-local"],
+      textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+      }
+
+      textarea {
+        height: 100px;
+        resize: vertical;
+      }
+
+      .btn-submit {
+        background: #c70d0d;
+        color: white;
+        padding: 12px 30px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        display: block;
+        width: 100%;
+        transition: background 0.3s;
+      }
+
+      .btn-submit:hover {
+        background: #a00b0b;
+      }
+
+      .error-message {
+        color: red;
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h2>Đặt Lịch Khám</h2>
+      <button onclick="goBack()">Quay lại</button>
+    </div>
+
+    <div class="container">
+      <!-- Thông tin phòng khám -->
+      <div class="phongkham-info" id="phongkhamInfo"></div>
+
+      <!-- Thông tin bác sĩ -->
+      <div class="bacsi-card" id="bacsiInfo"></div>
+
+      <!-- Form đặt lịch -->
+      <form id="datLichForm">
+        <div class="form-group">
+          <label for="thoiGian">Chọn thời gian khám:</label>
+          <input type="datetime-local" id="thoiGian" required />
+        </div>
+
+        <div class="form-group">
+          <label for="ghiChu">Thông tin bổ sung:</label>
+          <textarea
+            id="ghiChu"
+            placeholder="Vui lòng nhập các thông tin cần thiết (ví dụ: tình trạng cấp cứu, triệu chứng đặc biệt, yêu cầu đặc biệt...)"
+          ></textarea>
+        </div>
+
+        <button type="button" class="btn-submit" onclick="submitForm()">
+          Đặt lịch ngay!
+        </button>
+        <div id="errorMessage" class="error-message"></div>
+      </form>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // Lấy thông tin từ sessionStorage
+        const phongkham = JSON.parse(
+          sessionStorage.getItem("selectedPhongKham")
+        );
+        const bacsi = JSON.parse(sessionStorage.getItem("selectedBacsi"));
+
+        if (!phongkham || !bacsi) {
+          alert("Vui lòng chọn phòng khám và bác sĩ trước khi đặt lịch!");
+          window.location.href = "index.html";
+          return;
+        }
+
+        // Hiển thị thông tin phòng khám
+        document.getElementById("phongkhamInfo").innerHTML = `
         <h3>${phongkham.chucNang}</h3>
         <p>${phongkham.moTa}</p>
       `;
 
-      // Hiển thị thông tin bác sĩ
-      document.getElementById('bacsiInfo').innerHTML = `
+        // Hiển thị thông tin bác sĩ
+        document.getElementById("bacsiInfo").innerHTML = `
         <div class="bacsi-info">
-          <img src="${bacsi.img || 'img/ptit.png'}" class="bacsi-img" alt="Bác sĩ">
+          <img src="${
+            bacsi.img || "img/ptit.png"
+          }" class="bacsi-img" alt="Bác sĩ">
           <div>
             <h3>${bacsi.ten}</h3>
             <p>Chuyên môn: ${bacsi.chuyenmon}</p>
@@ -196,38 +202,107 @@
           </div>
         </div>
       `;
-    });
+      });
 
-    function submitForm() {
-      const thoiGian = document.getElementById('thoiGian').value;
-      const ghiChu = document.getElementById('ghiChu').value;
+      async function submitForm() {
+        const thoiGian = document.getElementById("thoiGian").value;
+        const ghiChu = document.getElementById("ghiChu").value;
+        const button = document.querySelector(".btn-submit");
 
-      if (!thoiGian) {
-        showError('Vui lòng chọn thời gian khám');
-        return;
+        if (!thoiGian) {
+          showError("Vui lòng chọn thời gian khám");
+          return;
+        }
+
+        // Thêm xác nhận từ người dùng
+        const isConfirmed = confirm(`Bạn có chắc chắn muốn đặt lịch vào:\n
+            Thời gian: ${thoiGian}
+            Ghi chú: ${ghiChu || "Không có"}\n
+            Nhấn OK để xác nhận`);
+
+        if (!isConfirmed) {
+          showError("Đã hủy đặt lịch");
+          return;
+        }
+
+        try {
+          // Khóa nút và hiển thị trạng thái loading
+          button.disabled = true;
+          button.textContent = "Đang xử lý...";
+
+          const phongkham = JSON.parse(
+            sessionStorage.getItem("selectedPhongKham")
+          );
+          const bacsi = JSON.parse(sessionStorage.getItem("selectedBacsi"));
+          const benhnhan = JSON.parse(sessionStorage.getItem("benhnhan")); // ✅ Parse JSON
+          if (!benhnhan) {
+            alert("Bạn chưa đăng nhập!");
+            window.location.href = "dangnhap.html";
+            return;
+          }
+          if (!phongkham?.ID || !bacsi?.id) {
+            showError("Thông tin phòng khám/bác sĩ không hợp lệ");
+            button.disabled = false;
+            button.textContent = "Xác nhận đặt lịch";
+            return;
+          }
+
+          const payload = {
+            benhnhanID: benhnhan.id,
+            bacsiID: bacsi.id,
+            thoigian: thoiGian,
+            ghichu: ghiChu,
+          };
+
+       
+
+          const response = await fetch(
+            "http://192.168.43.20:5000/benhnhan/lichhen/add",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(payload),
+            }
+          );
+
+          const result = await response.json();
+
+          if (result.success) {
+            // Hiển thị thông báo thành công với định dạng đẹp hơn
+            const successMessage = `
+                Đặt lịch thành công!
+            `;
+
+            if (confirm(successMessage + "\n\nNhấn OK để về trang chủ")) {
+              sessionStorage.removeItem("selectedPhongKham");
+              sessionStorage.removeItem("selectedBacsi");
+              window.location.href = "index.html";
+            }
+          } else {
+            showError(result.message || "Đặt lịch thất bại");
+          }
+        } catch (error) {
+          console.error("Lỗi:", error);
+          showError(`Lỗi kết nối: ${error.message}`);
+        } finally {
+          // Luôn mở khóa nút dù thành công hay thất bại
+          button.disabled = false;
+          button.textContent = "Xác nhận đặt lịch";
+        }
       }
 
-      // Lưu thông tin đặt lịch vào sessionStorage
-      const datLichInfo = {
-        phongkham: JSON.parse(sessionStorage.getItem('selectedPhongKham')),
-        bacsi: JSON.parse(sessionStorage.getItem('selectedBacsi')),
-        thoiGian,
-        ghiChu
-      };
+      function showError(message) {
+        document.getElementById("errorMessage").textContent = message;
+        setTimeout(() => {
+          document.getElementById("errorMessage").textContent = "";
+        }, 5000);
+      }
 
-      sessionStorage.setItem('datLichInfo', JSON.stringify(datLichInfo));
-      
-      // Chuyển hướng sang trang xác nhận
-      window.location.href = 'xacnhan.html';
-    }
-
-    function showError(message) {
-      document.getElementById('errorMessage').textContent = message;
-    }
-
-    function goBack() {
-      window.history.back();
-    }
-  </script>
-</body>
+      function goBack() {
+        window.history.back();
+      }
+    </script>
+  </body>
 </html>
