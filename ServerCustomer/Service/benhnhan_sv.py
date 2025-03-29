@@ -130,3 +130,27 @@ class BenhNhanService:
         finally:
             if connection:
                 connection.close()
+    
+    @staticmethod
+    def update_password(id, password):
+
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        
+        # Cập nhật các trường cần thiết (nếu dữ liệu được gửi lên)
+        update_query = """
+        UPDATE benhnhan
+        SET password = %s
+        WHERE id = %s
+        """
+        cursor.execute(update_query, (
+            
+            password,
+            id
+        ))
+        conn.commit()
+        cursor.close()
+        conn.close()
+        
+        # Để đơn giản, ta trả về dữ liệu đã gửi (có thể bổ sung truy vấn lại từ DB nếu cần)
+        return {"success": True, "message": "Cập nhật thành công"}

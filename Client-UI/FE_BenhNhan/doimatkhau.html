@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đổi Mật Khẩu</title>
+    <link rel="icon" href="img/ptit.png" type="image/x-icon" />
+    <style>
+      /* Giữ nguyên toàn bộ CSS từ file cũ */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f8f8f8;
+      }
+      header {
+        background-color: #bf0f0f;
+        color: #fff;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 20px;
+      }
+      .logo {
+        font-weight: bold;
+        font-size: 18px;
+      }
+      nav a {
+        color: #fff;
+        text-decoration: none;
+        margin: 0 10px;
+        font-weight: 500;
+      }
+      nav a:hover {
+        text-decoration: underline;
+      }
+      .user-info {
+        display: flex;
+        align-items: center;
+      }
+      .user-info a {
+        color: #fff;
+        text-decoration: none;
+        margin-right: 10px;
+        margin-left: 10px;
+        font-weight: bold;
+      }
+      .top-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid #fff;
+      }
+      .breadcrumb {
+        background-color: #f1f1f1;
+        padding: 10px 20px;
+        font-size: 14px;
+        color: #555;
+      }
+      .container {
+        max-width: 500px;
+        margin: 20px auto;
+        background-color: #fff;
+        padding: 30px;
+        border-radius: 6px;
+        box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+      }
+      h2 {
+        color: #bc0909;
+        margin-bottom: 20px;
+        text-align: center;
+      }
+      .form-group {
+        margin-bottom: 15px;
+      }
+      .form-group label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 5px;
+      }
+      .form-group input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+      button {
+        width: 100%;
+        padding: 12px;
+        background-color: #bd0808;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        cursor: pointer;
+        margin-top: 10px;
+      }
+      button:hover {
+        background-color: #dc1d1d;
+      }
+      #message {
+        text-align: center;
+        margin-top: 15px;
+        font-weight: bold;
+      }
+      footer {
+        background-color: #c50505;
+        color: #fff;
+        text-align: center;
+        padding: 10px;
+        margin-top: 150px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Giữ nguyên header từ file cũ -->
+    <header>
+      <div class="logo">Phòng Khám PTIT</div>
+      <nav>
+        <a href="index.html">Trang chủ</a>
+        <a href="#">Đặt lịch hẹn</a>
+        <a href="#">Đơn thuốc của bạn</a>
+        <a href="#">Phiếu khám của bạn</a>
+        <a href="#">Lịch hẹn của bạn</a>
+      </nav>
+
+      <div class="user-info">
+        <a id="username" href="thongtin.html">ngovanntrong1308</a>
+        <img
+          id="top-avatar"
+          class="top-avatar"
+          src="img/logo1.jpg"
+          alt="Ảnh đại diện"
+        />
+        <a id="logout" href="#" onclick="logout(event)">Đăng xuất</a>
+      </div>
+    </header>
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">Trang chủ / Đổi mật khẩu</div>
+
+    <!-- Container chính - Form đổi mật khẩu -->
+    <div class="container">
+      <h2>Đổi Mật Khẩu</h2>
+      <div class="form-group">
+        <label for="old-password">Mật khẩu hiện tại:</label>
+        <input
+          type="password"
+          id="old-password"
+          placeholder="Nhập mật khẩu hiện tại"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="new-password">Mật khẩu mới:</label>
+        <input
+          type="password"
+          id="new-password"
+          placeholder="Nhập mật khẩu mới"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="confirm-password">Xác nhận mật khẩu mới:</label>
+        <input
+          type="password"
+          id="confirm-password"
+          placeholder="Nhập lại mật khẩu mới"
+          required
+        />
+      </div>
+      <button onclick="changePassword()">Đổi mật khẩu</button>
+      <p id="message"></p>
+    </div>
+
+    <!-- Footer -->
+    <footer>&copy; 2025 Phòng Khám PTIT - All Rights Reserved.</footer>
+
+    <script>
+      // Khi trang load, điền thông tin người dùng từ sessionStorage
+      (function () {
+        try {
+          const benhnhanStr = sessionStorage.getItem("benhnhan");
+          if (!benhnhanStr) {
+            alert("Vui lòng đăng nhập để tiếp tục");
+            window.location.href = "login.html";
+            return;
+          }
+
+          const benhnhan = JSON.parse(benhnhanStr);
+          if (benhnhan.ten) {
+            document.getElementById("username").innerText = benhnhan.ten;
+          }
+          if (benhnhan.img) {
+            document.getElementById("top-avatar").src = benhnhan.img;
+          }
+        } catch (error) {
+          console.error("Lỗi khi tải thông tin:", error);
+        }
+      })();
+
+      // Hàm đổi mật khẩu
+      function changePassword() {
+        try {
+          const benhnhanStr = sessionStorage.getItem("benhnhan");
+          if (!benhnhanStr) {
+            document.getElementById("message").innerText =
+              "Vui lòng đăng nhập lại!";
+            document.getElementById("message").style.color = "red";
+            return;
+          }
+
+          const benhnhan = JSON.parse(benhnhanStr);
+          const password = benhnhan.password;
+          const oldPassword = document.getElementById("old-password").value;
+          const newPassword = document.getElementById("new-password").value;
+          const confirmPassword =
+            document.getElementById("confirm-password").value;
+
+          if (oldPassword !== password) {
+            document.getElementById("message").innerText =
+              "Mật khẩu hiện tại không đúng, hãy nhớ lại!";
+            document.getElementById("message").style.color = "red";
+            return;
+          }
+          // Kiểm tra dữ liệu nhập
+          if (!oldPassword || !newPassword || !confirmPassword) {
+            document.getElementById("message").innerText =
+              "Vui lòng điền đầy đủ thông tin!";
+            document.getElementById("message").style.color = "red";
+            return;
+          }
+
+          if (newPassword.length < 6) {
+            document.getElementById("message").innerText =
+              "Mật khẩu mới phải có ít nhất 6 ký tự!";
+            document.getElementById("message").style.color = "red";
+            return;
+          }
+
+          if (newPassword !== confirmPassword) {
+            document.getElementById("message").innerText =
+              "Mật khẩu mới không khớp!";
+            document.getElementById("message").style.color = "red";
+            return;
+          }
+
+          // Gửi yêu cầu đổi mật khẩu
+          fetch("http://172.11.43.16:5000/benhnhan/change-password", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              id: benhnhan.id,
+              newPassword: newPassword,
+            }),
+          })
+            .then((response) => response.json()) // Trong phần xử lý response API thành công
+            .then((data) => {
+              const messageEl = document.getElementById("message");
+              if (data.success) {
+                messageEl.innerText = "Đổi mật khẩu thành công!";
+                messageEl.style.color = "green";
+
+                // Cập nhật mật khẩu mới vào session
+                benhnhan.password = newPassword; // Thêm dòng này
+                sessionStorage.setItem("benhnhan", JSON.stringify(benhnhan)); // Thêm dòng này
+
+                // Xóa các trường nhập liệu
+                document.getElementById("old-password").value = "";
+                document.getElementById("new-password").value = "";
+                document.getElementById("confirm-password").value = "";
+              } else {
+                messageEl.innerText = data.message || "Đổi mật khẩu thất bại!";
+                messageEl.style.color = "red";
+              }
+            })
+            .catch((error) => {
+              console.error("Lỗi:", error);
+              document.getElementById("message").innerText =
+                "Có lỗi xảy ra. Vui lòng thử lại sau!";
+              document.getElementById("message").style.color = "red";
+            });
+        } catch (error) {
+          console.error("Lỗi trong quá trình xử lý:", error);
+          document.getElementById("message").innerText =
+            "Đã xảy ra lỗi trong quá trình xử lý.";
+          document.getElementById("message").style.color = "red";
+        }
+      }
+      function logout(event) {
+        event.preventDefault(); // Ngăn hành vi mặc định của thẻ <a>
+        sessionStorage.clear();
+        window.location.href = "dangnhap.html";
+        return false;
+      }
+    </script>
+  </body>
+</html>

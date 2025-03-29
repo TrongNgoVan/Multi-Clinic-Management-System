@@ -136,3 +136,17 @@ def login_bacsi():
     else:
         return jsonify(result), 401
 
+@benhnhan_bp.route("/change-password", methods=["POST"])
+def change_password():
+    try:
+        data = request.get_json()
+        benhnhan_id = data.get("id")
+        new_password = data.get("newPassword")
+
+        # Cập nhật mật khẩu mới
+        result = BenhNhanService.update_password(benhnhan_id, new_password)
+        return jsonify(result), 201 if result["success"] else 400
+
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)}), 500
+

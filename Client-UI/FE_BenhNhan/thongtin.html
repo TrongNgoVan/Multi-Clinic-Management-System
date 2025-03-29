@@ -1,434 +1,356 @@
 <!DOCTYPE html>
 <html lang="vi">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Thông Tin Cá Nhân</title>
-    <link rel="icon" href="img/ptit.png" type="image/x-icon" />
-    <style>
-      /* Đặt lại một số thuộc tính mặc định */
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-      body {
-        font-family: Arial, sans-serif;
-        background-color: #f8f8f8;
-      }
-      /* Header và thanh điều hướng */
-      header {
-        background-color: #d60000; /* Màu đỏ PTIT */
-        color: #fff;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px 20px;
-      }
-      .logo {
-        font-weight: bold;
-        font-size: 18px;
-      }
-      nav a {
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thông Tin Cá Nhân</title>
+  <link rel="icon" href="img/ptit.png" type="image/x-icon" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f8f8;
+    }
+
+    /* Header */
+    header {
+      background-color: #b80909;
+      color: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+    }
+
+    .logo {
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      margin: 0 10px;
+      font-weight: 500;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .top-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 4px;
+      object-fit: cover;
+      border: 2px solid #fff;
+    }
+
+    /* Breadcrumb */
+    .breadcrumb {
+      background-color: #f1f1f1;
+      padding: 10px 20px;
+      font-size: 14px;
+      color: #555;
+    }
+
+    /* Main Container */
+    .main-container {
+      display: flex;
+      gap: 30px;
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 0 20px;
+    }
+
+    /* Left Column - Form */
+    .form-container {
+      flex: 3;
+      background: #fff;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .form-container h2 {
+      color: #c60707;
+      margin-bottom: 25px;
+      border-bottom: 2px solid #eee;
+      padding-bottom: 10px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #555;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    /* Right Column - Avatar & Contact */
+    .sidebar-container {
+      flex: 1;
+      max-width: 300px;
+    }
+
+    .avatar-section {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+
+    #avatar-preview {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+      border-radius: 4px;
+      margin-bottom: 15px;
+      border: 2px solid #eee;
+    }
+
+    .upload-btn {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      background: #bd0303;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      text-align: center;
+      transition: background 0.3s;
+    }
+
+    .upload-btn:hover {
+      background: #ec0d0d;
+    }
+
+    
+
+    /* Button */
+    .submit-btn {
+      background: #c50606;
+      color: white;
+      padding: 12px 25px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.3s;
+    }
+
+    .submit-btn:hover {
+      background: #ed0b0b;
+    }
+
+    /* Footer */
+    footer {
+      background-color: #c10a0a;
+      color: #fff;
+      text-align: center;
+      padding: 15px;
+      margin-top: 30px;
+    }
+    .user-info a{
         color: #fff;
         text-decoration: none;
-        margin: 0 10px;
-        font-weight: 500;
-      }
-      nav a:hover {
-        text-decoration: underline;
-      }
-      /* Phần user-info góc phải header */
-      .user-info {
-        display: flex;
-        align-items: center;
-      }
-      .user-info span {
         margin-right: 10px;
         font-weight: bold;
       }
-      .top-avatar {
-        width: 35px;
-        height: 35px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 2px solid #fff;
-      }
-      /* Breadcrumb */
-      .breadcrumb {
-        background-color: #f1f1f1;
-        padding: 10px 20px;
-        font-size: 14px;
-        color: #555;
-      }
-      /* Khu vực chứa nội dung chính */
-      .container {
-        display: flex;
-        justify-content: space-between;
-        max-width: 1200px;
-        margin: 20px auto;
-        gap: 20px;
-      }
-      /* Cột chính chứa form cập nhật */
-      .main-content {
-        flex: 2;
-        background-color: #fff;
-        padding: 20px;
-        border-radius: 6px;
-        box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
-      }
-      .main-content h2 {
-        color: #d60000;
-        margin-bottom: 20px;
-      }
-      /* Form cập nhật thông tin */
-      .update-form label {
-        font-weight: bold;
-        display: block;
-        margin: 10px 0 5px;
-      }
-      .update-form input {
-        width: 100%;
-        padding: 8px;
-        margin-bottom: 10px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-      }
-      .update-form button {
-        width: 100%;
-        padding: 10px;
-        background-color: #28a745;
-        border: none;
+      .user-info span{
         color: #fff;
-        font-size: 16px;
-        border-radius: 4px;
-        cursor: pointer;
-      }
-      .update-form button:hover {
-        background-color: #218838;
-      }
-      /* Ảnh đại diện xem trước */
-      #avatar-preview {
-        display: block;
-        width: 100px;
-        height: 100px;
-        border-radius: 50%;
-        object-fit: cover;
-        margin: 10px auto;
-        border: 2px solid #ccc;
-      }
-      #message {
-        text-align: center;
-        margin-top: 15px;
+        text-decoration: none;
+        margin-right: 10px;
         font-weight: bold;
       }
-      /* Cột bên phải chứa liên hệ & giới thiệu */
-      .sidebar {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-      }
-      .sidebar-section {
-        background-color: #fff;
-        padding: 20px;
-        border-radius: 6px;
-        box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
-      }
-      .sidebar-section h3 {
-        color: #d60000;
-        margin-bottom: 10px;
-      }
-      .sidebar-section p {
-        line-height: 1.6;
-      }
-      /* Footer */
-      footer {
-        background-color: #d60000;
-        color: #fff;
-        text-align: center;
-        padding: 10px;
-        margin-top: 20px;
-      }
-    </style>
-  </head>
-  <body>
-    <!-- Header + Nav -->
-    <header>
-      <div class="logo">Phòng Khám PTIT</div>
-      <nav>
-        <a href="#">Trang chủ</a>
-        <a href="#">Đặt lịch hẹn</a>
-        <a href="#">Xem phiếu khám</a>
-        <a href="#">Xem đơn thuốc</a>
-        <a href="#">Xem thông tin phòng khám</a>
-      </nav>
-      <div class="user-info">
-        <span id="username">ngovanntrong1308</span>
-        <img
-          id="top-avatar"
-          class="top-avatar"
-          src="https://via.placeholder.com/35"
-          alt="Ảnh đại diện"
-        />
+
+    .user-info a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">Phòng Khám PTIT</div>
+    <nav>
+      <a href="index.html">Trang chủ</a>
+      <a href="#">Phiếu khám của bạn</a>
+      <a href="#">Lịch hẹn của bạn</a>
+      <a href="#">Đơn thuốc của bạn</a>
+      <a href="#">Đặt lịch hẹn</a>
+    </nav>
+    <div class="user-info">
+      <span id="username">ngovanntrong1308</span>
+      <img id="top-avatar" class="top-avatar" src="img/ptit.png" alt="Ảnh đại diện">
+      <a id="logout" href="#" onclick="logout(event)">Đăng xuất</a>
+    </div>
+  </header>
+
+
+  <div class="breadcrumb">
+    <a href="doimatkhau.html" style="color: #d60000; text-decoration: none; font-weight: bold;">
+      Đổi mật khẩu
+    </a>
+  </div>
+
+
+  <div class="main-container">
+    <!-- Left Column - Form -->
+    <div class="form-container">
+      <h2>Thông tin cá nhân</h2>
+      <div class="form-group">
+        <label for="ten">Họ và Tên:</label>
+        <input type="text" id="ten" placeholder="Nhập họ và tên">
       </div>
-    </header>
-
-    <!-- Breadcrumb -->
-    <div class="breadcrumb">Trang chủ / Quản lý Tài Khoản</div>
-
-    <!-- Container Chính -->
-    <div class="container">
-      <!-- Cột chính: Form cập nhật -->
-      <div class="main-content">
-        <h2>Thông tin cơ bản</h2>
-        <div class="update-form">
-          <label for="ten">Họ và Tên:</label>
-          <input type="text" id="ten" placeholder="Nhập họ và tên" />
-
-          <label for="sdt">Số Điện Thoại:</label>
-          <input type="text" id="sdt" placeholder="Nhập số điện thoại" />
-
-          <label for="quequan">Quê Quán:</label>
-          <input type="text" id="quequan" placeholder="Nhập quê quán" />
-
-          <label for="cccd">CCCD:</label>
-          <input type="text" id="cccd" placeholder="Nhập số CCCD" />
-
-          <label for="dob">Ngày Sinh:</label>
-          <input type="date" class="form-control" id="dob" name="dob" />
-          
-
-          <label for="avatar">Ảnh Đại Diện:</label>
-          <input type="file" id="avatar" accept="image/*" />
-          <img id="avatar-preview" src="" alt="Ảnh đại diện" />
-
-          <button onclick="updateInfo()">Cập Nhật</button>
-          <p id="message"></p>
-        </div>
+      <div class="form-group">
+        <label for="sdt">Số Điện Thoại:</label>
+        <input type="text" id="sdt" placeholder="Nhập số điện thoại">
       </div>
-
-      <!-- Cột phụ: Thông tin liên hệ & Giới thiệu -->
-      <div class="sidebar">
-        <div class="sidebar-section">
-          <h3>Thông tin liên hệ</h3>
-          <p>
-            - Địa chỉ: Số 1, Nguyễn Trãi, Hà Đông, Hà Nội <br />
-            - Điện thoại: 0123.456.789 <br />
-            - Email: contact@ptit.vn
-          </p>
-        </div>
-        <div class="sidebar-section">
-          <h3>Giới thiệu</h3>
-          <p>
-            Phòng Trọ PTIT là hệ thống cung cấp phòng trọ, nhà nguyên căn uy tín
-            cho sinh viên Học viện Công nghệ Bưu chính Viễn thông và các khu vực
-            lân cận. Với mục tiêu giúp sinh viên và người lao động có môi trường
-            sống tốt nhất, chúng tôi luôn cập nhật thông tin phòng trọ, tin tức
-            và hỗ trợ khách hàng nhanh chóng.
-          </p>
-        </div>
+      <div class="form-group">
+        <label for="quequan">Quê Quán:</label>
+        <input type="text" id="quequan" placeholder="Nhập quê quán">
       </div>
+      <div class="form-group">
+        <label for="cccd">CCCD:</label>
+        <input type="text" id="cccd" placeholder="Nhập số CCCD">
+      </div>
+      <div class="form-group">
+        <label for="dob">Ngày Sinh:</label>
+        <input type="date" id="dob">
+      </div>
+      <button class="submit-btn" onclick="updateInfo()">Cập nhật thông tin</button>
     </div>
 
-    <!-- Footer -->
-    <footer>&copy; 2025 Phòng Trọ PTIT - All Rights Reserved.</footer>
+    <!-- Right Column - Avatar & Contact -->
+    <div class="sidebar-container">
+      <div class="avatar-section">
+        <img id="avatar-preview" src="https://via.placeholder.com/200" alt="Ảnh đại diện">
+        <label for="avatar" class="upload-btn">Tải ảnh lên</label>
+        <input type="file" id="avatar" accept="image/*" hidden>
+      </div>
 
-    <script>
-      // Khi trang load, điền thông tin bệnh nhân từ sessionStorage (đã lưu sau đăng nhập)
-      (function () {
-        try {
-          const benhnhanStr = sessionStorage.getItem("benhnhan");
-          if (!benhnhanStr) {
-            console.error(
-              "Không tìm thấy dữ liệu bệnh nhân trong sessionStorage"
-            );
-            alert(
-              "Không tìm thấy thông tin bệnh nhân, vui lòng đăng nhập lại."
-            );
-            window.location.href = "login_register.html";
-            return;
-          }
+    
+    </div>
+  </div>
 
-          console.log("Dữ liệu bệnh nhân từ sessionStorage:", benhnhanStr);
-          const benhnhan = JSON.parse(benhnhanStr);
-          console.log("Dữ liệu sau khi parse:", benhnhan);
+  <footer>&copy; 2025 Phòng Khám PTIT - All Rights Reserved.</footer>
 
-          // Đổ dữ liệu lên form
-          document.getElementById("ten").value = benhnhan.ten || "";
-          document.getElementById("sdt").value = benhnhan.sdt || "";
-          document.getElementById("quequan").value = benhnhan.quequan || "";
-          document.getElementById("cccd").value = benhnhan.cccd || "";
-
-          // Xử lý ngày sinh
-          // Xử lý ngày sinh
-          if (benhnhan.dob) {
-            console.log("Giá trị dob gốc:", benhnhan.dob);
-            let dobValue = benhnhan.dob;
-
-            // Xử lý các định dạng ngày khác nhau
-            if (typeof dobValue === "string") {
-              // Trường hợp chuỗi có định dạng GMT
-              if (dobValue.includes("GMT")) {
-                try {
-                  const dateObj = new Date(dobValue);
-                  if (isNaN(dateObj.getTime())) {
-                    throw new Error("Ngày sinh không hợp lệ");
-                  }
-                  const year = dateObj.getFullYear();
-                  const month = String(dateObj.getMonth() + 1).padStart(2, "0");
-                  const day = String(dateObj.getDate()).padStart(2, "0");
-                  dobValue = `${year}-${month}-${day}`;
-                } catch (error) {
-                  console.error("Lỗi xử lý ngày sinh GMT:", error);
-                  dobValue = ""; // Hoặc gán giá trị mặc định
-                }
-              }
-              // Xử lý định dạng ISO (có chứa 'T')
-              else if (dobValue.includes("T")) {
-                dobValue = dobValue.split("T")[0];
-              }
-              // Xử lý định dạng MM/DD/YYYY
-              else if (dobValue.includes("/")) {
-                const parts = dobValue.split("/");
-                if (parts.length === 3) {
-                  const month = parts[0].padStart(2, "0");
-                  const day = parts[1].padStart(2, "0");
-                  const year = parts[2];
-                  dobValue = `${year}-${month}-${day}`;
-                }
-              }
-            } else if (dobValue instanceof Date) {
-              // Xử lý nếu dobValue là đối tượng Date
-              const year = dobValue.getFullYear();
-              const month = String(dobValue.getMonth() + 1).padStart(2, "0");
-              const day = String(dobValue.getDate()).padStart(2, "0");
-              dobValue = `${year}-${month}-${day}`;
-            }
-
-            console.log("Giá trị dob sau khi xử lý:", dobValue);
-            document.getElementById("dob").value = dobValue;
-          } else {
-            console.warn("Không có dữ liệu ngày sinh");
-          }
-
-          // Avatar hiển thị ở form + trên header
-          if (benhnhan.img) {
-            document.getElementById("avatar-preview").src = benhnhan.img;
-            document.getElementById("top-avatar").src = benhnhan.img;
-          }
-
-          // Tên hiển thị góc phải header
-          if (benhnhan.ten) {
-            document.getElementById("username").innerText = benhnhan.ten;
-          }
-        } catch (error) {
-          console.error("Lỗi khi xử lý dữ liệu:", error);
-          alert("Có lỗi xảy ra khi tải thông tin. Vui lòng thử lại.");
+  <script>
+    // Load thông tin từ sessionStorage
+    (function () {
+      try {
+        const benhnhanStr = sessionStorage.getItem("benhnhan");
+        if (!benhnhanStr) {
+          alert("Vui lòng đăng nhập lại!");
+          window.location.href = "login.html";
+          return;
         }
-      })();
 
-      // Hiển thị preview của file ảnh khi chọn
-      document
-        .getElementById("avatar")
-        .addEventListener("change", function (event) {
-          const file = event.target.files[0];
-          if (file) {
-            const reader = new FileReader();
-            reader.onload = function (e) {
-              document.getElementById("avatar-preview").src = e.target.result;
-            };
-            reader.readAsDataURL(file);
-          }
+        const benhnhan = JSON.parse(benhnhanStr);
+        
+        // Điền thông tin vào form
+        document.getElementById("ten").value = benhnhan.ten || "";
+        document.getElementById("sdt").value = benhnhan.sdt || "";
+        document.getElementById("quequan").value = benhnhan.quequan || "";
+        document.getElementById("cccd").value = benhnhan.cccd || "";
+        document.getElementById("dob").value = benhnhan.dob || "";
+
+        // Xử lý ảnh đại diện
+        if (benhnhan.img) {
+          document.getElementById("avatar-preview").src = benhnhan.img;
+          document.getElementById("top-avatar").src = benhnhan.img;
+        }
+
+        // Cập nhật tên hiển thị
+        if (benhnhan.ten) {
+          document.getElementById("username").textContent = benhnhan.ten;
+        }
+      } catch (error) {
+        console.error("Lỗi khi tải thông tin:", error);
+      }
+    })();
+
+    // Xử lý upload ảnh
+    document.getElementById("avatar").addEventListener("change", function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          document.getElementById("avatar-preview").src = event.target.result;
+          document.getElementById("top-avatar").src = event.target.result;
+        }
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // Hàm cập nhật thông tin
+    async function updateInfo() {
+      try {
+        const formData = new FormData();
+        const benhnhan = JSON.parse(sessionStorage.getItem("benhnhan"));
+
+        // Thêm thông tin vào formData
+        formData.append("id", benhnhan.id);
+        formData.append("ten", document.getElementById("ten").value);
+        formData.append("sdt", document.getElementById("sdt").value);
+        formData.append("quequan", document.getElementById("quequan").value);
+        formData.append("cccd", document.getElementById("cccd").value);
+        formData.append("dob", document.getElementById("dob").value);
+
+        // Thêm file ảnh nếu có
+        const avatarFile = document.getElementById("avatar").files[0];
+        if (avatarFile) formData.append("img", avatarFile);
+
+        // Gửi request
+        const response = await fetch("http://172.11.43.16:5000/benhnhan/update", {
+          method: "PUT",
+          body: formData
         });
 
-      // Hàm cập nhật thông tin
-      function updateInfo() {
-        try {
-          const benhnhanStr = sessionStorage.getItem("benhnhan");
-          if (!benhnhanStr) {
-            document.getElementById("message").innerText =
-              "Không tìm thấy thông tin bệnh nhân!";
-            document.getElementById("message").style.color = "red";
-            return;
-          }
-
-          const benhnhan = JSON.parse(benhnhanStr);
+        const data = await response.json();
         
- 
-        
-
-          // Tạo FormData để gửi cả file ảnh và dữ liệu text
-          const formData = new FormData();
-          formData.append("id", benhnhan.id);
-          formData.append("ten", document.getElementById("ten").value);
-          formData.append("sdt", document.getElementById("sdt").value);
-          formData.append("quequan", document.getElementById("quequan").value);
-          formData.append("cccd", document.getElementById("cccd").value);
-          formData.append("dob", document.getElementById("dob").value);
-
-         
-
-          // Ảnh đại diện mới
-          const avatarFile = document.getElementById("avatar").files[0];
-          if (avatarFile) {
-            formData.append("img", avatarFile);
-          }
-
-          // Log dữ liệu gửi lên để debug
-          console.log("Dữ liệu gửi lên server:");
-          for (let pair of formData.entries()) {
-            // Không log password ra console
-            if (pair[0] !== "password") {
-              console.log(pair[0] + ": " + pair[1]);
-            }
-          }
-
-          fetch("http://172.11.43.16:5000/benhnhan/update", {
-            method: "PUT",
-            body: formData,
-          })
-            .then((response) => response.json())
-            .then((data) => {
-              const messageEl = document.getElementById("message");
-              if (data.success) {
-                messageEl.innerText = "Cập nhật thành công!";
-                messageEl.style.color = "green";
-                // Cập nhật lại sessionStorage nếu API trả về thông tin mới
-                sessionStorage.setItem(
-                  "benhnhan",
-                  JSON.stringify(data.benhnhan)
-                );
-                console.log("Dữ liệu mới từ server:", data.benhnhan);
-
-                // Cập nhật avatar hiển thị trên header nếu có
-                if (data.benhnhan.img) {
-                  document.getElementById("top-avatar").src = data.benhnhan.img;
-                }
-
-                // Cập nhật tên hiển thị nếu có thay đổi
-                if (data.benhnhan.ten) {
-                  document.getElementById("username").innerText =
-                    data.benhnhan.ten;
-                }
-              } else {
-                messageEl.innerText = data.message || "Cập nhật thất bại";
-                messageEl.style.color = "red";
-              }
-            })
-            .catch((error) => {
-              console.error("Lỗi:", error);
-              document.getElementById("message").innerText =
-                "Có lỗi xảy ra. Vui lòng thử lại sau!";
-              document.getElementById("message").style.color = "red";
-            });
-        } catch (error) {
-          console.error("Lỗi trong quá trình xử lý:", error);
-          document.getElementById("message").innerText =
-            "Đã xảy ra lỗi trong quá trình xử lý.";
-          document.getElementById("message").style.color = "red";
+        if (data.success) {
+          alert("Cập nhật thành công!");
+          sessionStorage.setItem("benhnhan", JSON.stringify(data.benhnhan));
+        } else {
+          alert(data.message || "Cập nhật thất bại!");
         }
+      } catch (error) {
+        console.error("Lỗi:", error);
+        alert("Có lỗi xảy ra, vui lòng thử lại!");
       }
-    </script>
-  </body>
+      
+    }
+    function logout(event) {
+  event.preventDefault(); // Ngăn hành vi mặc định của thẻ <a>
+  sessionStorage.clear();
+  window.location.href = "dangnhap.html";
+  return false;
+}
+  </script>
+</body>
 </html>
