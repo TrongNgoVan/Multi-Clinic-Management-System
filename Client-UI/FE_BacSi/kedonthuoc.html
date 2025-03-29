@@ -326,7 +326,7 @@
           row => row.getAttribute("data-thuoc-id") === medicine.id
         );
         if (!existingRow) {
-          addMedicineRow(medicine.id, medicine.name, medicine.price, 1, medicine.image);
+          addMedicineRow(medicine.id, medicine.name, medicine.price, 1, medicine.img);
         }
       });
     }
@@ -344,7 +344,7 @@
       // Cột ảnh
       const imageCell = document.createElement("td");
       const imgElem = document.createElement("img");
-      imgElem.src = imageURL || "img/no_image.png"; // nếu không có ảnh thì dùng ảnh mặc định
+      imgElem.src = imageURL || "img/thuoc.jpg"; // nếu không có ảnh thì dùng ảnh mặc định
       imgElem.alt = medicineName;
       imgElem.className = "medicine-image";
       imageCell.appendChild(imgElem);

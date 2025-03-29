@@ -144,6 +144,21 @@
       .btn-back:hover {
         background-color: #d21111;
       }
+      .medicine-image {
+            width: 70px;
+            height: 70px;
+            object-fit: contain;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 2px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Thêm hiệu ứng hover cho hàng bảng */
+        tr:hover {
+            background-color: #f9f9f9;
+        }
     </style>
   </head>
   <body>
@@ -188,98 +203,101 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        const bacsiStr = sessionStorage.getItem("bacsi");
-        if (!bacsiStr) {
-          window.location.href = "dangnhap.html";
-          return;
-        }
-        fetchMedicineList();
+          const bacsiStr = sessionStorage.getItem("bacsi");
+          if (!bacsiStr) {
+              window.location.href = "dangnhap.html";
+              return;
+          }
+          fetchMedicineList();
       });
 
       async function fetchMedicineList(searchTerm = "") {
-        try {
-          let response = await fetch(
-            `http://26.80.253.0:5000/bacsi/get_thuoc?search=${encodeURIComponent(
-              searchTerm
-            )}`
-          );
-          if (!response.ok) throw new Error("Lỗi API, mã: " + response.status);
+          try {
+              let response = await fetch(
+                  `http://26.80.253.0:5000/bacsi/get_thuoc?search=${encodeURIComponent(searchTerm)}`
+              );
+              if (!response.ok) throw new Error("Lỗi API, mã: " + response.status);
 
-          let data = await response.json();
-          const medicineList = document.getElementById("medicine-list");
-          medicineList.innerHTML = "";
+              let data = await response.json();
+              const medicineList = document.getElementById("medicine-list");
+              medicineList.innerHTML = "";
 
-          data.forEach((medicine) => {
-            // Nếu API có trường image (đường dẫn ảnh), ta dùng, nếu không thì ảnh mặc định
-            const imageURL = medicine.image
-              ? medicine.image
-              : "img/no_image.png"; // ảnh mặc định nếu không có
+              // Xử lý fallback ảnh 2 lớp
+              const defaultImage = "img/thuoc.jpg"; // Đường dẫn tuyệt đối/relative
 
-            const row = document.createElement("tr");
-            row.innerHTML = `
-            <td>
-              <input type="checkbox"
-                     class="medicine-checkbox"
-                     data-id="${medicine.id}"
-                     data-name="${medicine.ten}"
-                     data-price="${medicine.dongia}">
-            </td>
-            <!-- Cột ảnh -->
-            <td>
-              <img src="thuoc.jpg" 
-                   alt="${medicine.ten}" 
-                   class="medicine-image">
-            </td>
-            <td>${medicine.ten}</td>
-            <td>${medicine.mota}</td>
-            <td>${medicine.nsx}</td>
-            <td>${medicine.hsd}</td>
-            <td>${medicine.dongia}</td>
-          `;
-            medicineList.appendChild(row);
-          });
-        } catch (error) {
-          console.error("Lỗi khi lấy danh sách thuốc:", error);
-        }
-      }
-
-      function searchMedicine() {
-        const searchInput = document
-          .getElementById("search-input")
-          .value.toLowerCase();
-        fetchMedicineList(searchInput);
+              data.forEach((medicine) => {
+                  const imageURL = medicine.img || defaultImage;
+                  
+                  const row = document.createElement("tr");
+                  row.innerHTML = `
+                  <td>
+                      <input type="checkbox"
+                          class="medicine-checkbox"
+                          data-id="${medicine.id}"
+                          data-name="${medicine.ten}"
+                          data-price="${medicine.dongia}"
+                          data-image="${imageURL}"> <!-- Thêm data-image -->
+                  </td>
+                  <td>
+                      <img src="${imageURL}"
+                          alt="${medicine.ten}" 
+                          class="medicine-image"
+                          onerror="this.onerror=null;this.src='${defaultImage}'"> <!-- Fallback client -->
+                  </td>
+                  <td>${medicine.ten}</td>
+                  <td>${medicine.mota || 'Không có mô tả'}</td>
+                  <td>${medicine.nsx}</td>
+                  <td>${medicine.hsd}</td>
+                  <td>${formatCurrency(medicine.dongia)}</td>`;
+                  medicineList.appendChild(row);
+              });
+          } catch (error) {
+              console.error("Lỗi khi lấy danh sách thuốc:", error);
+              showError("Không thể tải danh sách thuốc");
+          }
       }
 
       function selectMedicine() {
-        const selectedMedicines =
-          JSON.parse(sessionStorage.getItem("selectedMedicines")) || [];
-        const checkboxes = document.querySelectorAll(
-          ".medicine-checkbox:checked"
-        );
-        checkboxes.forEach((checkbox) => {
-          const medicine = {
-            id: checkbox.getAttribute("data-id"),
-            name: checkbox.getAttribute("data-name"),
-            price: parseFloat(checkbox.getAttribute("data-price")),
-            image: checkbox.getAttribute("data-image") || "thuoc.jpg",
-          };
-          const existingMedicine = selectedMedicines.find(
-            (m) => m.id === medicine.id
-          );
-          if (!existingMedicine) {
-            selectedMedicines.push(medicine);
-          }
-        });
-        sessionStorage.setItem(
-          "selectedMedicines",
-          JSON.stringify(selectedMedicines)
-        );
-        window.location.href = `kedonthuoc.html`;
+          const selectedMedicines = JSON.parse(sessionStorage.getItem("selectedMedicines")) || [];
+          const checkboxes = document.querySelectorAll('.medicine-checkbox:checked');
+          
+          checkboxes.forEach((checkbox) => {
+              const medicine = {
+                  id: checkbox.getAttribute("data-id"),
+                  name: checkbox.getAttribute("data-name"),
+                  price: parseFloat(checkbox.getAttribute("data-price")),
+                  img: checkbox.getAttribute("data-image"), // Lấy đường dẫn ảnh
+                  quantity: 1 // Mặc định số lượng
+              };
+              
+              // Kiểm tra trùng lặp
+              const existingIndex = selectedMedicines.findIndex(m => m.id === medicine.id);
+              if (existingIndex === -1) {
+                  selectedMedicines.push(medicine);
+              }
+          });
+
+          sessionStorage.setItem("selectedMedicines", JSON.stringify(selectedMedicines));
+          window.location.href = "kedonthuoc.html";
       }
 
-      function goBack() {
-        window.history.back();
+      // Hàm định dạng tiền tệ
+      function formatCurrency(amount) {
+          return new Intl.NumberFormat('vi-VN', {
+              style: 'currency',
+              currency: 'VND'
+          }).format(amount);
       }
-    </script>
+
+      // Hàm hiển thị lỗi
+      function showError(message) {
+          const errorDiv = document.createElement('div');
+          errorDiv.className = 'error-message';
+          errorDiv.textContent = message;
+          document.querySelector('.container').prepend(errorDiv);
+      }
+  </script>
   </body>
 </html>
+
+

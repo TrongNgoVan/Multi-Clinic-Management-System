@@ -141,7 +141,7 @@ class BacSiService:
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
         query = """
-            SELECT id, ten, mota, nsx, hsd, dongia
+            SELECT id, ten, mota, nsx, hsd, dongia, img
             FROM thuoc
             WHERE ten LIKE %s
         """
