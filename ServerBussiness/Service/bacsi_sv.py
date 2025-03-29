@@ -27,7 +27,7 @@ class BacSiService:
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
         query = """
-            SELECT lichhen.id, lichhen.thoigianhen, 
+            SELECT lichhen.id, lichhen.thoigianhen, lichhen.ghichu, lichhen.trangthai,
                    bacsi.id as bacsi_id, bacsi.ten as bacsi_ten, 
                    benhnhan.id as benhnhan_id, benhnhan.ten as benhnhan_ten, benhnhan.dob as benhnhan_dob, 
                    benhnhan.cccd as benhnhan_cccd, benhnhan.sdt as benhnhan_sdt, benhnhan.quequan as benhnhan_quequan, benhnhan.img as benhnhan_img
@@ -41,7 +41,7 @@ class BacSiService:
         for row in cursor.fetchall():
             bacsi = BacSi(id=row["bacsi_id"], ten=row["bacsi_ten"], dob=None, chuyenmon=None, hocvan=None, kinhnghiem=None, img=None, phongID=None, username=None, password=None)
             benhnhan = BenhNhan(id=row["benhnhan_id"], ten=row["benhnhan_ten"], dob=row["benhnhan_dob"], cccd=row["benhnhan_cccd"], sdt=row["benhnhan_sdt"], quequan=row["benhnhan_quequan"], img=row["benhnhan_img"], username=None, password=None)
-            lichhen = LichHen(id=row["id"], thoigianhen=row["thoigianhen"], Bacsi=bacsi, BenhNhan=benhnhan)
+            lichhen = LichHen(id=row["id"], Bacsi=bacsi, BenhNhan=benhnhan, ghichu = row["ghichu"],thoigianhen=row["thoigianhen"], trangthai=row["trangthai"])
             lichhen_list.append(lichhen)
         cursor.close()
         conn.close()
@@ -173,3 +173,18 @@ class BacSiService:
         cursor.close()
         conn.close()
         return [pk.to_dict() for pk in phieukham_list]
+
+    @staticmethod
+    def duyetlichhen(id):
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        query = """
+            UPDATE lichhen
+            SET trangthai = "Đã duyệt"
+            WHERE ID = %s
+        """
+        cursor.execute(query, (id,))
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return {"success": True, "message": "Duyệt lịch hẹn thành công"}

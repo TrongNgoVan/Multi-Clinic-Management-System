@@ -77,3 +77,9 @@ def get_thuoc():
 def get_all_phieukham():
     ds_phieukham = BacSiService.get_all_phieukham()
     return jsonify(ds_phieukham), 200
+
+@bacsi_bp.route("/duyetlichhen/<int:id>", methods=["PUT"])
+def duyetlichhen(id):
+   
+    result = BacSiService.duyetlichhen(id)
+    return jsonify(result), 200
