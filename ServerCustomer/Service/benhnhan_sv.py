@@ -211,3 +211,27 @@ class BenhNhanService:
         finally:
             if 'cursor' in locals(): cursor.close()
             if 'conn' in locals(): conn.close()
+    
+    @staticmethod
+    def get_lichhen(benhnhanID):
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        query = """
+            SELECT lichhen.id, lichhen.thoigianhen, lichhen.ghichu, lichhen.trangthai,
+                   bacsi.id as bacsi_id, bacsi.ten as bacsi_ten, bacsi.dob as bacsi_dob, bacsi.chuyenmon as bacsi_chuyenmon, bacsi.hocvan as bacsi_hocvan, bacsi.kinhnghiem as bacsi_kinhnghiem, bacsi.img as bacsi_img, 
+                   benhnhan.id as benhnhan_id
+            FROM lichhen
+            JOIN benhnhan ON lichhen.benhnhanID = benhnhan.id
+            JOIN bacsi ON lichhen.bacsiID = bacsi.id
+            WHERE lichhen.benhnhanID = %s
+        """
+        cursor.execute(query, (benhnhanID,))
+        lichhen_list = []
+        for row in cursor.fetchall():
+            bacsi = BacSi(id=row["bacsi_id"], ten=row["bacsi_ten"], dob=row["bacsi_dob"], chuyenmon=row["bacsi_chuyenmon"], hocvan=row["bacsi_hocvan"], kinhnghiem=row["bacsi_kinhnghiem"], img=row["bacsi_img"],  phongID=None, username=None, password=None)
+            benhnhan = BenhNhan(id=row["benhnhan_id"], ten=None, sdt=None, quequan=None, cccd=None, dob=None, img=None, username=None, password=None)
+            lichhen = LichHen(id=row["id"], Bacsi=bacsi, BenhNhan=benhnhan, ghichu = row["ghichu"],thoigianhen=row["thoigianhen"], trangthai=row["trangthai"])
+            lichhen_list.append(lichhen)
+        cursor.close()
+        conn.close()
+        return lichhen_list

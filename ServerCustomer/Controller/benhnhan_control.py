@@ -170,3 +170,8 @@ def add_lichhen():
         return jsonify(result), 201 if result["success"] else 400
     except Exception as e:
         return jsonify({"success": False, "message": str(e)}), 500
+
+@benhnhan_bp.route("/get_all_lichhen/<int:benhnhanID>", methods=["GET"])
+def get_all_lichhen(benhnhanID):
+    ds_lichhen = BenhNhanService.get_lichhen(benhnhanID)
+    return jsonify([lichhen.to_dict() for lichhen in ds_lichhen])
