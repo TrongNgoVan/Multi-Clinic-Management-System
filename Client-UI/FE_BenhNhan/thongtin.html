@@ -197,20 +197,7 @@
 
           <label for="dob">Ngày Sinh:</label>
           <input type="date" class="form-control" id="dob" name="dob" />
-
-          <label for="password">Mật Khẩu Mới:</label>
-          <input
-            type="password"
-            id="password"
-            placeholder="Nhập mật khẩu mới"
-          />
-
-          <label for="repassword">Nhập Lại Mật Khẩu:</label>
-          <input
-            type="password"
-            id="repassword"
-            placeholder="Nhập lại mật khẩu"
-          />
+          
 
           <label for="avatar">Ảnh Đại Diện:</label>
           <input type="file" id="avatar" accept="image/*" />
@@ -367,16 +354,9 @@
           }
 
           const benhnhan = JSON.parse(benhnhanStr);
-          const password = document.getElementById("password").value;
-          const repassword = document.getElementById("repassword").value;
-
-          // Kiểm tra mật khẩu nhập lại
-          if (password && password !== repassword) {
-            document.getElementById("message").innerText =
-              "Mật khẩu nhập lại không khớp!";
-            document.getElementById("message").style.color = "red";
-            return;
-          }
+        
+ 
+        
 
           // Tạo FormData để gửi cả file ảnh và dữ liệu text
           const formData = new FormData();
@@ -387,10 +367,7 @@
           formData.append("cccd", document.getElementById("cccd").value);
           formData.append("dob", document.getElementById("dob").value);
 
-          // Chỉ gửi mật khẩu nếu người dùng nhập vào
-          if (password) {
-            formData.append("password", password);
-          }
+         
 
           // Ảnh đại diện mới
           const avatarFile = document.getElementById("avatar").files[0];
@@ -407,7 +384,7 @@
             }
           }
 
-          fetch("http://192.168.43.20:5000/benhnhan/update", {
+          fetch("http://172.11.43.16:5000/benhnhan/update", {
             method: "PUT",
             body: formData,
           })

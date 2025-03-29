@@ -43,5 +43,7 @@ app.register_blueprint(phongchucnang_bp, url_prefix="/phongchucnang")
 
 # Chạy server
 if __name__ == "__main__":
-    app.run(host="192.168.43.20", port=5000)
+    app.run(host="172.11.43.16", port=5000)
     # ipv4 wifi trọng 192.168.43.20
+    # ipv4 wifi trường 172.11.43.16
+

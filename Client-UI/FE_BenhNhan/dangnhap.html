@@ -330,7 +330,7 @@
           return;
         }
         const data = { username, password };
-        fetch("http://192.168.43.20:5000/benhnhan/login", {
+        fetch("http://172.11.43.16:5000/benhnhan/login", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(data)
@@ -400,7 +400,7 @@
           formData.append("img", avatarFile);
         }
 
-        fetch("http://192.168.43.20:5000/benhnhan/register", {
+        fetch("http://172.11.43.16:5000/benhnhan/register", {
           method: "POST",
           body: formData
         })

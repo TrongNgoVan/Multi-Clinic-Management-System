@@ -62,6 +62,7 @@ class BenhNhanService:
                     "cccd": benhnhan["cccd"],
                     "dob": benhnhan["dob"],
                     "img": benhnhan["img"],
+                    "password": benhnhan["password"],
                     "username": benhnhan["username"]
                 }
             }
