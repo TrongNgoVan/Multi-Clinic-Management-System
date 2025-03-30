@@ -210,3 +210,36 @@ def get_donthuoc(benhnhanID):
             "success": False,
             "error": "Lỗi server nội bộ"
         }), 500
+
+
+@benhnhan_bp.route("/phieukham/<int:benhnhanID>", methods=["GET"])
+
+def get_all_phieukham(benhnhanID):
+    try:
+        # Validate input
+        
+
+        # Get data from service
+        result = BenhNhanService.get_phieukham(benhnhanID)
+        
+        # Handle service response
+        if result.get('success'):
+            return jsonify({
+                "success": True,
+                "message": "Lấy danh sách phiếu khám thành công",
+                "data": result.get('data', []),
+                "total": result.get('total', 0)
+            }), 200
+        else:
+            return jsonify({
+                "success": False,
+                "message": "Lỗi hệ thống",
+                "error": result.get('error', 'UNKNOWN_ERROR')
+            }), 500
+
+    except Exception as e:
+        return jsonify({
+            "success": False,
+            "message": "Lỗi không xác định",
+            "error": str(e)
+        }), 500

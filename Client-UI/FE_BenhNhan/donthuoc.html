@@ -137,6 +137,9 @@
             body * {
                 visibility: hidden;
             }
+            .print-all-container {
+            display: none;
+        }
             
             .prescription-item.print-active,
             .prescription-item.print-active * {
@@ -180,12 +183,11 @@
             margin-top: 30px;
         }
 
-        .loading {
-            text-align: center;
-            padding: 50px;
-            font-size: 18px;
-            color: #666;
-        }
+        .print-all-container {
+        text-align: center;
+        margin-top: 20px;
+        padding: 0 30px;
+    }
     </style>
 </head>
 <body>
@@ -205,9 +207,11 @@
             <a id="logout" onclick="logout()">Đăng xuất</a>
         </div>
     </div>
-
+    <!-- <div class="print-all-container">
+        <button class="print-btn" onclick="window.print()">In toàn bộ Đơn Thuốc</button>
+    </div> -->
     <div class="prescription-list">
-        <div class="loading">Đang tải danh sách đơn thuốc...</div>
+
     </div>
 
     <div class="footer">
@@ -221,6 +225,8 @@
                 currency: 'VND' 
             }).format(amount ?? 0);
         }
+        
+
         function printPrescription(prescriptionId) {
             // Ẩn tất cả các đơn thuốc
             document.querySelectorAll('.prescription-item').forEach(item => {
@@ -237,6 +243,7 @@
             // Xóa class active sau khi in
             setTimeout(() => prescription.classList.remove('print-active'), 500);
         }
+
 
         async function loadPrescriptions(idBenhNhan) {
             try {
@@ -258,6 +265,7 @@
                         <div class="prescription-header">
                             <h1>Mã Đơn Thuốc: ${data.ID}</h1>
                             <button class="print-btn" onclick="printPrescription('${data.ID}')">In Đơn Thuốc</button>
+                          
                         </div>
 
                         <div class="prescription-info">
@@ -341,6 +349,7 @@
             sessionStorage.clear();
             window.location.href = "dangnhap.html";
         }
+        
     </script>
 </body>
 </html>

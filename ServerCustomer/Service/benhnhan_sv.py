@@ -311,3 +311,73 @@ class BenhNhanService:
         finally:
             if conn:
                 conn.close()
+
+    @staticmethod
+    def get_phieukham(benhnhanID):
+        conn = None
+        cursor = None
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor(dictionary=True)
+            
+            query = """
+                SELECT 
+                    phieukham.id,
+                    phieukham.trieuchung,
+                    phieukham.chandoan,
+                    phieukham.thongsoxetnghiem,
+                    phieukham.anhxetnghiem,
+                    phieukham.ngaykham,
+                    phieukham.tienkham,
+                    bacsi.id as bacsi_id,
+                    bacsi.ten as bacsi_ten,
+                    bacsi.img as bacsi_img
+                FROM phieukham
+                JOIN bacsi ON phieukham.bacsiID = bacsi.id
+                WHERE phieukham.benhnhanID = %s
+                ORDER BY phieukham.ngaykham DESC
+            """
+            
+            cursor.execute(query, (benhnhanID,))
+            
+            phieukham_list = []
+            for record in cursor:
+                # Format datetime
+                ngaykham = record['ngaykham'].isoformat() if record['ngaykham'] else None
+                
+                # Handle null values
+                anhxetnghiem = record['anhxetnghiem'] or None
+                bacsi_img = record['bacsi_img'] or "/img/doctor-default.png"
+                
+                phieu = {
+                    "id": record['id'],
+                    "trieu_chung": record['trieuchung'],
+                    "chan_doan": record['chandoan'],
+                    "thong_so_xet_nghiem": record['thongsoxetnghiem'],
+                    "anh_xet_nghiem": anhxetnghiem,
+                    "ngay_kham": ngaykham,
+                    "tien_kham": float(record['tienkham']) if record['tienkham'] else 0.0,
+                    "bac_si": {
+                        "id": record['bacsi_id'],
+                        "ho_ten": record['bacsi_ten'],
+                        "anh_dai_dien": bacsi_img
+                    }
+                }
+                phieukham_list.append(phieu)
+                
+            return {
+                "success": True,
+                "data": phieukham_list,
+                "total": len(phieukham_list)
+            }
+            
+        except Exception as e:
+            return {
+                "success": False,
+                "error": str(e)
+            }
+        finally:
+            if cursor:
+                cursor.close()
+            if conn:
+                conn.close()
