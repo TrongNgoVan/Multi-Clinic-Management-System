@@ -111,7 +111,7 @@
         }
 
         .medicine-image {
-            width: 80px;
+            width: 100px;
             height: 80px;
             object-fit: cover;
             border-radius: 4px;
@@ -133,8 +133,32 @@
             border-left: 4px solid #ffd700;
             margin-top: 25px;
         }
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            
+            .prescription-item.print-active,
+            .prescription-item.print-active * {
+                visibility: visible;
+            }
 
-        .print-btn {
+            .prescription-item.print-active {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                margin: 0;
+                padding: 20px;
+                box-shadow: none;
+                page-break-after: always;
+            }
+
+            .print-btn, .navbar, .footer {
+                display: none !important;
+            }
+        }
+        .print-btn  {
             background: #c80d0d;
             color: white;
             padding: 10px 25px;
@@ -168,11 +192,12 @@
     <div class="navbar">
         <div class="navbar-left">
             <div class="logo">Phòng Khám PTIT</div>
+            <a href="index.html">Trang chủ</a>
             <a href="phongkham.html">Đặt lịch khám</a>
-            <a href="#">Xem phiếu khám</a>
+            <a href="phieukham.html">Xem phiếu khám</a>
             <a href="donthuoc.html">Xem đơn thuốc</a>
             <a href="xemlichhen.html">Xem lịch hẹn</a>
-            <a href="#">Xem thông tin phòng khám</a>
+            <!-- <a href="#">Xem thông tin phòng khám</a> -->
         </div>
         <div class="navbar-right">
             <a id="patientName" href="thongtin.html"></a>
@@ -196,6 +221,22 @@
                 currency: 'VND' 
             }).format(amount ?? 0);
         }
+        function printPrescription(prescriptionId) {
+            // Ẩn tất cả các đơn thuốc
+            document.querySelectorAll('.prescription-item').forEach(item => {
+                item.classList.remove('print-active');
+            });
+            
+            // Hiển thị đơn cần in và thêm class active
+            const prescription = document.getElementById(`prescription-${prescriptionId}`);
+            prescription.classList.add('print-active');
+            
+            // Kích hoạt lệnh in
+            window.print();
+            
+            // Xóa class active sau khi in
+            setTimeout(() => prescription.classList.remove('print-active'), 500);
+        }
 
         async function loadPrescriptions(idBenhNhan) {
             try {
@@ -213,10 +254,10 @@
                 }
 
                 container.innerHTML = datas.map(data => `
-                    <div class="prescription-item">
+                <div class="prescription-item" id="prescription-${data.ID}">
                         <div class="prescription-header">
                             <h1>Mã Đơn Thuốc: ${data.ID}</h1>
-                            <button class="print-btn" onclick="window.print()">In Đơn Thuốc</button>
+                            <button class="print-btn" onclick="printPrescription('${data.ID}')">In Đơn Thuốc</button>
                         </div>
 
                         <div class="prescription-info">
@@ -230,7 +271,7 @@
                                 <tr>
                                     <th>Ảnh thuốc</th>
                                     <th>Tên thuốc</th>
-                                    <th>Phân loại</th>
+                                    <th>Công dụng</th>
                                     <th>Số lượng</th>
                                     <th>Đơn giá</th>
                                     <th>Thành tiền</th>
