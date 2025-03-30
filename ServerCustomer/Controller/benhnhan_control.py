@@ -175,3 +175,38 @@ def add_lichhen():
 def get_all_lichhen(benhnhanID):
     ds_lichhen = BenhNhanService.get_lichhen(benhnhanID)
     return jsonify([lichhen.to_dict() for lichhen in ds_lichhen])
+
+
+from flask import jsonify
+from werkzeug.exceptions import InternalServerError, NotFound
+
+@benhnhan_bp.route("/donthuoc/<int:benhnhanID>", methods=["GET"])
+def get_donthuoc(benhnhanID):
+    try:
+        # Gọi service
+        result = BenhNhanService.get_donthuoc(benhnhanID)
+        
+        # Xử lý kết quả
+        if result is None:
+            raise InternalServerError("Lỗi hệ thống khi truy vấn dữ liệu")
+            
+        if not result:  # Danh sách rỗng
+            return jsonify({
+                "success": True,
+                "message": "Bệnh nhân chưa có đơn thuốc nào",
+                "data": []
+            }), 200
+            
+        return jsonify({
+            "success": True,
+            "count": len(result),
+            "data": result
+        }), 200
+        
+    except Exception as e:
+        # Ghi log lỗi
+        app.logger.error(f"Lỗi API /donthuoc/{benhnhanID}: {str(e)}")
+        return jsonify({
+            "success": False,
+            "error": "Lỗi server nội bộ"
+        }), 500

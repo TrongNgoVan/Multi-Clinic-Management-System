@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách Đơn thuốc</title>
+    <link rel="icon" href="img/ptit.png" type="image/x-icon">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f3f3f3;
+        }
+
+        .navbar {
+            display: flex;
+            align-items: center;
+            background-color: #c80d0d;
+            padding: 10px 20px;
+            color: #fff;
+            justify-content: space-between;
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .navbar a:hover {
+            background-color: #a00b0b;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            /* margin-left: 10px; */
+            border: 2px solid #fff; /* Viền trắng giúp nổi bật */
+            object-fit: cover;
+        }
+
+        .prescription-list {
+            max-width: 1000px;
+            margin: 30px auto;
+        }
+
+        .prescription-item {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .prescription-header {
+            border-bottom: 2px solid #c80d0d;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .prescription-info {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .medicine-list {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .medicine-list th,
+        .medicine-list td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        .medicine-list th {
+            background-color: #c80d0d;
+            color: white;
+        }
+
+        .medicine-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            background: #eee;
+        }
+
+        .total-amount {
+            text-align: right;
+            font-size: 18px;
+            margin: 20px 0;
+            color: #c80d0d;
+            font-weight: bold;
+        }
+
+        .prescription-notes {
+            background-color: #fff9e6;
+            padding: 15px;
+            border-left: 4px solid #ffd700;
+            margin-top: 25px;
+        }
+
+        .print-btn {
+            background: #c80d0d;
+            color: white;
+            padding: 10px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .print-btn:hover {
+            background-color: #a00b0b;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #c80d0d;
+            color: white;
+            margin-top: 30px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 50px;
+            font-size: 18px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-left">
+            <div class="logo">Phòng Khám PTIT</div>
+            <a href="phongkham.html">Đặt lịch khám</a>
+            <a href="#">Xem phiếu khám</a>
+            <a href="donthuoc.html">Xem đơn thuốc</a>
+            <a href="xemlichhen.html">Xem lịch hẹn</a>
+            <a href="#">Xem thông tin phòng khám</a>
+        </div>
+        <div class="navbar-right">
+            <a id="patientName" href="thongtin.html"></a>
+            <img id="avatar" class="avatar" src="img/logo1.png" alt="Ảnh đại diện">
+            <a id="logout" onclick="logout()">Đăng xuất</a>
+        </div>
+    </div>
+
+    <div class="prescription-list">
+        <div class="loading">Đang tải danh sách đơn thuốc...</div>
+    </div>
+
+    <div class="footer">
+        &copy; 2025 Phòng Khám Đa Khoa PTIT. Mọi quyền được bảo lưu.
+    </div>
+
+    <script>
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('vi-VN', { 
+                style: 'currency', 
+                currency: 'VND' 
+            }).format(amount ?? 0);
+        }
+
+        async function loadPrescriptions(idBenhNhan) {
+            try {
+                const response = await fetch(`http://192.168.43.20:5000/benhnhan/donthuoc/${idBenhNhan}`);
+                if (!response.ok) throw new Error('Lỗi kết nối máy chủ: ' + response.status);
+                
+                const prescriptions = await response.json();
+                const datas =  prescriptions.data
+                console.log(prescriptions.data);
+                const container = document.querySelector('.prescription-list');
+                
+                if (!Array.isArray(datas) || datas.length === 0) {
+                    container.innerHTML = `<div class="no-data">Không có đơn thuốc nào</div>`;
+                    return;
+                }
+
+                container.innerHTML = datas.map(data => `
+                    <div class="prescription-item">
+                        <div class="prescription-header">
+                            <h1>Mã Đơn Thuốc: ${data.ID}</h1>
+                            <button class="print-btn" onclick="window.print()">In Đơn Thuốc</button>
+                        </div>
+
+                        <div class="prescription-info">
+                            <div><strong>Bác sĩ kê đơn:</strong> ${data.ten_bacsi || 'Chưa xác định'}</div>
+                            <div><strong>Ngày tạo:</strong> ${data.ngaymua}</div>
+                            <div><strong>Trạng thái:</strong> Đã thanh toán</div>
+                        </div>
+
+                        <table class="medicine-list">
+                            <thead>
+                                <tr>
+                                    <th>Ảnh thuốc</th>
+                                    <th>Tên thuốc</th>
+                                    <th>Phân loại</th>
+                                    <th>Số lượng</th>
+                                    <th>Đơn giá</th>
+                                    <th>Thành tiền</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${data.chitiet.map(medicine => `
+                                    <tr>
+                                        <td>
+                                            <img src="${medicine.img || 'img/thuoc-mac-dinh.jpg'}" 
+                                                 class="medicine-image" 
+                                                 alt="${medicine.ten_thuoc}"
+                                                 onerror="this.src='img/thuoc-mac-dinh.jpg'">
+                                        </td>
+                                        <td>${medicine.ten_thuoc}</td>
+                                        <td>${medicine.mota_thuoc || 'Không phân loại'}</td>
+                                        <td>${medicine.soluong}</td>
+                                        <td>${formatCurrency(medicine.dongia)}</td>
+                                        <td>${formatCurrency(medicine.soluong * medicine.dongia)}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+
+                        <div class="total-amount">
+                            Tổng thành tiền: ${formatCurrency(data.tonggia)}
+                        </div>
+
+                        <div class="prescription-notes">
+                            <h3>Hướng dẫn sử dụng:</h3>
+                            <p>${data.mota || 'Không có hướng dẫn đặc biệt'}</p>
+                        </div>
+                    </div>
+                `).join('');
+                
+            } catch (error) {
+                console.error('Lỗi:', error);
+                document.querySelector('.prescription-list').innerHTML = `
+                    <div class="error-message">
+                        Lỗi tải dữ liệu: ${error.message}<br>
+                        <button onclick="location.reload()">Thử lại</button>
+                    </div>
+                `;
+            }
+        }
+
+        window.onload = () => {
+            try {
+                const userData = JSON.parse(sessionStorage.getItem("benhnhan"));
+                if (!userData?.id) throw new Error('Vui lòng đăng nhập');
+                
+                document.getElementById('patientName').textContent = userData.ten || 'Khách';
+                loadPrescriptions(userData.id);
+                // Cập nhật ảnh đại diện nếu có
+                const avatarImg = document.getElementById("avatar");
+                if (userData.img) {
+                    avatarImg.src = userData.img;
+                }
+                
+            } catch (error) {
+                alert(error.message);
+                window.location.href = "dangnhap.html";
+            }
+        };
+
+        function logout() {
+            sessionStorage.clear();
+            window.location.href = "dangnhap.html";
+        }
+    </script>
+</body>
+</html>

@@ -235,3 +235,79 @@ class BenhNhanService:
         cursor.close()
         conn.close()
         return lichhen_list
+
+    @staticmethod
+    def get_donthuoc(benhnhanID):
+        conn = None
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor(dictionary=True)
+
+            # Bước 1: Lấy danh sách đơn thuốc chính
+            cursor.execute("""
+                SELECT 
+                    dt.ID,
+                    dt.ngaymua,
+                    dt.tonggia,
+                    dt.mota,
+                    dt.bacsiID,
+                    bs.ten AS ten_bacsi
+                FROM donthuoc dt
+                JOIN bacsi bs ON dt.bacsiID = bs.id
+                WHERE dt.benhnhanID = %s
+                ORDER BY dt.ngaymua DESC
+            """, (benhnhanID,))
+            
+            donthuoc_list = cursor.fetchall()
+            if not donthuoc_list:
+                return []
+
+            # Bước 2: Lấy chi tiết từng đơn thuốc
+            for donthuoc in donthuoc_list:
+                # Truy vấn chi tiết thuốc
+                cursor.execute("""
+                    SELECT 
+                        ct.soluong,
+                        ct.gia,
+                        t.id AS thuoc_id,
+                        t.ten AS ten_thuoc,
+                        t.mota AS mota_thuoc,
+                        t.nsx,
+                        t.hsd,
+                        t.dongia,
+                        t.img
+                    FROM chitietdonthuoc ct
+                    JOIN thuoc t ON ct.thuocID = t.id
+                    WHERE ct.donthuocID = %s
+                """, (donthuoc["ID"],))
+                
+                # Đóng gói chi tiết vào đơn thuốc
+                chitiet = cursor.fetchall()
+                donthuoc["chitiet"] = [
+                    {
+                        "thuoc_id": item["thuoc_id"],
+                        "ten_thuoc": item["ten_thuoc"],
+                        "soluong": item["soluong"],
+                        "gia": item["gia"],
+                        "mota_thuoc": item["mota_thuoc"],
+                        "nsx": item["nsx"].strftime("%d/%m/%Y") if item["nsx"] else None,
+                        "hsd": item["hsd"].strftime("%d/%m/%Y") if item["hsd"] else None,
+                        "dongia": item["dongia"],
+                        "img": item["img"]
+                    }
+                    for item in chitiet
+                ]
+
+            # Định dạng lại ngày tháng cho đơn thuốc
+            for donthuoc in donthuoc_list:
+                donthuoc["ngaymua"] = donthuoc["ngaymua"].strftime("%d/%m/%Y %H:%M:%S") if donthuoc["ngaymua"] else None
+
+            return donthuoc_list
+
+        except Exception as e:
+            print(f"[LỖI] Không thể lấy đơn thuốc: {str(e)}")
+            return None
+
+        finally:
+            if conn:
+                conn.close()

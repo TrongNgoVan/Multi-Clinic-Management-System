@@ -23,3 +23,5 @@ class BenhNhan:
             "username": self.username,
             "password": self.password
         }
+
+    
