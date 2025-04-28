@@ -1,9 +1,9 @@
 import mysql.connector
 from flask import Blueprint, request, jsonify, render_template, redirect, url_for, session, flash
 from DB.db_connection import get_db_connection
-
+from werkzeug.utils import secure_filename
 from Service.bacsi_sv import BacSiService
-
+import os
 bacsi_bp = Blueprint("bacsi", __name__)
 
 @bacsi_bp.route("/get_all_bacsi", methods=["GET"])
@@ -29,27 +29,59 @@ def login_bacsi():
         return jsonify(result), 401
     
 
+UPLOAD_FOLDER_ABS = r"B:\Documents\Kỳ 2 - Năm 4\Chuyên Đề HTTT\Multi-Clinic-Management-System\ServerCustomer\static\xetnghiem"
+
 @bacsi_bp.route("/create_phieu_kham", methods=["POST"])
 def create_phieu_kham():
-    data = request.get_json()   
-    # Lấy dữ liệu từ request
-    trieuchung = data.get("trieuchung")
-    chandoan = data.get("chandoan")
-    thongsoxetnghiem = data.get("thongsoxetnghiem")
-    anhxetnghiem = data.get("anhxetnghiem")
-    ngaykham = data.get("ngaykham")
-    benhnhanID = data.get("benhnhanID")
-    bacsiID = data.get("bacsiID")
-    tienkham = data.get("tienkham")
+    file = request.files.get("anhxetnghiem")
+    if not file or file.filename == "":
+        return jsonify({"success": False, "message": "Chưa upload ảnh xét nghiệm"}), 400
 
-    # Gọi service để tạo phiếu khám
+    # Xử lý form data
+    form = request.form
+    trieuchung       = form.get("trieuchung", "")
+    chandoan         = form.get("chandoan", "")
+    thongsoxetnghiem = form.get("thongsoxetnghiem", "")
+    ngaykham         = form.get("ngaykham", "")
+    benhnhanID       = form.get("benhnhanID")
+    bacsiID          = form.get("bacsiID")
+    tienkham         = form.get("tienkham", "")
+
+    # Xử lý tên file an toàn
+    filename = secure_filename(file.filename)
+
+    # Chỉ gửi dữ liệu form (chưa lưu ảnh vội)
     result = BacSiService.create_phieu_kham(
-        trieuchung, chandoan, thongsoxetnghiem, anhxetnghiem, ngaykham, benhnhanID, bacsiID, tienkham
+        trieuchung=trieuchung,
+        chandoan=chandoan,
+        thongsoxetnghiem=thongsoxetnghiem,
+        anhxetnghiem=filename,  # vẫn gửi tên file vào DB
+        ngaykham=ngaykham,
+        benhnhanID=benhnhanID,
+        bacsiID=bacsiID,
+        tienkham=tienkham
     )
-    if result["success"]:
-        return jsonify(result), 201
+
+    if result.get("success"):
+        try:
+            # Sau khi database thành công, mới lưu file ảnh
+            os.makedirs(UPLOAD_FOLDER_ABS, exist_ok=True)
+            save_path = os.path.join(UPLOAD_FOLDER_ABS, filename)
+            file.save(save_path)
+
+            public_url = f"/static/xetnghiem/{filename}"  # đường dẫn public
+            result.update({"anhxetnghiem_url": public_url})
+
+            return jsonify(result), 201
+
+        except Exception as e:
+            # Nếu lỗi khi lưu file -> rollback database nếu cần (tuỳ bạn)
+            return jsonify({"success": False, "message": f"Lỗi khi lưu ảnh: {str(e)}"}), 500
+
     else:
+        # Nếu database lỗi -> không lưu gì hết
         return jsonify(result), 400
+
 
 @bacsi_bp.route("/create_prescription", methods=["POST"])
 def create_don_thuoc():

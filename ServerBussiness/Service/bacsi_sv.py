@@ -48,28 +48,57 @@ class BacSiService:
         return lichhen_list
 
     @staticmethod
-    def create_phieu_kham(trieuchung, chandoan, thongsoxetnghiem, anhxetnghiem, ngaykham, benhnhanID, bacsiID, tienkham):
+    def create_phieu_kham(trieuchung, chandoan, thongsoxetnghiem,
+                          anhxetnghiem, ngaykham, benhnhanID,
+                          bacsiID, tienkham):
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
         
         try:
-            # Tạo phiếu khám
+            # 1) Ghép tiền tố URL trước tên file (hoặc path gốc từ form)
+            base_url = "http://192.168.43.20:5000/"
+            full_file_url = base_url + anhxetnghiem.lstrip("/")  # đảm bảo không dư slash
+
+            # 2) Thực hiện INSERT, lưu full_file_url
             query = """
-                INSERT INTO phieukham (trieuchung, chandoan, thongsoxetnghiem, anhxetnghiem, ngaykham, benhnhanID, bacsiID, tienkham)
+                INSERT INTO phieukham 
+                    (trieuchung, chandoan, thongsoxetnghiem, anhxetnghiem, 
+                     ngaykham, benhnhanID, bacsiID, tienkham)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
             """
-            cursor.execute(query, (trieuchung, chandoan, thongsoxetnghiem, anhxetnghiem, ngaykham, benhnhanID, bacsiID, tienkham))
+            cursor.execute(query, (
+                trieuchung,
+                chandoan,
+                thongsoxetnghiem,
+                full_file_url,   # lưu URL đầy đủ
+                ngaykham,
+                benhnhanID,
+                bacsiID,
+                tienkham
+            ))
             conn.commit()
-            
-            return {"success": True, "message": "Tạo phiếu khám thành công"}
+
+            # 3) Lấy ID mới tạo (tuỳ nếu bạn muốn trả về)
+            phieukham_id = cursor.lastrowid
+
+            return {
+                "success": True,
+                "message": "Tạo phiếu khám thành công",
+                "phieukhamID": phieukham_id,
+                "anhxetnghiem_url": full_file_url
+            }
 
         except Exception as e:
             conn.rollback()
-            return {"success": False, "message": f"Lỗi khi tạo phiếu khám: {str(e)}"}
+            return {
+                "success": False,
+                "message": f"Lỗi khi tạo phiếu khám: {str(e)}"
+            }
 
         finally:
             cursor.close()
             conn.close()
+
 
     @staticmethod
     def create_prescription(ngaymua, benhnhan, bacsi, tonggia, mota, chitietdonthuoc):
