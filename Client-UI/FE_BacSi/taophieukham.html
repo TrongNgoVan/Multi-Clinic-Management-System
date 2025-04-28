@@ -212,10 +212,7 @@
         background-color: #e53935;
       }
 
-      /* Ẩn ban đầu nút “Tạo đơn thuốc” (nếu muốn) */
-      #create-prescription-btn {
-        display: none;
-      }
+
     </style>
   </head>
   <body>
@@ -302,20 +299,21 @@
           </button>
         </div>
         <input type="text" id="tienkham" placeholder="Tiền khám" />
+        <div class="btn-container">
+          <button class="btn btn-red" onclick="saveMedicalRecord()">
+            Lưu Phiếu Khám
+          </button>
+          <button class="btn btn-back" onclick="goBack()">Quay lại</button>
+          <button
+            class="btn btn-create-prescription"
+            id="create-prescription-btn"
+            onclick="createPrescription()"
+          >
+            Tạo Đơn Thuốc
+          </button>
+        </div>
       </div>
-      <div class="btn-container">
-        <button class="btn btn-red" onclick="saveMedicalRecord()">
-          Lưu Phiếu Khám
-        </button>
-        <button class="btn btn-back" onclick="goBack()">Quay lại</button>
-        <button
-          class="btn btn-create-prescription"
-          id="create-prescription-btn"
-          onclick="createPrescription()"
-        >
-          Tạo Đơn Thuốc
-        </button>
-      </div>
+      
     </div>
 
     <script>
@@ -416,37 +414,48 @@
         // 3) Chuẩn bị FormData
         const fd = new FormData();
         fd.append("trieuchung", trieuchung);
-        fd.append("chandoan", chandoan);
         fd.append("thongsoxetnghiem", thongsoxetnghiem);
-        fd.append("anhxetnghiem", file); // file nhị phân
+        fd.append("anhxetnghiem", file);
+        fd.append("chandoan", chandoan);
         fd.append("tienkham", tienkham);
         fd.append("ngaykham", ngaykham);
+        fd.append(
+          "benhnhanID",
+          JSON.parse(sessionStorage.getItem("benhnhan")).id
+        );
+        fd.append("bacsiID", JSON.parse(sessionStorage.getItem("bacsi")).id);
 
-        // Thêm ID bác sĩ + bệnh nhân
-        const benhnhan = JSON.parse(sessionStorage.getItem("benhnhan"));
-        const bacsi = JSON.parse(sessionStorage.getItem("bacsi"));
-        fd.append("benhnhanID", benhnhan.id);
-        fd.append("bacsiID", bacsi.id);
+
+        const phieuData = {
+          trieuchung,
+          thongsoxetnghiem,
+          // với ảnh chúng ta chỉ lưu tên file, còn nội dung nhị phân server đã lưu rồi
+          anhxetnghiem: file.name,
+          chandoan,
+          tienkham,
+          ngaykham,
+          benhnhanID: JSON.parse(sessionStorage.getItem("benhnhan")).id,
+          bacsiID: JSON.parse(sessionStorage.getItem("bacsi")).id,
+        };
 
         try {
+          // 5) Gửi request lên server
           const response = await fetch(
             "http://26.80.253.0:5000/bacsi/create_phieu_kham",
             {
               method: "POST",
-              body: fd, // multipart/form-data tự gắn header
+              body: fd,
             }
           );
-
           if (!response.ok) {
             throw new Error(`Server trả về ${response.status}`);
           }
-          const result = await response.json();
+
+          // 6) Thành công: show nút và lưu phieuData chứ không phải kết quả
           alert("Tạo phiếu khám thành công!");
-          // Hiển thị nút Tạo đơn thuốc
-          document.getElementById("create-prescription-btn").style.display =
-            "inline-block";
-          // Lưu lại phiếu khám nếu cần
-          sessionStorage.setItem("phieukham", JSON.stringify(result));
+
+          sessionStorage.setItem("phieukham", JSON.stringify(phieuData));
+
         } catch (err) {
           console.error("Lỗi khi tạo phiếu khám:", err);
           alert("Không thể tạo phiếu khám, vui lòng thử lại.");

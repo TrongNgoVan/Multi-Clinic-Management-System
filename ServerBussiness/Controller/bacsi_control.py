@@ -68,10 +68,7 @@ def create_phieu_kham():
             os.makedirs(UPLOAD_FOLDER_ABS, exist_ok=True)
             save_path = os.path.join(UPLOAD_FOLDER_ABS, filename)
             file.save(save_path)
-
-            public_url = f"/static/xetnghiem/{filename}"  # đường dẫn public
-            result.update({"anhxetnghiem_url": public_url})
-
+            
             return jsonify(result), 201
 
         except Exception as e:

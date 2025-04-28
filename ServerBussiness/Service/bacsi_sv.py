@@ -56,7 +56,7 @@ class BacSiService:
         
         try:
             # 1) Ghép tiền tố URL trước tên file (hoặc path gốc từ form)
-            base_url = "http://192.168.43.20:5000/"
+            base_url = "http://192.168.43.20:5000/static/xetnghiem/"
             full_file_url = base_url + anhxetnghiem.lstrip("/")  # đảm bảo không dư slash
 
             # 2) Thực hiện INSERT, lưu full_file_url
@@ -84,8 +84,6 @@ class BacSiService:
             return {
                 "success": True,
                 "message": "Tạo phiếu khám thành công",
-                "phieukhamID": phieukham_id,
-                "anhxetnghiem_url": full_file_url
             }
 
         except Exception as e:
