@@ -326,7 +326,7 @@
         if (avatarFile) formData.append("img", avatarFile);
 
         // Gửi request
-        const response = await fetch("http://192.168.43.20:5000/benhnhan/update", {
+        const response = await fetch("/api/benhnhan/update", {
           method: "PUT",
           body: formData
         });

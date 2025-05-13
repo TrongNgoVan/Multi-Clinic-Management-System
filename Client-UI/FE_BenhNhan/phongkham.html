@@ -52,7 +52,7 @@
   <script>
     document.addEventListener('DOMContentLoaded', async () => {
       try {
-        const response = await fetch('http://192.168.43.20:5000/benhnhan/phongkham');
+        const response = await fetch('/api/benhnhan/phongkham');
         
         if (!response.ok) {
           throw new Error(`Lỗi HTTP: ${response.status}`);

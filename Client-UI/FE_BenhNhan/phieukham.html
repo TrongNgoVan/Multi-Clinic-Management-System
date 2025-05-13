@@ -252,7 +252,7 @@
       async function loadMedicalRecords(patientId) {
         try {
           const response = await fetch(
-            `http://192.168.43.20:5000/benhnhan/phieukham/${patientId}`
+            `/api/benhnhan/phieukham/${patientId}`
           );
           const datas = await response.json();
           console.log(datas);

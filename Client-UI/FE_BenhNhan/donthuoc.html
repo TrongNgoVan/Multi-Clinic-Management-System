@@ -247,7 +247,7 @@
 
         async function loadPrescriptions(idBenhNhan) {
             try {
-                const response = await fetch(`http://192.168.43.20:5000/benhnhan/donthuoc/${idBenhNhan}`);
+                const response = await fetch(`/api/benhnhan/donthuoc/${idBenhNhan}`);
                 if (!response.ok) throw new Error('Lỗi kết nối máy chủ: ' + response.status);
                 
                 const prescriptions = await response.json();

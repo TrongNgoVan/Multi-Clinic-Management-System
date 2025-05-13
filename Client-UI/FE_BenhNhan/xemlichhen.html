@@ -180,7 +180,7 @@
       async function fetchLichHen(benhnhanID) {
         try {
           let response = await fetch(
-            `http://192.168.43.20:5000/benhnhan/get_all_lichhen/${benhnhanID}`
+            `/api/benhnhan/get_all_lichhen/${benhnhanID}`
           );
           if (!response.ok) throw new Error("Lỗi API, mã: " + response.status);
 

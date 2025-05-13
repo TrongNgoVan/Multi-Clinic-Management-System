@@ -174,7 +174,7 @@
       `;
 
         // Gọi API lấy danh sách bác sĩ
-        fetch(`http://192.168.43.20:5000/benhnhan/bacsi/${phongkham.ID}`)
+        fetch(`/api/benhnhan/bacsi/${phongkham.ID}`)
           .then((response) => response.json())
           .then((data) => {
             if (data.success) {
