@@ -211,6 +211,8 @@
       .btn-red:hover {
         background-color: #e53935;
       }
+
+
     </style>
   </head>
   <body>
@@ -257,6 +259,7 @@
             ></textarea>
           </div>
 
+          <!-- Box 2: Thông số xét nghiệm 1 -->
           <div class="box">
             <p><strong>Thông số xét nghiệm</strong></p>
             <textarea
@@ -265,6 +268,7 @@
             ></textarea>
           </div>
 
+          <!-- Box 3: Thông số xét nghiệm 2 -->
           <div class="box">
             <p><strong>Ảnh xét nghiệm</strong></p>
             <input
@@ -309,33 +313,8 @@
           </button>
         </div>
       </div>
+      
     </div>
-
-    <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
-    <script>
-      ["test-results"].forEach((id) => {
-        ClassicEditor.create(document.getElementById("test-results"), {
-          toolbar: [
-            "heading",
-            "|",
-            "bold",
-            "italic",
-            "underline",
-            "link",
-            "bulletedList",
-            "numberedList",
-            "insertTable",
-            "imageUpload",
-            "blockQuote",
-            "undo",
-            "redo",
-          ],
-          ckfinder: {
-            uploadUrl: "http://127.0.0.1:5000/upload_image", // endpoint Flask
-          },
-        }).catch((err) => console.error(err));
-      });
-    </script>
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {
@@ -446,6 +425,7 @@
         );
         fd.append("bacsiID", JSON.parse(sessionStorage.getItem("bacsi")).id);
 
+
         const phieuData = {
           trieuchung,
           thongsoxetnghiem,
@@ -475,6 +455,7 @@
           alert("Tạo phiếu khám thành công!");
 
           sessionStorage.setItem("phieukham", JSON.stringify(phieuData));
+
         } catch (err) {
           console.error("Lỗi khi tạo phiếu khám:", err);
           alert("Không thể tạo phiếu khám, vui lòng thử lại.");
