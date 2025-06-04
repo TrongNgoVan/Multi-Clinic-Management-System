@@ -1,4 +1,6 @@
-# Multi-Clinic-Management-System
-Multidisciplinary clinic management system integrated AI- Information Systems Topic
-lưu ý bảo mật
-![image](https://github.com/user-attachments/assets/07928dce-111c-4d53-8176-9c0067c43d56)
+# Hệ thống quản lý phòng khám đa khoa tích hợp chuẩn đoán thông minh!!! - 20/02/2025
+
+
+| Sinh Viên        | MSV       | Email                    |
+|----------------|------------|-------------------------------|
+| Ngọ Văn Trọng  | B21DCCN726 | ngovantrong1308@gmail.com     |
